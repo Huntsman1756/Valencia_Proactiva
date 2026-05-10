@@ -1,4 +1,4 @@
-# MEMORIA RESUMEN — VLC-SENTINELLA (València Proactiva / V-PRO)
+# MEMORIA RESUMEN — VLC-PROACTIVA (València Proactiva / V-PRO)
 
 > **Borrador de la Memoria Resumen del proyecto (Anexo II)** para la convocatoria AD.TR.15 — Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026, categoría **Datos Abiertos**.
 > Este documento es un borrador de trabajo. El formato final debe ajustarse al modelo Anexo II oficial publicado en la Sede Electrónica.
@@ -6,15 +6,15 @@
 > Última revisión: 2026-05-09 (pivote tras verificación del portal real).
 
 ## 1. Identificación del proyecto
-- **Título:** VLC-SENTINELLA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
+- **Título:** VLC-PROACTIVA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
 - **Categoría a la que concurre:** Datos Abiertos. *(Opcionalmente se valorará una candidatura paralela en Periodismo de Datos — ver § 12.)*
 - **Ámbito territorial:** Municipio de València.
 - **Tipo de entregable:** Plataforma web reutilizable (API + frontend) con código abierto (MIT) y datos derivados bajo licencia CC-BY 4.0.
 
 ## 2. Resumen ejecutivo
-**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC-SENTINELLA te muestra al instante la alternativa viable adaptada a tu perfil: peatonal, comercial, de movilidad reducida, ciclista o en transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
+**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC-PROACTIVA te muestra al instante la alternativa viable adaptada a tu perfil: peatonal, comercial, de movilidad reducida, ciclista o en transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
 
-VLC-SENTINELLA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere en tiempo real datasets reales del portal municipal (ocupación de vía pública, estado del tráfico actualizado cada 3 minutos, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, rutas alternativas multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes (ayudas a comercios afectados, exenciones). Todo el código es MIT y los datos derivados CC-BY 4.0.
+VLC-PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere en tiempo real datasets reales del portal municipal (ocupación de vía pública, estado del tráfico actualizado cada 3 minutos, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, rutas alternativas multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes (ayudas a comercios afectados, exenciones). Todo el código es MIT y los datos derivados CC-BY 4.0.
 
 ## 3. Problema que aborda
 

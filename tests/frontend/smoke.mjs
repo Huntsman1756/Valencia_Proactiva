@@ -25,9 +25,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
-  await page.locator("#sourcesPanel").filter({ hasText: "Per què importen les fonts" }).waitFor({ timeout: 5000 });
+  await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='methodology']").click();
-  await page.locator("#methodologyPanel").filter({ hasText: "Com llegir el mapa" }).waitFor({ timeout: 5000 });
+  await page.locator("#methodologyPanel").filter({ hasText: "Guia d'interacció i simbologia" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='info']").click();
   await page.locator("#additionalInfoPanel").filter({ hasText: "Limitacions actuals" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='events']").click();

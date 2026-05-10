@@ -1051,4 +1051,5 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Golden Path recomendado: perfil Comercial + evento actual de `ocupacio-via-publica` + enlace municipal real desde `comercio-ocupacion`.
 - `comercio-ocupacion.yaml` baja `severity_gte` a 1 para que la demo con ocupaciones actuales genere accion administrativa comercial.
 - Frontend añade fallback comercial para eventos `OCUPACION` si la BD fue ingestada antes de regenerar acciones; el boton apunta a Sede València, nunca al enlace del concurso.
-- Marca de pitch: `VLC-SENTINELLA (València Proactiva / V-PRO)` en memoria/UI, sin renombrar paquetes internos.
+- Marca de pitch: `VLC-PROACTIVA (València Proactiva / V-PRO)` en memoria/UI, sin renombrar paquetes internos.
+- Mantener en la UI la narrativa de concurso: trazabilidad de fuentes, Open Data 2.0, Digital Twin simplificado, atribución al Portal de Datos Abiertos de València y CTA administrativo real cuando exista URL municipal.

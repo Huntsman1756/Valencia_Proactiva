@@ -515,8 +515,9 @@ function renderSelectedEvent(card) {
     ? alternative.name
     : labelForPoi(alternative?.poi_type);
   const adminUrl = citizenActionUrl(card.action);
+  const adminLinkLabel = labelForActionLink(card.action);
   const adminLink = adminUrl
-    ? `<a class="detail-link" href="${adminUrl}" target="_blank" rel="noopener">${t("openActionLink")}</a>`
+    ? `<a class="detail-link primary-admin-link" href="${adminUrl}" target="_blank" rel="noopener">${escapeHtml(adminLinkLabel)}</a>`
     : "";
   const severityClass = event.severity >= 4 ? " is-high" : "";
 
@@ -569,6 +570,13 @@ function renderSelectedEvent(card) {
   selectedEventPanel.querySelectorAll(".feedback-button").forEach((button) => {
     button.addEventListener("click", () => submitFeedback(button, card));
   });
+}
+
+function labelForActionLink(action) {
+  if (action?.payload?.template_id === "comercio-ocupacion") {
+    return t("requestHelpLink");
+  }
+  return t("openActionLink");
 }
 
 function renderEmpty(message) {
