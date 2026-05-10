@@ -1022,3 +1022,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 **Tareas completadas:** T-XX, T-YY
 **Tareas creadas:** T-ZZ
 ```
+
+## Sesion 2026-05-10 - Ralph T-26/T-29/T-20c
+- Cerrado T-26: script de export derivados src/scripts/export_derived_data.py, tests y exports versionados CC-BY 4.0 en exports/.
+- Cerrado T-29: cifras reproducibles documentadas en docs/reports/memoria-figures.sql y .json; docs/MEMORIA.md actualizado.
+- Cerrado T-20c: catalogo docs/concurso/tramites-referenciados.md con 12 URLs oficiales y plantillas YAML enlazadas a tramites reales.
+- Regla para agentes: cuando se anadan nuevas acciones proactivas, incluir payload.url solo si la URL esta en docs/concurso/tramites-referenciados.md o queda verificada y anadida en la misma tirada.

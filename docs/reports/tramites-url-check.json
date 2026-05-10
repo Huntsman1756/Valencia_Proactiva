@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-05-10",
+  "method": "curl.exe -L -s -o NUL -w '%{http_code}' --max-time 20",
+  "results": [
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.70?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/WEB_ASSET_CRG_0105?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/VP.OC.15?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/VP.VE.50?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/registro/procedimiento/BS.DI.25?lang=1"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/ordenanzas/detalle/MzM2MDE.AvPAlt3D.AvOvTok%25C2%25A0"},
+    {"status": 200, "url": "https://www.valencia.es/cas/actualidad/-/content/tr%C3%A0fico-fallas-val%C3%A8ncia"},
+    {"status": 200, "url": "https://www.valencia.es/agenciabici/es/red-de-itinerarios-ciclistas"},
+    {"status": 200, "url": "https://www.valencia.es/cas/tramites/cita-previa"},
+    {"status": 200, "url": "https://sede.valencia.es/sede/"}
+  ]
+}

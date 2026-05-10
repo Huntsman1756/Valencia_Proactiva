@@ -1,0 +1,5 @@
+# source: Portal de Datos Abiertos del Ayuntamiento de Valencia; datos derivados por V-PRO
+# license: CC-BY-4.0
+action_id,action_type,title,profile,up_votes,down_votes,total_votes
+4,INFORMATION,Consulta la afeccion antes de desplazarte,PMR,29,0,29
+8,INFORMATION,Consulta la afeccion antes de desplazarte,PUBLIC_TRANSPORT,1,0,1

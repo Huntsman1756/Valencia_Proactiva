@@ -5,6 +5,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Exports, cifras y tramites oficiales - 2026-05-10
+- Cerrado T-26 con `src/scripts/export_derived_data.py` y exports CC-BY 4.0: 663 `impact_zones`, 506 `mitigation_actions` y feedback agregado anonimo.
+- Cerrado T-29 con cifras reproducibles para `docs/MEMORIA.md`: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR y ZBE 27,44 km2 (20,38% del termino municipal).
+- Cerrado T-20c con `docs/concurso/tramites-referenciados.md`: 12 URLs oficiales verificadas y plantillas YAML enlazando tramites municipales reales.
+- Anadidos `docs/reports/memoria-figures.sql` y `docs/reports/memoria-figures.json`.
+
 ### Added - Tirada Ralph ingesta y trazabilidad frontend - 2026-05-10
 - Anadidos `prd.json` y `progress.txt` para ejecutar la tirada con PRD y progreso estilo Ralph.
 - Ejecutada ingesta real en Docker contra 14 datasets: `scraped=14814`, `normalized=14814`, `stored_pois=11710`, `skipped_duplicates=3104`, `errors=0`; BD final con `urban_events=663` y `points_of_interest=13710`.

@@ -34,10 +34,10 @@
 - [ ] **Task 0.8:** Verificar modelo oficial Anexo II en `www.valencia.es` cuando publique el extracto en el BOP y adaptar `MEMORIA.md` al formato exigido. 🔴
 - [ ] **Task 0.9:** Preparar documentación administrativa (Anexo I, Anexo III si agrupación, Modelo 036/037, etc.). 🔴
 - [ ] **Task 0.10:** Revisión de lenguaje inclusivo y no sexista en todos los materiales públicos. 🔴
-- [ ] **Task 0.11:** Exportaciones de datos derivados (`src/scripts/export_derived_data.py` → GeoJSON/CSV CC-BY 4.0, incluyendo `feedback_aggregated.csv`). 🔴 (requiere Fase C)
+- [x] **Task 0.11:** Exportaciones de datos derivados (`src/scripts/export_derived_data.py` → GeoJSON/CSV CC-BY 4.0, incluyendo `feedback_aggregated.csv`). ✅ T-26 cerrado 2026-05-10.
 - [ ] **Task 0.12:** Demo desplegada públicamente + vídeo de 1-2 min. 🔴 (requiere Fase E)
 - [ ] **Task 0.13:** UI bilingüe castellano/valenciano + selector de perfil de usuario (genérico / comercial / PMR / ciclista / transporte público). 🔴 (requiere Fase D)
-- [ ] **Task 0.14:** Catálogo de trámites municipales reales para enlazar desde `MitigationAction` (`docs/concurso/tramites-referenciados.md`). 🟡 Plantilla creada, por rellenar con enlaces verificados.
+- [x] **Task 0.14:** Catálogo de trámites municipales reales para enlazar desde `MitigationAction` (`docs/concurso/tramites-referenciados.md`). ✅ T-20c cerrado con 12 URLs oficiales verificadas.
 - [ ] **Task 0.15:** Cifras cuantitativas del § 8 de `MEMORIA.md` calculadas con los datos reales del portal. 🔴
 - [ ] **Task 0.16:** Investigar proyectos ganadores de ediciones anteriores AD.TR.15 (2024, 2025) para evitar solapamiento en la narrativa de innovación. 🔴
 - [ ] **Task 0.17:** *(Rectificada — las bases limitan a 1 proyecto por participante.)* V-PRO concurre solo a Datos Abiertos. Opcional: coordinar con una persona periodista externa que presente una candidatura propia e independiente a Periodismo de Datos reutilizando los datos derivados CC-BY 4.0 de V-PRO. 🟡
@@ -71,8 +71,8 @@
 - [ ] **Task 2.3:** Alternative Finder multimodal (aparcamientos incluyendo PMR, Valenbisi tiempo real, EMT, FGV, itinerarios ciclistas, cargadores VE) → tabla `points_of_interest`. Endpoint `GET /api/v1/spatial/alternatives`. Tarea `T-21`. 🔴
 - [x] **Task 2.4:** **Feedback loop ciudadano:** endpoint `POST /api/v1/feedback` + rate-limit por `session_token`. Export agregado anónimo como dataset derivado CC-BY 4.0. Tarea `T-20b`. ✅ Endpoint y persistencia cerrados; export agregado sigue en T-26.
 - [ ] **Task 2.5:** API Documentation enriquecida (OpenAPI con ejemplos de cada perfil, tags con descripciones). 🟡
-- [ ] **Task 2.6:** Export de datos derivados bajo CC-BY 4.0 (`src/scripts/export_derived_data.py`, incluyendo `feedback_aggregated.csv`). Tarea `T-26`. 🔴
-- [ ] **Task 2.7:** Enlazado de `MitigationAction` con URLs reales de trámites en `valencia.es` / `sede.valencia.es`. Catálogo en `docs/concurso/tramites-referenciados.md`. Tarea `T-20c`. 🔴
+- [x] **Task 2.6:** Export de datos derivados bajo CC-BY 4.0 (`src/scripts/export_derived_data.py`, incluyendo `feedback_aggregated.csv`). Tarea `T-26`. ✅
+- [x] **Task 2.7:** Enlazado de `MitigationAction` con URLs reales de trámites en `valencia.es` / `sede.valencia.es`. Catálogo en `docs/concurso/tramites-referenciados.md`. Tarea `T-20c`. ✅
 
 ---
 

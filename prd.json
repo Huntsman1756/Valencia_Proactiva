@@ -43,6 +43,38 @@
         "Se verifican filtros de alternativas para al menos Valenbisi, EMT/FGV, bici, cargadores VE y aparcamiento.",
         "Se actualizan STATUS, TODO, AGENTS y CHANGELOG."
       ]
+    },
+    {
+      "id": "R-04",
+      "title": "T-26 export de datos derivados",
+      "status": "done",
+      "acceptance": [
+        "src/scripts/export_derived_data.py genera exports/impact_zones.geojson.",
+        "Genera exports/mitigation_actions.csv con trazabilidad de evento, accion y URL si existe.",
+        "Genera exports/feedback_aggregated.csv sin PII y con votos agregados.",
+        "Los ficheros declaran fuente/licencia CC-BY 4.0 y se verifican con tests o parser."
+      ]
+    },
+    {
+      "id": "R-05",
+      "title": "T-29 cifras reproducibles para memoria",
+      "status": "done",
+      "acceptance": [
+        "Se calculan ocupaciones, tramos monitorizados, plazas PMR y cobertura ZBE desde BD/datasets reales.",
+        "Las queries quedan documentadas.",
+        "docs/MEMORIA.md sustituye placeholders por cifras concretas con fecha de calculo."
+      ]
+    },
+    {
+      "id": "R-06",
+      "title": "T-20c tramites municipales reales",
+      "status": "done",
+      "acceptance": [
+        "docs/concurso/tramites-referenciados.md contiene al menos 8 URLs oficiales verificadas.",
+        "Cada URL devuelve 200 o un estado aceptable documentado en verificacion.",
+        "Las plantillas YAML citan al menos 4 URLs verificadas.",
+        "La documentacion refleja el cierre de T-20c."
+      ]
     }
   ]
 }

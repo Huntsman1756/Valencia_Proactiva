@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-05-10",
+  "open_data_run": {
+    "urban_events": 663,
+    "points_of_interest": 13710,
+    "official_notices": 20
+  },
+  "figures": {
+    "ocupaciones_activas": 253,
+    "tramos_trafico_monitorizados": 410,
+    "plazas_pmr_catalogadas": 2161,
+    "tipos_poi_multimodales": 12,
+    "zbe_area_km2": 27.44,
+    "municipio_area_km2": 134.65,
+    "zbe_coverage_pct": 20.38
+  },
+  "sources": {
+    "zbe_geojson": "https://geoportal.valencia.es/server/rest/services/OPENDATA/Trafico/MapServer/240/query?where=1%3D1&outFields=%2A&f=geojson",
+    "municipio_area": "https://www.valencia.es/cas/la-ciudad/situacion-geografica"
+  }
+}

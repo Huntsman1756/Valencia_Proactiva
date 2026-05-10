@@ -176,7 +176,7 @@ Estos datos los genera V-PRO a partir de los anteriores y se publicarán bajo **
 
 1. **`exports/impact_zones.geojson`** — polígonos de zona de impacto calculados por buffer PostGIS.
 2. **`exports/mitigation_actions.csv`** — acciones generadas por el motor de plantillas con enlaces a trámites reales municipales (ver `docs/concurso/tramites-referenciados.md`).
-3. **`exports/action_templates.yaml`** — catálogo de reglas declarativas versionado en git.
+3. **`src/backend/engine/templates/*.yaml`** — catálogo de reglas declarativas versionado en git; las acciones exportadas incorporan `payload.url` cuando existe trámite oficial aplicable.
 4. **`exports/feedback_aggregated.csv`** — agregación anónima (sin PII) de los votos 👍/👎 sobre la utilidad de las sugerencias. *Meta-nivel: V-PRO no solo consume datos abiertos — produce nuevos datos abiertos.*
 
 ---

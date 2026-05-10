@@ -10,14 +10,20 @@
       "title": "Evita este tramo",
       "description": "Hay retencion relevante. Usa una ruta alternativa.",
       "priority": 70,
-      "profiles": ["GENERIC", "COMMERCIAL"]
+      "profiles": ["GENERIC", "COMMERCIAL"],
+      "payload": {
+        "url": "https://sede.valencia.es/sede/ordenanzas/detalle/MzM2MDE.AvPAlt3D.AvOvTok%25C2%25A0"
+      }
     },
     {
       "action_type": "INFORMATION",
       "title": "Valora transporte publico",
       "description": "El trafico puede alargar el trayecto en superficie.",
       "priority": 55,
-      "profiles": ["PUBLIC_TRANSPORT"]
+      "profiles": ["PUBLIC_TRANSPORT"],
+      "payload": {
+        "url": "https://www.valencia.es/cas/actualidad/-/content/tr%C3%A0fico-fallas-val%C3%A8ncia"
+      }
     }
   ]
 }

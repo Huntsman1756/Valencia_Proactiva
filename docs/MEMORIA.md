@@ -150,16 +150,16 @@ Plan de trabajo por fases (detalle en `ROADMAP.md` y `NEXT_STEPS.md`):
 
 Las decisiones técnicas estructurales (stack, scheduler, frontend, pivote de datasets) están documentadas en `docs/DECISIONS.md` como Architecture Decision Records firmados.
 
-## 8. Cifras del contexto (pendientes de completar antes de presentar)
+## 8. Cifras del contexto (calculadas con datos reales)
 
-> A rellenar con datos del propio portal durante la Fase 0.
-> Estos números son la vitamina del criterio 2 en la presentación oficial.
+> Calculo reproducible en `docs/reports/memoria-figures.sql` y resultados en `docs/reports/memoria-figures.json`.
+> Fecha de calculo: 2026-05-10, tras ejecutar `python -m scripts.run_ingest` contra los 14 datasets configurados.
 
-- Número de ocupaciones de vía pública activas en Valencia en un año promedio: **_a calcular con dataset `ocupacio-via-publica`_**.
-- Número de tramos de tráfico monitorizados en tiempo real: **_a calcular con dataset `estat-transit-temps-real`_**.
-- Número de plazas de aparcamiento PMR catalogadas: **_a calcular con dataset `aparcaments-persones-mobilitat-reduida`_**.
-- Porcentaje de la ciudad cubierta por ZBE: **_a calcular con dataset `zona-de-bajas-emisiones`_**.
-- Número total de datasets reutilizados: **≥ 12** (verificado).
+- Ocupaciones de via publica activas ingeridas desde `ocupacio-via-publica`: **253**.
+- Tramos de trafico monitorizados en tiempo real desde `estat-transit-temps-real`: **410**.
+- Plazas/registros PMR catalogados desde `aparcaments-persones-mobilitat-reduida`: **2.161**.
+- Superficie de la ZBE oficial: **27,44 km2**, equivalente al **20,38%** del termino municipal de Valencia.
+- Numero total de datasets reutilizados por el MVP: **14** capas municipales verificadas, con **12 tipos de POI multimodal** en el Alternative Finder.
 
 ## 9. Equipo y colaboración
 Proyecto liderado por personas desarrolladoras con experiencia en plataformas geoespaciales. Abierto a la incorporación de perfiles de periodismo de datos, diseño UX, accesibilidad y entidades municipales. Se contemplará la firma del **Anexo III** si se concurre en agrupación.

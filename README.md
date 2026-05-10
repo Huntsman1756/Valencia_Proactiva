@@ -61,6 +61,20 @@ docker compose exec api python -m src.scripts.run_ingest
 4. Trazabilidad completa en [`DATA_SOURCES.md`](./DATA_SOURCES.md).
 5. Reproducible con un único `docker compose up`.
 
+### Exports derivados reproducibles
+Tras ejecutar la ingesta, los datasets derivados se generan con:
+
+```bash
+docker compose -f infra/docker-compose.yml exec api sh -lc 'VPRO_EXPORT_DIR=/exports python -m scripts.export_derived_data'
+```
+
+Archivos publicados:
+- [`exports/impact_zones.geojson`](./exports/impact_zones.geojson) - zonas de impacto PostGIS.
+- [`exports/mitigation_actions.csv`](./exports/mitigation_actions.csv) - acciones sugeridas y enlaces oficiales.
+- [`exports/feedback_aggregated.csv`](./exports/feedback_aggregated.csv) - votos agregados sin `session_token`.
+
+Las cifras usadas en la memoria estan documentadas en [`docs/reports/memoria-figures.sql`](./docs/reports/memoria-figures.sql) y [`docs/reports/memoria-figures.json`](./docs/reports/memoria-figures.json).
+
 ## 👥 Participación
 Proyecto abierto a colaboración entre desarrolladores, periodistas y entidades del municipio. Las contribuciones se aceptan mediante *pull request* siguiendo [`CONTRIBUTING.md`](./CONTRIBUTING.md) y respetando los principios de transparencia, lenguaje inclusivo y no sexista, y redacción en castellano o valenciano de los materiales públicos.
 

@@ -40,6 +40,7 @@ services:
     volumes:
       - ../src/backend:/app
       - ../src/scripts:/app/scripts
+      - ../exports:/exports
 
   frontend:
     image: nginx:1.27-alpine

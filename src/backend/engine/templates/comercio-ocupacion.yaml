@@ -12,7 +12,8 @@
       "priority": 50,
       "profiles": ["COMMERCIAL"],
       "payload": {
-        "url": "docs/concurso/tramites-referenciados.md"
+        "url": "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1",
+        "secondary_url": "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1"
       }
     }
   ]

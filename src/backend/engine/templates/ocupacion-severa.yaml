@@ -10,7 +10,10 @@
       "title": "Ruta alternativa recomendada",
       "description": "Evita la zona afectada y revisa el mapa antes de salir.",
       "priority": 80,
-      "profiles": ["GENERIC", "COMMERCIAL", "CYCLIST", "PUBLIC_TRANSPORT"]
+      "profiles": ["GENERIC", "COMMERCIAL", "CYCLIST", "PUBLIC_TRANSPORT"],
+      "payload": {
+        "url": "https://www.valencia.es/cas/actualidad/-/content/tr%C3%A0fico-fallas-val%C3%A8ncia"
+      }
     },
     {
       "action_type": "PARKING_SUGGESTION",
@@ -19,7 +22,8 @@
       "priority": 95,
       "profiles": ["PMR"],
       "payload": {
-        "poi_type": "APARCAMIENTO_PMR"
+        "poi_type": "APARCAMIENTO_PMR",
+        "url": "https://sede.valencia.es/sede/registro/procedimiento/BS.DI.25?lang=1"
       }
     }
   ]

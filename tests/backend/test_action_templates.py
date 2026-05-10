@@ -39,3 +39,22 @@ def test_templates_cover_all_demo_profiles():
     }
 
     assert {"GENERIC", "COMMERCIAL", "PMR", "CYCLIST", "PUBLIC_TRANSPORT"} <= profiles
+
+
+def test_templates_link_verified_official_urls():
+    actions = [
+        *generate_actions(_event(severity=1), impact_zone_id=10),
+        *generate_actions(_event(severity=3), impact_zone_id=10),
+        *generate_actions(_event(UrbanEventType.TRAFICO, severity=3), impact_zone_id=10),
+    ]
+    urls = {
+        action.payload.get("url")
+        for action in actions
+        if action.payload.get("url")
+    }
+
+    assert len(urls) >= 4
+    assert all(
+        url.startswith(("https://www.valencia.es/", "https://sede.valencia.es/"))
+        for url in urls
+    )

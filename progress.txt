@@ -23,3 +23,19 @@ Siguiente: R-03 verificacion final + docs + push.
 - Docker: compose up -d --build OK, /health 200.
 - Frontend: node --check, JSON i18n, smoke Playwright en 8080 y 3000 OK.
 - Docs actualizados: STATUS, TODO, AGENTS, frontend spec y CHANGELOG.
+2026-05-10 10:00 - Inicio segunda tirada Ralph en la misma rama.
+Objetivo: cerrar T-26 exports, T-29 cifras de memoria y T-20c tramites oficiales verificados.
+R-04 en curso: implementar export_derived_data.py y validarlo con BD real.
+2026-05-10 10:20 - R-04/T-26 cerrado.
+- Script: src/scripts/export_derived_data.py.
+- Tests: tests/backend/test_export_derived_data.py verde.
+- Export real Docker: impact_zones=663, mitigation_actions=506, feedback_aggregated=2.
+- Archivos generados: exports/impact_zones.geojson, exports/mitigation_actions.csv, exports/feedback_aggregated.csv.
+R-05 en curso: calcular cifras reproducibles para MEMORIA §8.
+2026-05-10 11:35 - R-05/T-29 cerrado.
+- MEMORIA se actualiza con cifras reales: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR, ZBE 27,44 km2 y 20,38% del termino municipal.
+- Reproducibilidad: docs/reports/memoria-figures.sql y docs/reports/memoria-figures.json.
+2026-05-10 11:50 - R-06/T-20c cerrado.
+- Catalogo docs/concurso/tramites-referenciados.md con 12 URLs oficiales.
+- Plantillas YAML enlazan URLs oficiales para comercio, PMR, bici, trafico, Fallas/ZBE y cita previa.
+- Test de plantillas cubre al menos 4 URLs oficiales en dominios valencia.es/sede.valencia.es.
