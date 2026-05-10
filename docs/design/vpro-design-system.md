@@ -76,7 +76,7 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 - Las alternativas cercanas deben ser distinguibles de los eventos mediante color, leyenda y popup explicito asociado al perfil activo.
 - En mapa operativo, los marcadores V-PRO tienen prioridad sobre iconos del mapa base. Usar pins propios y ocultar POI/transporte base cuando resten legibilidad.
 - En vista expandida, conservar una bandeja compacta de eventos visibles para que el mapa no quede desconectado de la lista.
-- Los paneles informativos (`Fuentes`, `Metodología`, `Info`) son pestañas centrales del área principal. No usan drawer lateral, backdrop ni botón de cierre; la navegación superior es el único cambio de sección.
+- Los paneles informativos (`Fuentes`, `Metodología`, `Info`) son pestañas centrales a página completa dentro del área principal. No usan drawer lateral, backdrop ni botón de cierre; al abrirse ocultan mapa, carril izquierdo y panel derecho para evitar solapes.
 - Las listas operativas no deben depender de scrollbars internas poco evidentes. Si una bandeja puede crecer, ofrecer control explicito de contraer/expandir.
 
 ## Anti-patrones

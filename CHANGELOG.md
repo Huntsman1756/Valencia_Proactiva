@@ -6,7 +6,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 ## [Unreleased]
 
 ### Changed - Pestañas informativas - 2026-05-10
-- Frontend: `Fuentes`, `Metodología` e `Info` dejan de abrirse como drawer lateral y pasan a pestañas individuales dentro del área central, más visibles y fáciles de mantener.
+- Frontend: `Fuentes`, `Metodología` e `Info` dejan de abrirse como drawer lateral y pasan a pestañas individuales a página completa dentro del área principal, sin mapa ni panel derecho superpuestos.
 - Tests: el smoke valida que la pestaña activa oculte la lista de eventos y que volver a `Eventos` restaure el carril operativo.
 
 ### Added - ZBE y alternativas por medio - 2026-05-10

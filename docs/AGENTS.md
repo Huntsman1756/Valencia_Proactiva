@@ -1084,8 +1084,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Bugfix posterior: el estado `is-collapsed` debe vivir en `#events` porque el CSS depende de `.event-list.is-collapsed`; el carril desktop de `#eventList` debe mantener `overflow-x: auto` y scrollbar visible.
 
 ## Sesion 2026-05-10 - Pestañas informativas centrales
-- Frontend: `Fuentes`, `Metodología` e `Info` dejan de ser drawers laterales y pasan a pestañas individuales en el área central, alineadas con la navegación superior.
+- Frontend: `Fuentes`, `Metodología` e `Info` dejan de ser drawers laterales y pasan a pestañas individuales a página completa en el área central, alineadas con la navegación superior.
 - Regla nueva: las pestañas informativas pueden ocultar `#events` mientras están activas; `Eventos` debe restaurar la lista y el toggle `Contraer/Ver eventos`.
+- Regla nueva: con una pestaña informativa activa, ocultar mapa, carril izquierdo y panel derecho para evitar solapes con `Interrupción activa`.
 - No reintroducir botones `Cerrar` ni foco forzado a un drawer para estas secciones.
 
 ## Sesion 2026-05-10 - Confianza del dato y vision post-MVP

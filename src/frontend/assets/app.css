@@ -930,6 +930,30 @@ a:hover {
   box-shadow: var(--shadow-soft);
 }
 
+body.has-section-tab .workspace {
+  display: block;
+  max-width: 1180px;
+  padding: 14px;
+}
+
+body.has-section-tab .left-rail,
+body.has-section-tab .detail-rail,
+body.has-section-tab .map-shell,
+body.has-section-tab .map-event-tray,
+body.has-section-tab .map-help {
+  display: none;
+}
+
+body.has-section-tab .map-workspace {
+  width: 100%;
+}
+
+body.has-section-tab .info-panel:not([hidden]) {
+  max-height: none;
+  margin: 0 auto;
+  overflow: visible;
+}
+
 .panel-close {
   display: none;
 }
@@ -1634,13 +1658,6 @@ a:hover {
   }
 
   .info-panel:not([hidden]) {
-    position: absolute;
-    left: 336px;
-    right: 414px;
-    bottom: 18px;
-    z-index: 9;
-    max-height: min(58vh, 560px);
-    overflow: auto;
     border-radius: var(--float-radius);
     background: var(--surface-float);
     box-shadow: var(--shadow-float);

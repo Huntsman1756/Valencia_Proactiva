@@ -279,6 +279,7 @@ function setupViews() {
 }
 
 function openInfoPanel(view) {
+  document.body.classList.add("has-section-tab");
   if (eventsPanel) {
     eventsPanel.hidden = true;
   }
@@ -299,6 +300,7 @@ function openInfoPanel(view) {
 
 function closeInfoPanel(options = {}) {
   state.activeView = "events";
+  document.body.classList.remove("has-section-tab");
   if (eventsPanel) {
     eventsPanel.hidden = false;
   }

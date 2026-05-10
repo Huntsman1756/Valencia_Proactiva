@@ -34,10 +34,13 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   const sourcesPanelState = await page.evaluate(() => ({
     eventsHidden: document.querySelector("#events")?.hidden,
     sourcesVisible: !document.querySelector("#sourcesPanel")?.hidden,
+    sectionTab: document.body.classList.contains("has-section-tab"),
+    mapHidden: getComputedStyle(document.querySelector(".map-shell")).display === "none",
+    detailHidden: getComputedStyle(document.querySelector(".detail-rail")).display === "none",
     backdropHidden: document.querySelector("#panelBackdrop")?.hidden,
     bodyOverflow: getComputedStyle(document.body).overflow,
   }));
-  if (!sourcesPanelState.eventsHidden || !sourcesPanelState.sourcesVisible || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
+  if (!sourcesPanelState.eventsHidden || !sourcesPanelState.sourcesVisible || !sourcesPanelState.sectionTab || !sourcesPanelState.mapHidden || !sourcesPanelState.detailHidden || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
     throw new Error(`Sources tab state is broken: ${JSON.stringify(sourcesPanelState)}`);
   }
   await page.locator("[data-view='methodology']").click();
