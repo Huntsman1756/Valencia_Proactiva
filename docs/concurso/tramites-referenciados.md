@@ -13,7 +13,7 @@
 
 | ID | Uso V-PRO | Perfil | URL oficial | Ultima verificacion | Regla YAML |
 |---|---|---|---|---|---|
-| `COMERCIO_INVERSIONES` | Ayudas municipales a inversiones en comercio local. | COMMERCIAL | https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1 | 2026-05-10 | `comercio-ocupacion` |
+| `COMERCIO_INVERSIONES` | Ayudas municipales a inversiones en comercio local. | COMMERCIAL | https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1 | 2026-05-10 | Referencia documental |
 | `COMERCIO_PROMOCION` | Ayudas a asociaciones de comercio para promocion y dinamizacion local. | COMMERCIAL | https://sede.valencia.es/sede/registro/procedimiento/AE.CM.70?lang=1 | 2026-05-10 | Referencia documental |
 | `OCUPACION_CONTENEDOR` | Comunicacion de ocupacion de via publica con contenedor de escombros. | GENERIC / COMMERCIAL | https://sede.valencia.es/sede/registro/procedimiento/WEB_ASSET_CRG_0105?lang=1 | 2026-05-10 | Referencia documental |
 | `OCUPACION_TERRAZA` | Autorizacion para ocupacion del dominio publico municipal mediante terraza. | COMMERCIAL | https://sede.valencia.es/sede/registro/procedimiento/VP.OC.15?lang=1 | 2026-05-10 | Referencia documental |
@@ -28,8 +28,8 @@
 
 ## Evidencia funcional
 
-- `COMERCIO_INVERSIONES`: la Sede indica ayudas para modernizar, digitalizar y mejorar el comercio local.
 - `CARGA_DESCARGA_COMERCIAL`: la Sede permite solicitar reservas de carga y descarga para vehiculos comerciales.
+- `COMERCIO_INVERSIONES`: la Sede indica ayudas para modernizar, digitalizar y mejorar el comercio local; queda como referencia documental, no como CTA principal de la demo.
 - `PMR_TARJETA`: la Sede permite solicitar tarjeta de estacionamiento PMR durante todo el ano.
 - `ZBE_ORDENANZA`: la Sede publica el expediente normativo de la Zona de Bajas Emisiones.
 

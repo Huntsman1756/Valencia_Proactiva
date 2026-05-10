@@ -4,29 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f4f6f8">
-    <title>VLC-PROACTIVA · València Proactiva</title>
+    <title>VLC PROACTIVA · València Proactiva</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d3b66'/%3E%3Cpath d='M16 5a8 8 0 0 0-8 8c0 5.5 8 14 8 14s8-8.5 8-14a8 8 0 0 0-8-8Zm0 11.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Z' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="./assets/app.css">
   </head>
   <body>
     <main class="app-shell" aria-live="polite">
       <header class="civic-header">
-        <a class="brand" href="#events" aria-label="VLC-PROACTIVA València Proactiva">
+        <a class="brand" href="#events" aria-label="VLC PROACTIVA València Proactiva">
           <span class="brand-mark" aria-hidden="true">V</span>
           <span class="brand-copy">
-            <strong>VLC-PROACTIVA</strong>
+            <strong>VLC PROACTIVA</strong>
             <span data-i18n="brandName">Valencia Proactiva</span>
-            <em class="sync-chip" data-i18n="syncStatus">Sincronizado con VLC-i · hace 2 min</em>
+            <em class="sync-chip" data-i18n="syncStatus">Datos oficiales cargados · demo local</em>
           </span>
         </a>
-
-        <nav class="primary-nav" aria-label="Navegación principal" data-i18n-attr="aria-label:primaryNavLabel">
-          <a href="#events" data-i18n="navStart">Inicio</a>
-          <a href="#map" data-i18n="navMap">Mapa</a>
-          <a href="#events" data-i18n="navEvents">Eventos</a>
-          <a href="#poiFilters" data-i18n="navAlternatives">Alternativas</a>
-          <a href="#additionalInfoPanel" data-i18n="navInfo">Sobre V-PRO</a>
-        </nav>
 
         <div class="header-actions">
           <p id="statusText" class="data-status" data-i18n="loading">Buscando acontecimientos activos...</p>
@@ -54,6 +46,7 @@
               <button type="button" data-profile="CYCLIST"></button>
               <button type="button" data-profile="PUBLIC_TRANSPORT"></button>
             </nav>
+            <p id="profileImpact" class="profile-impact"></p>
           </section>
 
           <section class="rail-section quick-filters">
@@ -131,7 +124,7 @@
 
     <div id="toast" class="toast" role="status" hidden></div>
 
-    <noscript>V-PRO necesita JavaScript para mostrar eventos urbanos y alternativas cercanas.</noscript>
+    <noscript>VLC PROACTIVA necesita JavaScript para mostrar eventos urbanos y alternativas cercanas.</noscript>
     <script src="./assets/app.js" defer></script>
   </body>
 </html>

@@ -1048,8 +1048,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 
 ## Sesion 2026-05-10 - Predespliegue concurso Golden Path
 - R-14 cerrado: `talls-transit-falles` no debe usarse como Golden Path activo fuera de temporada porque el portal lo marca como desactualizado; queda solo como historico/fallback documentado.
-- Golden Path recomendado: perfil Comercial + evento actual de `ocupacio-via-publica` + enlace municipal real desde `comercio-ocupacion`.
+- Golden Path recomendado: perfil Comercio + evento actual de `ocupacio-via-publica` + enlace municipal real desde `comercio-ocupacion`.
 - `comercio-ocupacion.yaml` baja `severity_gte` a 1 para que la demo con ocupaciones actuales genere accion administrativa comercial.
 - Frontend añade fallback comercial para eventos `OCUPACION` si la BD fue ingestada antes de regenerar acciones; el boton apunta a Sede València, nunca al enlace del concurso.
-- Marca de pitch: `VLC-PROACTIVA (València Proactiva / V-PRO)` en memoria/UI, sin renombrar paquetes internos.
-- Mantener en la UI la narrativa de concurso: trazabilidad de fuentes, Open Data 2.0, Digital Twin simplificado, atribución al Portal de Datos Abiertos de València y CTA administrativo real cuando exista URL municipal.
+- Marca pública en UI: `VLC PROACTIVA`; usar `V-PRO` solo como nombre interno/histórico si aparece en documentación técnica.
+- Mantener en la UI la narrativa de concurso, pero con promesas verificables: fuentes concretas listadas, perfiles que cambian la capa prioritaria, rutas externas etiquetadas como destino en Maps y CTA administrativo real cuando exista URL municipal.
+- Para comercio, `comercio-ocupacion` debe priorizar `TR.AR.45` (carga y descarga) sobre ayudas genéricas como `AE.CM.35`.

@@ -12,6 +12,13 @@ const POI_FILTERS = [
   "ITINERARIO_CICLISTA",
   "CARGADOR_VE",
 ];
+const PROFILE_DEFAULT_POI = {
+  GENERIC: "ALL",
+  COMMERCIAL: "PARKING",
+  PMR: "APARCAMIENTO_PMR",
+  CYCLIST: "VALENBISI",
+  PUBLIC_TRANSPORT: "PARADA_EMT",
+};
 const SOURCE_CATALOG = [
   {
     id: "open_data_core",
@@ -36,9 +43,10 @@ const GITHUB_URL = "https://github.com/Huntsman1756/Valencia_Proactiva";
 const CONTEST_URL = "https://sede.valencia.es/sede/registro/procedimiento/AD.TR.15";
 const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css";
 const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
+const INITIAL_PROFILE = localStorage.getItem("vpro_profile") || "PMR";
 
 const state = {
-  profile: localStorage.getItem("vpro_profile") || "PMR",
+  profile: INITIAL_PROFILE,
   language: localStorage.getItem("vpro_language") || languageFromNavigator(),
   messages: {},
   events: [],
@@ -47,12 +55,14 @@ const state = {
   impactZones: [],
   trafficEvents: [],
   activeView: "events",
-  poiTypeFilter: localStorage.getItem("vpro_poi_type") || "ALL",
+  poiTypeFilter: localStorage.getItem("vpro_poi_type") || PROFILE_DEFAULT_POI[INITIAL_PROFILE] || "ALL",
   activeOnly: localStorage.getItem("vpro_active_only") !== "false",
   showZbe: localStorage.getItem("vpro_show_zbe") !== "false",
   map: null,
   sessionToken: getSessionToken(),
   selectedCardIndex: 0,
+  dashboardLoadTimer: null,
+  dashboardRequestId: 0,
 };
 
 const eventList = document.querySelector("#eventList");
@@ -66,6 +76,7 @@ const methodologyPanel = document.querySelector("#methodologyPanel");
 const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
 const detailRail = document.querySelector(".detail-rail");
 const selectedEventPanel = document.querySelector("#selectedEventPanel");
+const profileImpact = document.querySelector("#profileImpact");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -121,12 +132,17 @@ function setupProfiles() {
     button.addEventListener("click", () => {
       state.profile = button.dataset.profile;
       localStorage.setItem("vpro_profile", state.profile);
+      state.poiTypeFilter = PROFILE_DEFAULT_POI[state.profile] || "ALL";
+      localStorage.setItem("vpro_poi_type", state.poiTypeFilter);
       document.querySelectorAll("[data-profile]").forEach((item) => {
         item.setAttribute("aria-pressed", String(item === button));
       });
-      loadDashboard();
+      updatePoiFilterButtons();
+      updateProfileImpact();
+      scheduleDashboardLoad();
     });
   });
+  updateProfileImpact();
 }
 
 function renderProfileButton(button) {
@@ -152,6 +168,7 @@ function setupLanguageSelector() {
       });
       await loadMessages();
       applyTranslations();
+      updateProfileImpact();
       if (state.cards.length > 0) {
         state.events = normalizeEvents(state.events);
         state.cards = state.cards.map((card) => ({
@@ -215,13 +232,25 @@ function setupPoiFilters() {
     button.addEventListener("click", () => {
       state.poiTypeFilter = type;
       localStorage.setItem("vpro_poi_type", type);
-      document.querySelectorAll("[data-poi-filter]").forEach((item) => {
-        item.setAttribute("aria-pressed", String(item === button));
-      });
-      loadDashboard();
+      updatePoiFilterButtons();
+      scheduleDashboardLoad();
     });
     poiFilters.appendChild(button);
   });
+}
+
+function updatePoiFilterButtons() {
+  document.querySelectorAll("[data-poi-filter]").forEach((item) => {
+    item.setAttribute("aria-pressed", String(item.dataset.poiFilter === state.poiTypeFilter));
+  });
+}
+
+function updateProfileImpact() {
+  if (!profileImpact) {
+    return;
+  }
+  const key = `profileImpact_${state.profile}`;
+  profileImpact.textContent = t(key);
 }
 
 function scheduleMapSetup() {
@@ -301,6 +330,7 @@ function setupMapToggle() {
 }
 
 async function loadDashboard() {
+  const requestId = ++state.dashboardRequestId;
   eventList.innerHTML = "";
   statusText.textContent = formatMessage("activeProfileLoading", { profile: profileLabel(state.profile) });
 
@@ -310,6 +340,9 @@ async function loadDashboard() {
       fetchJson(`${API_BASE}/api/v1/spatial/impact-zones?limit=120`),
       fetchJson(`${API_BASE}/api/v1/spatial/events-layer?limit=160&event_type=TRAFICO`),
     ]);
+    if (requestId !== state.dashboardRequestId) {
+      return;
+    }
     state.events = normalizeEvents(events).slice(0, 6);
     state.impactZones = impactZones;
     state.trafficEvents = trafficEvents;
@@ -327,10 +360,20 @@ async function loadDashboard() {
     updateMap(filteredCards());
     statusText.textContent = formatMessage("activeEvents", { count: filteredCards().length });
   } catch (error) {
+    if (requestId !== state.dashboardRequestId) {
+      return;
+    }
     renderEmpty(t("apiError"));
     statusText.textContent = t("apiUnavailable");
     showToast(t("apiUnavailable"));
   }
+}
+
+function scheduleDashboardLoad() {
+  clearTimeout(state.dashboardLoadTimer);
+  state.dashboardLoadTimer = setTimeout(() => {
+    loadDashboard();
+  }, 220);
 }
 
 async function buildCardModel(event) {
@@ -449,6 +492,7 @@ function createEventCard(card, index) {
         <span>${alternative ? `${distance} · ${places}` : t("noAlternative")}</span>
       </p>
     </div>
+    <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
     <div class="card-actions">
       <button type="button" class="route-button">${t("route")}</button>
       <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
@@ -548,6 +592,7 @@ function renderSelectedEvent(card) {
       <h3>${t("recommendedAlternativeTitle")}</h3>
       <p><strong>${escapeHtml(alternativeName || t("noAlternative"))}</strong></p>
       <p>${alternative ? escapeHtml(`${distance} · ${places} · ${labelForPoi(alternative.poi_type)}`) : escapeHtml(t("noAlternative"))}</p>
+      <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
     </section>
     <section class="detail-block">
       <h3>${t("adminActionTitle")}</h3>
@@ -609,6 +654,9 @@ function renderInfoPanels() {
           <div>
             <strong>${t(`sourceName_${source.id}`)}</strong>
             <span>${t(`sourceDescription_${source.id}`)}</span>
+            <ul class="dataset-list">
+              ${sourceDatasets(source.id).map((dataset) => `<li>${escapeHtml(dataset)}</li>`).join("")}
+            </ul>
           </div>
           <small>${t(source.kindKey)} · ${formatMessage("datasetCount", { count: source.datasetCount })}</small>
           <a href="${source.url}" target="_blank" rel="noopener">${t("openSourceLink")}</a>
@@ -1067,10 +1115,15 @@ function syntheticCommercialAction(profile, event) {
     payload: {
       template_id: "comercio-ocupacion",
       profiles: ["COMMERCIAL"],
-      url: "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1",
-      secondary_url: "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1",
+      url: "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1",
+      secondary_url: "https://sede.valencia.es/sede/registro/procedimiento/VP.VE.50?lang=1",
     },
   };
+}
+
+function sourceDatasets(sourceId) {
+  const datasets = state.messages.sourceDatasets?.[sourceId];
+  return Array.isArray(datasets) ? datasets : [];
 }
 
 function cleanTitle(value) {

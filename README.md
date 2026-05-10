@@ -1,4 +1,4 @@
-# Valencia Proactiva (V-PRO)
+# VLC PROACTIVA (València Proactiva)
 
 > Motor de inteligencia urbana proactiva basado en datos abiertos del Ayuntamiento de València.
 > Proyecto candidato a la **categoría de Datos Abiertos** de los *Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026* (convocatoria **AD.TR.15**).
@@ -24,13 +24,13 @@ La ciudadanía y los comercios reciben alternativas (rutas, aparcamientos, trám
 | VPS | Hetzner CX22 | Ubuntu 24.04 · ~4 €/mes |
 
 ## 🗂️ Documentación del repositorio
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — stack, estructura canónica y modelo de datos.
-- [`CONTEXT.md`](./CONTEXT.md) — visión, stakeholders y reglas del proyecto.
-- [`ROADMAP.md`](./ROADMAP.md) — plan por fases con estado actual.
-- [`NEXT_STEPS.md`](./NEXT_STEPS.md) — plan operativo fase a fase para el siguiente agente.
-- [`MEMORIA.md`](./MEMORIA.md) — borrador de la Memoria Resumen (Anexo II) del concurso.
-- [`DATA_SOURCES.md`](./DATA_SOURCES.md) — catálogo y trazabilidad de los datasets utilizados.
-- [`METHODOLOGY.md`](./METHODOLOGY.md) — metodología de ingesta, normalización y análisis.
+- [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — stack, estructura canónica y modelo de datos.
+- [`docs/CONTEXT.md`](./docs/CONTEXT.md) — visión, stakeholders y reglas del proyecto.
+- [`docs/ROADMAP.md`](./docs/ROADMAP.md) — plan por fases con estado actual.
+- [`docs/NEXT_STEPS.md`](./docs/NEXT_STEPS.md) — plan operativo fase a fase para el siguiente agente.
+- [`docs/MEMORIA.md`](./docs/MEMORIA.md) — borrador de la Memoria Resumen (Anexo II) del concurso.
+- [`docs/DATA_SOURCES.md`](./docs/DATA_SOURCES.md) — catálogo y trazabilidad de los datasets utilizados.
+- [`docs/METHODOLOGY.md`](./docs/METHODOLOGY.md) — metodología de ingesta, normalización y análisis.
 - [`docs/STATUS.md`](./docs/STATUS.md) — salud actual del proyecto.
 - [`docs/DECISIONS.md`](./docs/DECISIONS.md) — Architecture Decision Records.
 - [`docs/AGENTS.md`](./docs/AGENTS.md) — registro de trabajo por sesión.
@@ -56,8 +56,8 @@ docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest
 ## 🔓 Compromiso con los datos abiertos
 1. Código publicado con licencia MIT.
 2. Datos **derivados** (zonas de impacto, acciones de mitigación) publicados en GeoJSON/CSV bajo **CC-BY 4.0**, con atribución al Portal de Datos Abiertos de València.
-3. Metodología documentada en [`METHODOLOGY.md`](./METHODOLOGY.md).
-4. Trazabilidad completa en [`DATA_SOURCES.md`](./DATA_SOURCES.md).
+3. Metodología documentada en [`docs/METHODOLOGY.md`](./docs/METHODOLOGY.md).
+4. Trazabilidad completa en [`docs/DATA_SOURCES.md`](./docs/DATA_SOURCES.md).
 5. Reproducible con un único `docker compose up`.
 
 ### Exports derivados reproducibles

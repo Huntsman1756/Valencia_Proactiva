@@ -7,13 +7,13 @@
   "actions": [
     {
       "action_type": "ADMIN_TASK",
-      "title": "Ayudas municipales para comercios afectados",
-      "description": "Si la ocupacion afecta a carga, descarga o acceso comercial, revisa ayudas y tramites municipales aplicables.",
+      "title": "Gestion municipal de carga, descarga o acceso comercial",
+      "description": "Si la ocupacion afecta a carga, descarga o acceso comercial, revisa la gestion municipal aplicable y confirma requisitos en la Sede.",
       "priority": 50,
       "profiles": ["COMMERCIAL"],
       "payload": {
-        "url": "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1",
-        "secondary_url": "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1"
+        "url": "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1",
+        "secondary_url": "https://sede.valencia.es/sede/registro/procedimiento/VP.VE.50?lang=1"
       }
     }
   ]

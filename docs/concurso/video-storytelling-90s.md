@@ -7,8 +7,8 @@ Objetivo: explicar el problema y cerrar el bucle de acción, no hacer un tutoria
 **0-15 s · Problema**
 Juan tiene una furgoneta de reparto. Hoy València tiene varias ocupaciones de vía pública, tráfico denso y restricciones. Juan no tiene tiempo de revisar portales de datos, PDFs ni noticias municipales.
 
-**15-35 s · Apertura de VLC-PROACTIVA**
-Abre VLC-PROACTIVA. La app ya muestra qué ocurre cerca, la zona de impacto y el perfil activo. Cambia a `Comercial`.
+**15-35 s · Apertura de VLC PROACTIVA**
+Abre VLC PROACTIVA. La app ya muestra qué ocurre cerca, la zona de impacto y el perfil activo. Cambia a `Comercio`.
 
 **35-55 s · Acción administrativa**
 Selecciona una ocupación activa de `ocupacio-via-publica`. El panel derecho muestra alternativa, distancia y un enlace municipal real para comercios afectados o trámites relacionados. El mensaje clave: el dato abierto se convierte en una acción administrativa concreta.

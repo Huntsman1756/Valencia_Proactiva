@@ -70,6 +70,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
 
   const data = await page.evaluate(() => ({
     title: document.title,
+    brand: document.querySelector(".brand-copy strong")?.textContent,
+    primaryNavExists: Boolean(document.querySelector(".primary-nav")),
     cards: document.querySelectorAll(".event-card").length,
     empty: Boolean(document.querySelector(".empty-state")),
     status: document.querySelector("#statusText")?.textContent,
@@ -80,6 +82,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     htmlLang: document.documentElement.lang,
     storedLanguage: localStorage.getItem("vpro_language"),
     sourceStrip: document.querySelector(".source-strip")?.textContent,
+    sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
+    profileImpact: document.querySelector("#profileImpact")?.textContent,
+    routeText: document.querySelector(".route-button")?.textContent,
+    routeDisclaimer: document.querySelector(".route-note")?.textContent,
     activePoiFilter: localStorage.getItem("vpro_poi_type"),
     tabs: Array.from(document.querySelectorAll("[data-view]")).map((item) => item.textContent),
     layers: {
@@ -104,6 +110,19 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     popupText: document.querySelector(".maplibregl-popup-content")?.textContent,
     feedbackText: document.querySelector("#toast")?.textContent,
   }));
+
+  if (!data.title.includes("VLC PROACTIVA") || data.brand !== "VLC PROACTIVA") {
+    throw new Error(`Unexpected public brand: ${data.title} / ${data.brand}`);
+  }
+  if (data.primaryNavExists) {
+    throw new Error("Duplicated primary navigation is still present");
+  }
+  if (data.sourceDatasetCount < 10) {
+    throw new Error(`Expected detailed source datasets, got ${data.sourceDatasetCount}`);
+  }
+  if (!data.routeDisclaimer?.includes("Google")) {
+    throw new Error("Route disclaimer missing Google Maps limitation");
+  }
 
   await page.close();
   return { name, data, messages };

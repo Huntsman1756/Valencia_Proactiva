@@ -34,7 +34,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   letter-spacing: 0;
   font-variant-numeric: tabular-nums;
 }
@@ -126,7 +126,7 @@ a:hover {
   align-items: center;
   gap: 5px;
   color: var(--green);
-  font-size: 10px;
+  font-size: 11px;
   font-style: normal;
   font-weight: 750;
 }
@@ -139,10 +139,6 @@ a:hover {
   background: var(--green);
   box-shadow: 0 0 0 0 rgba(11, 122, 88, 0.36);
   animation: live-pulse 1800ms ease-out infinite;
-}
-
-.primary-nav {
-  display: none;
 }
 
 .header-actions {
@@ -358,6 +354,18 @@ a:hover {
   color: rgba(255, 255, 255, 0.82);
 }
 
+.profile-impact {
+  margin: 8px 0 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(13, 59, 102, 0.16);
+  border-radius: 7px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
 .filter-row {
   display: flex;
   align-items: center;
@@ -431,7 +439,7 @@ a:hover {
   background: var(--surface);
   color: var(--ink);
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -818,6 +826,13 @@ a:hover {
   font-size: 12px;
 }
 
+.route-note {
+  margin: -2px 0 0;
+  color: var(--soft);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .card-actions,
 .detail-actions {
   display: flex;
@@ -1008,6 +1023,7 @@ a:hover {
 
 .source-row span,
 .source-row small,
+.dataset-list,
 .method-list,
 .info-copy,
 .limitation-list,
@@ -1015,6 +1031,17 @@ a:hover {
 .faq-item p {
   color: var(--muted);
   line-height: 1.45;
+}
+
+.dataset-list {
+  display: grid;
+  gap: 3px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.dataset-list li {
+  padding-left: 2px;
 }
 
 .method-list {
@@ -1125,36 +1152,9 @@ a:hover {
 
 @media (min-width: 1180px) {
   .civic-header {
-    grid-template-columns: 260px 1fr auto;
+    grid-template-columns: 1fr auto;
     min-height: 72px;
     padding: 0 24px;
-  }
-
-  .primary-nav {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-  }
-
-  .primary-nav a {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    min-height: 72px;
-    padding: 0 8px;
-    color: var(--ink);
-    font-weight: 650;
-  }
-
-  .primary-nav a:first-child::after {
-    content: "";
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 0;
-    height: 3px;
-    border-radius: 999px 999px 0 0;
-    background: var(--blue);
   }
 
   .workspace {
