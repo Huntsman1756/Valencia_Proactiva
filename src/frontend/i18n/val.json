@@ -1,5 +1,5 @@
 {
-  "appName": "V-PRO",
+  "appName": "VLC-SENTINELLA",
   "lang": "val",
   "brandName": "València Proactiva",
   "primaryNavLabel": "Navegació principal",
@@ -30,6 +30,7 @@
   "adminActionTitle": "Acció administrativa",
   "openActionLink": "Obrir tràmit o referència",
   "noAdminAction": "No hi ha tràmit específic associat; revisa la ruta recomanada i la font oficial.",
+  "commercialFallbackActionTitle": "Ajudes municipals per a comerços afectats",
   "feedbackQuestion": "T'ha sigut útil esta informació?",
   "unknownLocation": "Ubicació pendent de confirmar",
   "eyebrow": "València ara",
@@ -110,7 +111,7 @@
   "sourceName_vpro_feedback": "Feedback ciutadà V-PRO",
   "sourceDescription_vpro_feedback": "Vots anònims sobre accions recomanades. S'exporten agregats, sense token de sessió, com a dataset derivat CC-BY 4.0.",
   "derivedDataTitle": "Dades derivades que produïx V-PRO",
-  "derivedDataText": "A més de consumir fonts oficials, V-PRO genera zones d'impacte, accions recomanades i feedback agregat. Estos derivats estan pensats per a publicar-se baix CC-BY 4.0 amb atribució a l'Ajuntament de València.",
+  "derivedDataText": "A més de consumir fonts oficials, V-PRO genera zones d'impacte, accions recomanades i feedback agregat. V-PRO no sols consumix dades obertes: produïx noves dades obertes derivades de l'experiència ciutadana real, baix CC-BY 4.0.",
   "methodologyEyebrow": "Mètode",
   "methodologyTitle": "Com es decideix què mostrar",
   "methodologyIntro": "La demo no és un visor genèric: transforma dades obertes en una recomanació pràctica per a una persona concreta.",
@@ -202,7 +203,7 @@
   },
   "actionTemplates": {
     "bici-ocupacion": "Desviament ciclista recomanat",
-    "comercio-ocupacion": "Revisa el tràmit municipal per afecció",
+    "comercio-ocupacion": "Ajudes municipals per a comerços afectats",
     "ocupacion-generica": "Consulta l'afecció abans de desplaçar-te",
     "ocupacion-severa": "Ruta alternativa recomanada",
     "trafico-retencion": "Evita este tram"

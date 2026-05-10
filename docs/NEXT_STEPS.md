@@ -620,7 +620,7 @@ Antes de cerrar la memoria final:
 - Guion (60-120 s):
   1. Problema: "datos pasivos" (un click al portal ODS muestra un mapa estático de ocupaciones).
   2. Solución: "bucle de acción" (V-PRO al lado, la misma información pero con sugerencia por perfil y CTA).
-  3. Demo Golden Path: usuario PMR entra a la zona afectada por una falla → V-PRO le sugiere el aparcamiento PMR más cercano fuera de la zona + ruta accesible.
+  3. Demo Golden Path: perfil Comercial abre una ocupación actual de `ocupacio-via-publica` → V-PRO muestra zona de impacto, alternativa cercana y enlace municipal real; perfil PMR puede mostrar aparcamiento accesible fuera de la zona.
   4. Feedback: click en 👍, muestra el agregado público.
   5. Arquitectura en 15 s (lean + open).
   6. Llamada a la acción: "V-PRO es una candidatura abierta. El código y los datos derivados están en GitHub bajo MIT y CC-BY 4.0".
@@ -629,7 +629,7 @@ Antes de cerrar la memoria final:
 
 ### F.5 — Golden Path de datos demo
 - `tests/backend/fixtures/golden_path.py` con escenarios curados:
-  1. **Ocupación por falla** en Av. del Reino de València → perfil PMR → sugerencia aparcamiento PMR + ruta accesible.
+  1. **Ocupación de vía pública actual** en València → perfil Comercial → enlace municipal real para comercios afectados + alternativa cercana.
   2. **Tramo cortado** en el Puente de las Flores → perfil ciclista → sugerencia Valenbisi con disponibilidad + itinerario ciclista alternativo.
   3. **Aviso ZBE** → perfil comercial → enlace a trámite de registro de vehículo profesional.
 - `src/scripts/seed_demo.py` carga estos fixtures para la demo.

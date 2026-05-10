@@ -1,7 +1,7 @@
 {
-  "appName": "V-PRO",
+  "appName": "VLC-SENTINELLA",
   "lang": "es",
-  "brandName": "Valencia Proactiva",
+  "brandName": "València Proactiva",
   "primaryNavLabel": "Navegación principal",
   "navStart": "Inicio",
   "navMap": "Mapa",
@@ -30,6 +30,7 @@
   "adminActionTitle": "Acción administrativa",
   "openActionLink": "Abrir trámite o referencia",
   "noAdminAction": "No hay trámite específico asociado; revisa la ruta recomendada y la fuente oficial.",
+  "commercialFallbackActionTitle": "Ayudas municipales para comercios afectados",
   "feedbackQuestion": "¿Te ha sido útil esta información?",
   "unknownLocation": "Ubicación pendiente de confirmar",
   "eyebrow": "Valencia ahora",
@@ -110,7 +111,7 @@
   "sourceName_vpro_feedback": "Feedback ciudadano V-PRO",
   "sourceDescription_vpro_feedback": "Votos anónimos sobre acciones recomendadas. Se exportan agregados, sin token de sesión, como dataset derivado CC-BY 4.0.",
   "derivedDataTitle": "Datos derivados que produce V-PRO",
-  "derivedDataText": "Además de consumir fuentes oficiales, V-PRO genera zonas de impacto, acciones recomendadas y feedback agregado. Estos derivados están pensados para publicarse bajo CC-BY 4.0 con atribución al Ayuntamiento de València.",
+  "derivedDataText": "Además de consumir fuentes oficiales, V-PRO genera zonas de impacto, acciones recomendadas y feedback agregado. V-PRO no solo consume datos abiertos: produce nuevos datos abiertos derivados de la experiencia ciudadana real, bajo CC-BY 4.0.",
   "methodologyEyebrow": "Método",
   "methodologyTitle": "Cómo se decide qué mostrar",
   "methodologyIntro": "La demo no es un visor genérico: transforma datos abiertos en una recomendación práctica para una persona concreta.",
@@ -202,7 +203,7 @@
   },
   "actionTemplates": {
     "bici-ocupacion": "Desvío ciclista recomendado",
-    "comercio-ocupacion": "Revisa el trámite municipal por afección",
+    "comercio-ocupacion": "Ayudas municipales para comercios afectados",
     "ocupacion-generica": "Consulta la afección antes de desplazarte",
     "ocupacion-severa": "Ruta alternativa recomendada",
     "trafico-retencion": "Evita este tramo"

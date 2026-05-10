@@ -2,13 +2,13 @@
   "id": "comercio-ocupacion",
   "when": {
     "event_type": "OCUPACION",
-    "severity_gte": 3
+    "severity_gte": 1
   },
   "actions": [
     {
       "action_type": "ADMIN_TASK",
-      "title": "Revisa tramite municipal por afeccion",
-      "description": "Si afecta a carga, descarga o acceso comercial, revisa los tramites municipales aplicables.",
+      "title": "Ayudas municipales para comercios afectados",
+      "description": "Si la ocupacion afecta a carga, descarga o acceso comercial, revisa ayudas y tramites municipales aplicables.",
       "priority": 50,
       "profiles": ["COMMERCIAL"],
       "payload": {

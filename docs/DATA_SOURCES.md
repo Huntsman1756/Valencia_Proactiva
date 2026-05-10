@@ -77,8 +77,8 @@ Estos datasets alimentan directamente la tabla `urban_events`. Cada uno mapea a 
 | Endpoint GeoJSON | ver página del dataset (recurso GeoJSON disponible) |
 | Estado | **Información no actualizada** (según el propio portal). Histórico de ediciones pasadas. |
 | Licencia | CC BY 4.0 |
-| Tipo V-PRO | `EVENTO_FALLAS` — carga estacional durante marzo, muestra el caso de uso en su contexto más crítico. |
-| Uso | **Demostración Golden Path:** caso de uso emblemático y específico de Valencia que conecta con el jurado local. En producción requiere un fallback al dataset histórico si no hay datos frescos. |
+| Tipo V-PRO | `EVENTO_FALLAS` — carga estacional durante marzo, útil para validar eventos masivos en contexto de Fallas. |
+| Uso | **Referencia histórica / fallback estacional.** No se usa como Golden Path activo fuera de temporada porque el propio portal puede indicar datos desactualizados. La demo pública usa `ocupacio-via-publica` con eventos actuales. |
 
 #### D. Zona de Bajas Emisiones (ZBE)
 | Campo | Valor |
@@ -194,7 +194,7 @@ Estos datos los genera V-PRO a partir de los anteriores y se publicarán bajo **
 
 | Limitación | Mitigación |
 |---|---|
-| Algunos datasets dicen "información no actualizada" (`talls-transit-falles`) | Usar solo para Golden Path histórico o fallback. |
+| Algunos datasets dicen "información no actualizada" (`talls-transit-falles`) | No usar como Golden Path activo fuera de temporada; mantener solo como histórico/fallback documentado. |
 | Frecuencia de actualización no siempre documentada | Scheduler V-PRO mantiene política conservadora de 30 min; sobrepasar solo si el dataset lo declara. |
 | `Estado` del tráfico en tiempo real puede llegar "4 Sin datos" en tramos puntuales | Omitir o marcar visualmente con color neutro; nunca inferir. |
 | Duplicidad sospechosa entre `carregadors-vehicles-electrics` y `recarrega-vehicles-electrics` | Verificar campos y mergear si aplica (tarea `T-34b`). |

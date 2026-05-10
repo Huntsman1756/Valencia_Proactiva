@@ -5,6 +5,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Predespliegue concurso y Golden Path - 2026-05-10
+- Demo: `talls-transit-falles` deja de ser Golden Path activo fuera de temporada; queda documentado como histórico/fallback.
+- Demo: Golden Path principal pasa a `ocupacio-via-publica` actual con perfil Comercial, zona de impacto, alternativa y enlace municipal real.
+- Backend: `comercio-ocupacion` se activa desde severidad 1 para ocupaciones reales, no solo severidad alta.
+- Frontend: marca visible actualizada a `VLC-SENTINELLA` con subtítulo `València Proactiva`; el fallback comercial muestra trámite municipal real aunque la BD venga de una ingesta anterior.
+- Concurso: añadidos borrador de primer párrafo de Anexo II y guion de vídeo de 90 segundos centrado en problema -> acción -> feedback.
+
 ### Changed - Rediseño civic utility map-first - 2026-05-10
 - Frontend: reemplazada la estructura anterior por cabecera civica, carril izquierdo de perfil/filtros, mapa central MapLibre y panel derecho de detalle/accion.
 - Frontend: añadido perfil `Comercial` al selector CAS/VAL runtime, manteniendo perfiles `Generico`, `PMR`, `Bici` y `Transporte`.

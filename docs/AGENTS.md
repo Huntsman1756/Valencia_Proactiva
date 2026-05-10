@@ -368,7 +368,7 @@
 **Supuestos asumidos (a verificar):**
 - Los layer IDs de `zona-de-bajas-emisiones` y otros datasets secundarios no se han verificado todavía. Se asume que siguen el mismo patrón `OPENDATA/<grupo>/MapServer/<layer>/query?f=geojson`. Confirmar en `T-34`.
 - Las URLs de los datasets verificados (`ocupacio-via-publica` → layer 209, `estat-transit-temps-real` → layer 192, `aparcaments-persones-mobilitat-reduida` → layer 207) fueron extraídas del propio portal durante esta sesión.
-- `talls-transit-falles` está marcado "información no actualizada" en el portal; se asume uso como fallback histórico para el Golden Path.
+- `talls-transit-falles` está marcado "información no actualizada" en el portal; no usarlo como Golden Path activo fuera de temporada. La demo pública debe apoyarse en `ocupacio-via-publica` con fecha actual y perfil Comercial/PMR.
 
 **Preguntas abiertas (pendientes de respuesta del Product Owner):**
 1. **¿Candidatura paralela en Periodismo de Datos?** (Coste ~5 días adicionales, beneficio potencial de hasta 5.000 € extra). Ver `MEMORIA.md § 12`.
@@ -1045,3 +1045,10 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Ajuste posterior: perfiles con iconos SVG inline y descripcion; switches rapidos funcionales; alternativas envueltas para no ocultar filtros; la accion administrativa no debe enlazar al concurso si no hay URL ciudadana real en el payload.
 - Regla de UI: el detalle movil debe estar en flujo, no como overlay fijo, para no interceptar clicks de tarjetas ni feedback.
 - Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, `node tests/frontend/smoke.mjs` con capturas mobile/desktop regeneradas.
+
+## Sesion 2026-05-10 - Predespliegue concurso Golden Path
+- R-14 cerrado: `talls-transit-falles` no debe usarse como Golden Path activo fuera de temporada porque el portal lo marca como desactualizado; queda solo como historico/fallback documentado.
+- Golden Path recomendado: perfil Comercial + evento actual de `ocupacio-via-publica` + enlace municipal real desde `comercio-ocupacion`.
+- `comercio-ocupacion.yaml` baja `severity_gte` a 1 para que la demo con ocupaciones actuales genere accion administrativa comercial.
+- Frontend añade fallback comercial para eventos `OCUPACION` si la BD fue ingestada antes de regenerar acciones; el boton apunta a Sede València, nunca al enlace del concurso.
+- Marca de pitch: `VLC-SENTINELLA (València Proactiva / V-PRO)` en memoria/UI, sin renombrar paquetes internos.

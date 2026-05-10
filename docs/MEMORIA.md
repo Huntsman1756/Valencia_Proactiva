@@ -1,4 +1,4 @@
-# MEMORIA RESUMEN — Valencia Proactiva (V-PRO)
+# MEMORIA RESUMEN — VLC-SENTINELLA (València Proactiva / V-PRO)
 
 > **Borrador de la Memoria Resumen del proyecto (Anexo II)** para la convocatoria AD.TR.15 — Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026, categoría **Datos Abiertos**.
 > Este documento es un borrador de trabajo. El formato final debe ajustarse al modelo Anexo II oficial publicado en la Sede Electrónica.
@@ -6,22 +6,22 @@
 > Última revisión: 2026-05-09 (pivote tras verificación del portal real).
 
 ## 1. Identificación del proyecto
-- **Título:** Valencia Proactiva (V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
+- **Título:** VLC-SENTINELLA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
 - **Categoría a la que concurre:** Datos Abiertos. *(Opcionalmente se valorará una candidatura paralela en Periodismo de Datos — ver § 12.)*
 - **Ámbito territorial:** Municipio de València.
 - **Tipo de entregable:** Plataforma web reutilizable (API + frontend) con código abierto (MIT) y datos derivados bajo licencia CC-BY 4.0.
 
 ## 2. Resumen ejecutivo
-**Cuando el tráfico se corta, un festejo ocupa tu calle o la Zona de Bajas Emisiones restringe tu vehículo, V-PRO te muestra al instante la alternativa viable adaptada a tu perfil: peatonal, comercial, de movilidad reducida, ciclista o en transporte público.**
+**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC-SENTINELLA te muestra al instante la alternativa viable adaptada a tu perfil: peatonal, comercial, de movilidad reducida, ciclista o en transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
 
-V-PRO transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere en tiempo real datasets reales del portal municipal (ocupación de vía pública, estado del tráfico actualizado cada 3 minutos, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, rutas alternativas multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes (ayudas a comercios afectados, exenciones). Todo el código es MIT y los datos derivados CC-BY 4.0.
+VLC-SENTINELLA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere en tiempo real datasets reales del portal municipal (ocupación de vía pública, estado del tráfico actualizado cada 3 minutos, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, rutas alternativas multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes (ayudas a comercios afectados, exenciones). Todo el código es MIT y los datos derivados CC-BY 4.0.
 
 ## 3. Problema que aborda
 
 El Portal de Datos Abiertos del Ayuntamiento publica actualmente **más de 250 datasets** sobre movilidad, urbanismo, servicios y transparencia municipal. Entre ellos, dos joyas clasificadas como "conjuntos de datos de Alto Valor" según el estándar europeo: `estat-transit-temps-real` (actualizado cada 3 minutos) y la familia de datasets de movilidad reducida. Sin embargo, **la carga de transformar esos datos en una decisión cotidiana recae íntegramente en la ciudadanía**.
 
 Casos reales:
-- Una **persona comerciante** no sabe hasta que lo sufre que una ocupación de vía pública durante una falla va a cortarle el acceso durante tres semanas, ni qué ayudas municipales puede solicitar.
+- Una **persona comerciante** no sabe hasta que lo sufre que una ocupación de vía pública activa va a cortarle el acceso o la carga y descarga, ni qué ayudas o trámites municipales puede revisar.
 - Una **familia con algún miembro de movilidad reducida** no descubre hasta llegar al destino que el evento de su barrio ha cerrado el único aparcamiento PMR cercano.
 - Una **persona conductora con vehículo antiguo** entra en la ZBE sin saberlo y descubre la sanción días después.
 - Una **ciclista habitual** pierde tiempo buscando aparcamiento para bicis sin saber que Valenbisi tiene disponibilidad a 150 metros.
@@ -79,7 +79,7 @@ Catálogo completo y URLs exactas en `DATA_SOURCES.md`. Resumen:
 **Fuentes de interrupciones** (generan `UrbanEvent`):
 - `ocupacio-via-publica` — obras + festejos + incidencias (nuclear).
 - `estat-transit-temps-real` — tráfico en tiempo real, HVD europeo, cada 3 min.
-- `talls-transit-falles` — cortes por Fallas (Golden Path).
+- `talls-transit-falles` — cortes por Fallas. Se conserva como referencia histórica o fallback estacional, no como Golden Path activo de la demo.
 - `zona-de-bajas-emisiones` — restricciones de acceso por vehículo.
 
 **Fuentes de alternativas** (generan `PointOfInterest`):
@@ -106,7 +106,7 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 
 ### 6.2. Valor público e impacto social y urbano (25 pts)
 - **Impacto directo en colectivos vulnerables:**
-  - Comercios afectados por ocupaciones prolongadas (obras, fallas) → enlace a ayudas municipales.
+  - Comercios afectados por ocupaciones de vía pública actuales → enlace a ayudas o trámites municipales.
   - **Personas con movilidad reducida** — sugerencias filtradas a POIs accesibles. Esto **no es un checkbox de accesibilidad**, es un perfil de usuario explícito con datos dedicados.
   - Residentes de zonas con restricción de acceso (ZBE) → aviso antes de la sanción.
   - Ciclistas → aparcamientos de bici + Valenbisi con disponibilidad en tiempo real.
@@ -197,6 +197,8 @@ Este compromiso refuerza el **criterio 4** (colaboración y apertura) del jurado
 - `METHODOLOGY.md` — metodología detallada.
 - `docs/DECISIONS.md` — ADRs firmados (ADR-001 a ADR-004).
 - `docs/concurso/tramites-referenciados.md` — catálogo de URLs municipales reales enlazadas en las `MitigationAction`.
+- `docs/concurso/anexo-ii-primer-parrafo.md` — primer párrafo recomendado para el Anexo II oficial.
+- `docs/concurso/video-storytelling-90s.md` — guion de vídeo de 90 segundos orientado a problema -> acción -> feedback.
 - `LICENSE` — licencias de código y datos.
 
 ---

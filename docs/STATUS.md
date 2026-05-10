@@ -6,7 +6,7 @@
 ## Estado global
 - **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y es idempotente en segundo run. Tests verdes (94/94), cobertura backend 70,31%, `ruff`, `mypy` y `pip-audit` verdes.
 - **Fase producto:** 3 · *Interfaz proactiva local* — ingesta end-to-end funcional contra BD real. Action Template Engine `T-20` genera acciones por perfil, feedback loop `/api/v1/feedback` persiste votos reales, Alternative Finder multimodal con 12 datasets POI, staging `official_notices` para avisos oficiales EMT sin geometría y promoción conservadora opcional a `UrbanEvent` mediante gazetteer versionado con validación geográfica reproducible, CLI operativo y API admin de avisos oficiales, endpoint `/api/v1/spatial/alternatives` operativo, endpoint de capas espaciales para mapa, frontend vanilla `src/frontend` servido por Nginx en `localhost:8080`, dirección visual `Civic Utility` documentada, y configuración Nginx de producción preparada con security headers.
-- **Fase concurso AD.TR.15:** 0 · *Entregables* — 70% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados ✅; Anexo II oficial, demo/vídeo y solicitud pendientes).
+- **Fase concurso AD.TR.15:** 0 · *Entregables* — 75% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados ✅; Golden Path activo cambiado a `ocupacio-via-publica`; Anexo II oficial, demo/vídeo y solicitud pendientes).
 - **Branch activa:** `main`.
 - **Última release estable:** *ninguna*.
 - **Commits recientes:** *no auditados esta sesión*. El siguiente agente empieza con `git log --oneline -20`.
@@ -82,7 +82,7 @@ Arquitectura firmada en 4 ADRs:
 | `backend/` vacío en raíz — Windows file lock impide eliminación instantánea | DevOps | T-103 (workaround: `Remove-Item -Recurse -Force backend` en shell limpio) |
 
 ## Próximas acciones (sin VPS)
-1. **Frontend demo:** Lighthouse mobile ≥90, accesibilidad y Golden Path estable para vídeo.
+1. **Frontend demo:** Lighthouse mobile ≥90, accesibilidad y Golden Path estable para vídeo usando `ocupacio-via-publica` actual, no `talls-transit-falles`.
 2. **Concurso:** `T-36` ganadores anteriores, revisión de lenguaje inclusivo y adaptación al Anexo II oficial cuando esté publicado.
 3. **Docs:** cerrar `T-115` con barrido de referencias históricas obsoletas.
 4. **Dev hygiene:** `T-33` pre-commit y `T-34b` deduplicación cargadores VE.
@@ -99,6 +99,7 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | CI | workflow `.github/workflows/ci.yml` existe; no corrido todavía (pendiente primer push) |
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
+| Golden Path predespliegue | ✅ Demo recomendada: perfil Comercial sobre `ocupacio-via-publica` actual con enlace municipal real; `talls-transit-falles` queda como histórico/fallback documentado |
 | Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, tabs Fuentes/Metodología/Info ampliadas y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
 | Frontend civic utility | ✅ Rediseño map-first con cabecera institucional, perfiles/filtros en carril izquierdo, MapLibre central, detalle seleccionado a la derecha, hoja móvil en flujo y perfil Comercial; smoke Playwright mobile/desktop verde |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
@@ -123,3 +124,4 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **T-116:** pulido frontend de concurso cerrado: mapa sin solape de pestañas (`overlapsTabs=false`), leyenda y popups de capas, enlace GitHub/AD.TR.15 y revisión ES/VAL de acentos principales.
 - **R-12:** reorganización explicativa cerrada: el mapa pasa a lateral solo desde 1100px; cabecera, Eventos, Fuentes, Metodología e Info explican producto, uso, fuentes, mapa, limitaciones y FAQ.
 - **R-13:** rediseño Civic Utility map-first cerrado: nueva cabecera cívica, carril izquierdo, mapa central, panel derecho de acción, perfil Comercial, hoja móvil en flujo y smoke Playwright mobile/desktop verde.
+- **R-14:** predespliegue concurso: `talls-transit-falles` deja de ser Golden Path activo; `comercio-ocupacion` aplica a ocupaciones actuales desde severidad 1 y muestra trámite municipal real en perfil Comercial; memoria reforzada con marca `VLC-SENTINELLA (València Proactiva)` y frase de datos derivados.

@@ -192,12 +192,12 @@ Se adopta la opción 2. El proyecto pivota:
 - Se usa un dataset de Alto Valor Europeo (criterio 1 — innovación).
 - Ángulo de accesibilidad fuerte (criterio 2 — valor público).
 - Feedback loop convierte a V-PRO en productor de datos abiertos (criterio 4 — apertura).
-- Alineación con la narrativa valenciana específica (cortes por Fallas) sin depender de datos que no tenemos.
+- Alineación con la narrativa valenciana específica (ocupaciones, tráfico, Fallas en temporada) sin depender de datos históricos para la demo activa.
 
 **Negativas / riesgos:**
 - Reescritura parcial del scraper (el modelo de datos aguanta, pero la capa de ingesta cambia).
 - Hay que validar los campos de cada feature manualmente antes de mapear a `UrbanEvent` — lo cubre la tarea `T-34` subida a P1.
-- `talls-transit-falles` es histórico: para Fallas 2026 hay que disponer del fichero del año previo como fallback.
+- `talls-transit-falles` es histórico/fallback: no debe ser Golden Path activo fuera de temporada si el portal lo marca como desactualizado.
 
 ### Revisit
 Se revisita si el Ayuntamiento publica nuevas versiones en tiempo real (p.ej. `obres-en-curs-temps-real`) que permitan sustituir la heurística de `ocupacio-via-publica`.

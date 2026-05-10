@@ -66,7 +66,7 @@
 - [x] Tabs `Eventos`, `Fuentes`, `Metodología`, `Info`.
 - [ ] Lighthouse mobile ≥90 Performance y Accessibility.
 - [ ] Pase final WCAG/teclado/contraste.
-- [ ] Golden Path demo estabilizado para vídeo.
+- [ ] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
 
 ## Fase 4 — Producción
 

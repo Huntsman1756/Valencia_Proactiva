@@ -157,7 +157,7 @@ function setupLanguageSelector() {
         state.cards = state.cards.map((card) => ({
           ...card,
           event: normalizeEvent(card.event),
-          action: selectActionForProfile(card.event.mitigation_actions || [], state.profile),
+          action: selectActionForProfile(card.event.mitigation_actions || [], state.profile, card.event),
         }));
         const visibleCards = filteredCards();
         renderCards(visibleCards);
@@ -351,7 +351,7 @@ async function buildCardModel(event) {
   return {
     event,
     alternative: alternatives[0] || null,
-    action: selectActionForProfile(event.mitigation_actions || [], state.profile),
+    action: selectActionForProfile(event.mitigation_actions || [], state.profile, event),
   };
 }
 
@@ -1040,11 +1040,29 @@ function citizenActionUrl(action) {
   return rawUrl;
 }
 
-function selectActionForProfile(actions, profile) {
+function selectActionForProfile(actions, profile, event = null) {
   return actions.find((action) => action.payload?.profiles?.includes(profile))
+    || syntheticCommercialAction(profile, event)
+    || (profile === "COMMERCIAL" ? actions.find((action) => citizenActionUrl(action)) : null)
     || actions.find((action) => action.payload?.profiles?.includes("GENERIC"))
     || actions[0]
     || null;
+}
+
+function syntheticCommercialAction(profile, event) {
+  if (profile !== "COMMERCIAL" || event?.type !== "OCUPACION") {
+    return null;
+  }
+  return {
+    id: null,
+    title: t("commercialFallbackActionTitle"),
+    payload: {
+      template_id: "comercio-ocupacion",
+      profiles: ["COMMERCIAL"],
+      url: "https://sede.valencia.es/sede/registro/procedimiento/AE.CM.35?lang=1",
+      secondary_url: "https://sede.valencia.es/sede/registro/procedimiento/TR.AR.45?lang=1",
+    },
+  };
 }
 
 function cleanTitle(value) {

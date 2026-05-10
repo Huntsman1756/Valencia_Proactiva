@@ -1,0 +1,3 @@
+# Anexo II — primer párrafo recomendado
+
+**VLC-SENTINELLA (València Proactiva / V-PRO)** transforma el Portal de Datos Abiertos del Ayuntamiento de València en un servicio proactivo de movilidad urbana: detecta ocupaciones de vía pública, tráfico, ZBE y eventos con impacto, calcula zonas afectadas con PostGIS y recomienda acciones útiles según el perfil de la persona usuaria. La innovación principal es que **V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real**: zonas de impacto, acciones recomendadas y feedback agregado anónimo se publican bajo CC-BY 4.0 para cerrar el bucle `evento -> impacto -> acción -> evaluación ciudadana`.
