@@ -122,7 +122,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
 - Operaciones:
   - Extracción de campos con fallbacks multilingües (`titulo` / `title` / `nom`).
   - Parseo de fechas en múltiples formatos (`%Y-%m-%d`, ISO 8601, `%d/%m/%Y`).
-  - Estimación de severidad cuando no está declarada (heurística de palabras clave).
+  - Estimación de severidad cuando no está declarada. Para `OCUPACION`, la regla usa superficie publicada (`M2`) y tipo de afección (`acera`, `calzada`, `carril`, `zona estacionamiento`, `carga/descarga`); para otros eventos conserva la heurística de palabras clave o el dato de origen si existe.
   - Validación geométrica con Shapely (`is_valid`, `not is_empty`).
 - Registros sin geometría o con geometría inválida → descartados y registrados en logs.
 
@@ -187,11 +187,11 @@ Estas métricas las imprime `src/scripts/run_ingest.py` en stdout y se capturan 
 ### 4.2. Validaciones
 - Geometrías: `is_valid` y `not is_empty` (Shapely).
 - Coordenadas: acotadas a `[-180, 180]` × `[-90, 90]` en los schemas Pydantic.
-- Severidad: acotada a `[1, 5]` en modelo y schemas.
+- Severidad: acotada a `[1, 5]` en modelo y schemas. Si la fuente no publica gravedad, V-PRO deriva una severidad operativa conservadora: `1` sin afección clara, `2` acera o superficie menor, `3` superficie media/estacionamiento/carril/cruce y `4` grandes superficies. El tráfico mantiene el mapeo del estado oficial.
 - Fechas: múltiples formatos aceptados con fallback a `datetime.now()` si no hay dato.
 
 ### 4.3. Limitaciones conocidas
-- La estimación heurística de severidad (palabras clave en la descripción) es imprecisa. Propuesta: sustituir por reglas declarativas por tipo de obra cuando se conozcan las categorías oficiales del portal.
+- La estimación de severidad sigue siendo derivada cuando el portal no publica gravedad explícita. Es mejor que mostrar todo como `1`, pero debe explicarse como impacto operativo estimado y no como prioridad oficial municipal.
 - Los eventos puntuales (sin área) reciben un buffer por defecto que puede no reflejar el área real de afectación.
 - Algunos datasets del portal pueden cambiar de slug o formato; el sistema loguea el error pero no intenta auto-recuperarse.
 

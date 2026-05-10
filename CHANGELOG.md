@@ -5,6 +5,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Severidad operativa y layout flotante - 2026-05-10
+- Backend: `OCUPACION` deriva severidad operativa desde superficie (`M2`) y tipo de afección cuando el portal no publica gravedad explícita; evita que la demo muestre todo como severidad 1.
+- Tests: añadida cobertura para acera, superficie media, estacionamiento/chaflán y gran superficie.
+- Frontend: layout desktop flotante sobre mapa, modo claro/oscuro, paneles con translucidez funcional documentada y badges de `Impacto` en lugar de exponer solo el número de severidad.
+- Docs: metodología y sistema de diseño explican que la severidad derivada es impacto operativo estimado, no prioridad oficial municipal.
+
 ### Changed - Claridad de producto y perfiles - 2026-05-10
 - Frontend: navegación de secciones integrada en el header; `Fuentes`, `Metodología` e `Info` se abren como drawer superpuesto para mantener el mapa como superficie principal.
 - Frontend: botones de navegación externa pasan a estilo outlined; el CTA administrativo mantiene peso visual sólido.

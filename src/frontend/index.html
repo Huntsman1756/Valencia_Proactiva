@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,6 +29,9 @@
 
         <div class="header-actions">
           <p id="statusText" class="data-status" data-i18n="loading">Buscando acontecimientos activos...</p>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" data-i18n-attr="aria-label:themeToggleLabel">
+            <span aria-hidden="true">NOC</span>
+          </button>
           <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
             <button type="button" data-lang="es">CAS</button>
             <button type="button" data-lang="val">VAL</button>

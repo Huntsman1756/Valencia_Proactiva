@@ -1054,3 +1054,11 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Marca pública en UI: `VLC PROACTIVA`; usar `V-PRO` solo como nombre interno/histórico si aparece en documentación técnica.
 - Mantener en la UI la narrativa de concurso, pero con promesas verificables: fuentes concretas listadas, perfiles que cambian la capa prioritaria, rutas externas etiquetadas como destino en Maps y CTA administrativo real cuando exista URL municipal.
 - Para comercio, `comercio-ocupacion` debe priorizar `TR.AR.45` (carga y descarga) sobre ayudas genéricas como `AE.CM.35`.
+
+## Sesion 2026-05-10 - Severidad operativa y front flotante
+- Diagnóstico: la BD local tenía `OCUPACION=253` y `TRAFICO=410` con `severity=1` porque las fuentes actuales no publican gravedad explícita y el estimador anterior solo elevaba por estado de tráfico o palabras clave.
+- Backend: `_estimate_occupation_severity` deriva impacto operativo desde `tipo_afectacion`, superficie en `M2`, acera, calzada/carril/cruce/chaflán, estacionamiento y carga/descarga. No pretende ser prioridad oficial municipal.
+- Tests: añadidos casos para acera (`2`), 47,12 m2 (`3`), acera + estacionamiento + chaflán (`3`) y 150 m2 (`4`).
+- Reingesta dev ejecutada: `refreshed_events=229` en primer pase y distribución final `OCUPACION 1=39, 2=42, 3=172`; `TRAFICO 1=410` porque el estado oficial actual no eleva impacto.
+- Frontend: se rompe el layout cuadriculado en desktop con mapa como superficie principal y paneles flotantes para perfil, eventos y detalle; se añade modo claro/oscuro y badges `Impacto`.
+- Docs: actualizado sistema de diseño con excepción controlada para translucidez funcional y metodología con la regla de severidad.

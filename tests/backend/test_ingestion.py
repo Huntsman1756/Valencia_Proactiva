@@ -125,6 +125,50 @@ class TestNormalizer:
 
 
 class TestArcGiSCRaper:
+    def test_estimate_occupation_severity_from_sidewalk(self):
+        scraper = ArcGiSCRaper()
+
+        severity = scraper._estimate_severity(
+            {"tipo_afectacion": "ACERA"},
+            state=None,
+            config={"event_type": "OCUPACION"},
+        )
+
+        assert severity == 2
+
+    def test_estimate_occupation_severity_from_surface_area(self):
+        scraper = ArcGiSCRaper()
+
+        severity = scraper._estimate_severity(
+            {"tipo_afectacion": "47,12 M2(VER LICENCIA E INFORME MOVILIDAD)"},
+            state=None,
+            config={"event_type": "OCUPACION"},
+        )
+
+        assert severity == 3
+
+    def test_estimate_occupation_severity_from_parking_corner(self):
+        scraper = ArcGiSCRaper()
+
+        severity = scraper._estimate_severity(
+            {"tipo_afectacion": "ACERA Y ZONA ESTACIONAMIENTO CHAFLAN"},
+            state=None,
+            config={"event_type": "OCUPACION"},
+        )
+
+        assert severity == 3
+
+    def test_estimate_occupation_severity_from_large_surface_area(self):
+        scraper = ArcGiSCRaper()
+
+        severity = scraper._estimate_severity(
+            {"tipo_afectacion": "150 M2"},
+            state=None,
+            config={"event_type": "OCUPACION"},
+        )
+
+        assert severity == 4
+
     def test_parse_epoch_milliseconds(self):
         scraper = ArcGiSCRaper()
 
@@ -240,6 +284,7 @@ class TestIngestorRecordRouting:
             "_store_events",
             lambda records: {
                 "stored": len(records),
+                "refreshed": 4,
                 "skipped_duplicates": 1,
                 "errors": 0,
             },
@@ -263,6 +308,7 @@ class TestIngestorRecordRouting:
             "stored": 3,
             "stored_events": 1,
             "stored_pois": 2,
+            "refreshed_events": 4,
             "skipped_duplicates": 3,
             "errors": 1,
         }

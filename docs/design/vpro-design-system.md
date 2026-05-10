@@ -45,10 +45,11 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 
 ## Layout
 - Mobile-first.
-- En desktop, tres zonas: perfil/filtros a la izquierda, mapa central y detalle de accion a la derecha.
+- En desktop, el mapa es la superficie principal y ocupa el fondo operativo. Perfil/filtros, lista y detalle flotan encima con separacion visible para evitar lectura de informe cuadriculado.
 - En mobile, el mapa aparece primero tras la cabecera y el detalle queda como hoja inferior dentro del flujo.
 - El selector de idioma siempre queda separado de perfiles y alineado a la derecha.
-- Los componentes operativos tienen radio maximo `8px`; botones de herramienta y feedback pueden ser circulares si contienen simbolos.
+- Los componentes en flujo conservan radio contenido. En desktop se permite `--float-radius` para paneles flotantes sobre mapa siempre que haya contraste AA, borde fino y sin glow decorativo.
+- Modo claro y oscuro comparten estructura; el modo oscuro es de operativa/presentacion, no una paleta neon.
 
 ## Componentes
 ### Event Card
@@ -82,6 +83,9 @@ Prohibido en el frontend de V-PRO salvo decision documentada:
 - Sombras grandes para dar "premium".
 - Iconos enormes o emojis como elemento principal.
 - Cambiar colores por gustos sin revisar contraste y semantica.
+
+### Excepcion documentada 2026-05-10
+Se permite translucidez funcional (`backdrop-filter`) solo en header, leyenda y paneles flotantes del layout map-first. Motivo: mantener el mapa como contexto urbano continuo y reducir la sensacion de cuadricula. No se permite usarlo como decoracion aislada, ni con brillos, orbes o fondos generativos.
 
 ## Checklist antes de cerrar UI
 - No hay overflow horizontal en mobile.

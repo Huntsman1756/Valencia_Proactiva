@@ -49,6 +49,7 @@ const state = {
   profile: INITIAL_PROFILE,
   language: localStorage.getItem("vpro_language") || languageFromNavigator(),
   messages: {},
+  theme: localStorage.getItem("vpro_theme") || "light",
   events: [],
   cards: [],
   visibleCards: [],
@@ -78,12 +79,14 @@ const detailRail = document.querySelector(".detail-rail");
 const selectedEventPanel = document.querySelector("#selectedEventPanel");
 const profileImpact = document.querySelector("#profileImpact");
 const panelBackdrop = document.querySelector("#panelBackdrop");
+const themeToggle = document.querySelector("#themeToggle");
 
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   await loadMessages();
   applyTranslations();
+  setupThemeToggle();
   setupProfiles();
   setupLanguageSelector();
   setupViews();
@@ -122,8 +125,32 @@ function applyTranslations() {
     button.textContent = labelForPoiFilter(button.dataset.poiFilter);
   });
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
+  updateThemeButton();
   renderInfoPanels();
   renderSelectedEvent(state.visibleCards[state.selectedCardIndex]);
+}
+
+function setupThemeToggle() {
+  applyTheme();
+  themeToggle?.addEventListener("click", () => {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("vpro_theme", state.theme);
+    applyTheme();
+  });
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = state.theme;
+  updateThemeButton();
+}
+
+function updateThemeButton() {
+  if (!themeToggle) {
+    return;
+  }
+  const dark = state.theme === "dark";
+  themeToggle.setAttribute("aria-pressed", String(dark));
+  themeToggle.querySelector("span").textContent = dark ? t("themeLightShort") : t("themeDarkShort");
 }
 
 function setupProfiles() {
@@ -497,6 +524,7 @@ function createEventCard(card, index) {
     ? formatMessage("places", { count: alternative.extra_data.numplazas })
     : t("dataAvailable");
   const actionLabel = labelForAction(card.action);
+  const impact = impactInfo(event);
   const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
     ? alternative.name
     : actionLabel || labelForPoi(alternative?.poi_type);
@@ -517,7 +545,7 @@ function createEventCard(card, index) {
       <div>
         <div class="event-type">
           <span>${labelForType(event.type)}</span>
-          <span class="severity-badge">${t("severity")} ${event.severity}</span>
+          <span class="severity-badge">${escapeHtml(impact.label)}</span>
         </div>
         <h3>${escapeHtml(event.title)}</h3>
       </div>
@@ -525,7 +553,7 @@ function createEventCard(card, index) {
     </div>
     <p class="event-description">${escapeHtml(trimText(event.description, 104))}</p>
     <div class="key-data">
-      <span class="key-data-icon" aria-hidden="true">⌖</span>
+      <span class="key-data-icon" aria-hidden="true">ALT</span>
       <p>
         <strong>${escapeHtml(alternativeName)}</strong>
         ${alternativeSource ? `<span>${escapeHtml(alternativeSource)}</span>` : ""}
@@ -535,10 +563,6 @@ function createEventCard(card, index) {
     <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
     <div class="card-actions">
       <button type="button" class="route-button">${t("route")}</button>
-      <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
-        <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}">+</button>
-        <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}">-</button>
-      </div>
     </div>
   `;
 
@@ -554,9 +578,6 @@ function createEventCard(card, index) {
     }
   });
   article.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
-  article.querySelectorAll(".feedback-button").forEach((button) => {
-    button.addEventListener("click", () => submitFeedback(button, card));
-  });
 
   return article;
 }
@@ -603,11 +624,12 @@ function renderSelectedEvent(card) {
   const adminLink = adminUrl
     ? `<a class="detail-link primary-admin-link" href="${adminUrl}" target="_blank" rel="noopener">${escapeHtml(adminLinkLabel)}</a>`
     : "";
+  const impact = impactInfo(event);
   const severityClass = event.severity >= 4 ? " is-high" : "";
 
   selectedEventPanel.innerHTML = `
     <div class="detail-meta">
-      <span class="detail-status${severityClass}">${t("activeStatus")} · ${t("severity")} ${event.severity}</span>
+      <span class="detail-status${severityClass}">${t("activeStatus")} - ${escapeHtml(impact.label)}</span>
       <h2>${escapeHtml(event.title)}</h2>
       <p>${escapeHtml(trimText(event.description, 160))}</p>
     </div>
@@ -618,7 +640,7 @@ function renderSelectedEvent(card) {
       </div>
       <div>
         <dt>${t("affectedAreaLabel")}</dt>
-        <dd>${escapeHtml(formatMessage("affectedAreaValue", { meters: event.severity >= 4 ? 450 : 250 }))}</dd>
+        <dd>${escapeHtml(formatMessage("affectedAreaValue", { meters: impact.meters }))}</dd>
       </div>
       <div>
         <dt>${t("sourceLabel")}</dt>
@@ -662,6 +684,23 @@ function labelForActionLink(action) {
     return t("requestHelpLink");
   }
   return t("openActionLink");
+}
+
+function impactInfo(event) {
+  const severity = Number(event?.severity || 1);
+  const meters = Math.min(Math.max(severity * 100, 100), 500);
+  let level = t("impactLow");
+  if (severity >= 4) {
+    level = t("impactHigh");
+  } else if (severity >= 3) {
+    level = t("impactMedium");
+  } else if (severity >= 2) {
+    level = t("impactModerate");
+  }
+  return {
+    meters,
+    label: formatMessage("impactBadge", { level, meters }),
+  };
 }
 
 function renderEmpty(message) {
@@ -725,8 +764,8 @@ function renderInfoPanels() {
       <li>${t("methodStep5")}</li>
     </ol>
     <p class="info-copy">${t("methodologyNote")}</p>
-    <section class="info-section">
-      <h3>${t("mapMethodTitle")}</h3>
+    <details class="info-accordion" open>
+      <summary>${t("mapMethodTitle")}</summary>
       <article class="map-explainer">
         <strong>${t("mapLayerEventsTitle")}</strong>
         <p>${t("mapLayerEventsText")}</p>
@@ -739,7 +778,7 @@ function renderInfoPanels() {
         <strong>${t("mapLayerAlternativesTitle")}</strong>
         <p>${t("mapLayerAlternativesText")}</p>
       </article>
-    </section>
+    </details>
   `;
 
   additionalInfoPanel.innerHTML = `
@@ -755,16 +794,20 @@ function renderInfoPanels() {
       <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
       <div><strong>20</strong><span>${t("metricNotices")}</span></div>
     </div>
-    <section class="info-section">
-      <h3>${t("limitationsTitle")}</h3>
+    <details class="info-accordion" open>
+      <summary>${t("governanceReferenceTitle")}</summary>
+      <p class="info-copy">${t("governanceReferenceText")}</p>
+    </details>
+    <details class="info-accordion" open>
+      <summary>${t("limitationsTitle")}</summary>
       <ul class="limitation-list">
         <li>${t("limitation1")}</li>
         <li>${t("limitation2")}</li>
         <li>${t("limitation3")}</li>
       </ul>
-    </section>
-    <section class="info-section">
-      <h3>${t("faqTitle")}</h3>
+    </details>
+    <details class="info-accordion">
+      <summary>${t("faqTitle")}</summary>
       <div class="faq-list">
         <article class="faq-item">
           <strong>${t("faqQ1")}</strong>
@@ -779,7 +822,7 @@ function renderInfoPanels() {
           <p>${t("faqA3")}</p>
         </article>
       </div>
-    </section>
+    </details>
     <div class="info-links">
       <a href="${GITHUB_URL}" target="_blank" rel="noopener">${t("githubLink")}</a>
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
@@ -919,8 +962,9 @@ function popupCoordinates(feature, lngLat) {
 }
 
 function popupForEventPoint(properties) {
+  const impact = impactInfo({ severity: properties.severity });
   return popupHtml(properties.title || labelForType(properties.type), [
-    `${labelForType(properties.type)} · ${t("severity")} ${properties.severity}`,
+    `${labelForType(properties.type)} - ${impact.label}`,
     t("popupEventHint"),
   ]);
 }
@@ -934,15 +978,17 @@ function popupForAlternativePoint(properties) {
 }
 
 function popupForImpactZone(properties) {
+  const impact = impactInfo({ severity: properties.severity });
   return popupHtml(t("legendImpact"), [
-    `${labelForType(properties.event_type)} · ${t("severity")} ${properties.severity}`,
+    `${labelForType(properties.event_type)} - ${impact.label}`,
     formatMessage("popupImpactRadius", { meters: Math.round(Number(properties.buffer_distance || 0)) }),
   ]);
 }
 
 function popupForTrafficLine(properties) {
+  const impact = impactInfo({ severity: properties.severity });
   return popupHtml(t("legendTraffic"), [
-    `${labelForType(properties.type)} · ${t("severity")} ${properties.severity}`,
+    `${labelForType(properties.type)} - ${impact.label}`,
     t("popupTrafficHint"),
   ]);
 }

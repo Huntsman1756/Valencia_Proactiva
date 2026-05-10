@@ -131,6 +131,7 @@ class Ingestor:
             "stored": event_result["stored"] + poi_result["stored"],
             "stored_events": event_result["stored"],
             "stored_pois": poi_result["stored"],
+            "refreshed_events": event_result.get("refreshed", 0),
             "skipped_duplicates": (
                 event_result["skipped_duplicates"] + poi_result["skipped_duplicates"]
             ),
@@ -213,6 +214,7 @@ class Ingestor:
     def _store_events(self, normalized_data: List[Dict[str, Any]]) -> Dict[str, int]:
         """Store normalized events in the database"""
         stored_count = 0
+        refreshed_count = 0
         skipped_duplicates = 0
         existing_ids = set()
         
@@ -225,6 +227,7 @@ class Ingestor:
             for item in normalized_data:
                 source_id = item.get("source_id")
                 if source_id and source_id in existing_ids:
+                    refreshed_count += self._refresh_existing_event(session, item)
                     skipped_duplicates += 1
                     logger.debug(f"Skipping duplicate event: {source_id}")
                     continue
@@ -279,9 +282,55 @@ class Ingestor:
         )
         return {
             "stored": stored_count,
+            "refreshed": refreshed_count,
             "skipped_duplicates": skipped_duplicates,
             "errors": errors,
         }
+
+    def _refresh_existing_event(
+        self,
+        session: Session,
+        item: Dict[str, Any],
+    ) -> int:
+        """Refresh derived fields for an already-ingested event.
+
+        Re-ingestion is idempotent for raw identity, but derived fields can
+        improve when the rules change. Updating severity and adding a latest
+        impact zone keeps local/dev data aligned without deleting history.
+        """
+        source_id = item.get("source_id")
+        if not source_id:
+            return 0
+
+        event = (
+            session.query(UrbanEvent)
+            .filter(UrbanEvent.source_id == source_id)
+            .one_or_none()
+        )
+        if event is None:
+            return 0
+
+        next_severity = int(item.get("severity", event.severity or 1))
+        if next_severity <= int(event.severity or 1):
+            return 0
+
+        try:
+            import shapely.geometry
+
+            geom = shapely.geometry.shape(item["geometry"])
+            event.severity = next_severity
+            event.extra_data = item.get("extra_data", event.extra_data or {})
+            self._create_impact_zone(session, event, geom)
+            logger.info(
+                "Refreshed event %s severity to %s",
+                source_id,
+                next_severity,
+            )
+            return 1
+        except Exception as e:
+            logger.error("Error refreshing event %s: %s", source_id, e)
+            session.rollback()
+            return 0
 
     def _store_pois(self, poi_records: List[Dict[str, Any]]) -> Dict[str, int]:
         """Store normalized points of interest in the database."""

@@ -6,6 +6,7 @@ This module queries ArcGIS REST MapServer services directly.
 
 import httpx
 import logging
+import re
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 
@@ -410,6 +411,8 @@ class ArcGiSCRaper:
                 severity = TRAFFIC_STATE_TO_SEVERITY[state_int]
             else:
                 severity = 1
+        elif config["event_type"] == "OCUPACION":
+            severity = self._estimate_occupation_severity(props)
         elif "gravedad" in props or "severity" in props:
             try:
                 severity = int(
@@ -437,6 +440,49 @@ class ArcGiSCRaper:
                     break
 
         return max(1, min(5, severity))
+
+    def _estimate_occupation_severity(self, props: Dict) -> int:
+        """Estimate operational impact for street occupations.
+
+        The municipal layer usually lacks an explicit severity field, so this
+        derives a conservative score from published operational fields such as
+        affected area and street-space type.
+        """
+        text = " ".join(
+            str(props.get(key, ""))
+            for key in (
+                "tipo_afectacion",
+                "desc_incidencia",
+                "descripcion",
+                "descripcio",
+            )
+        ).lower()
+        severity = 1
+
+        area_match = re.search(r"(\d+(?:[,.]\d+)?)\s*m2", text)
+        if area_match:
+            area = float(area_match.group(1).replace(",", "."))
+            if area >= 100:
+                severity = max(severity, 4)
+            elif area >= 40:
+                severity = max(severity, 3)
+            else:
+                severity = max(severity, 2)
+
+        if any(
+            term in text
+            for term in ("calzada", "carril", "cruce", "xamfra", "chaflan")
+        ):
+            severity = max(severity, 3)
+        if any(
+            term in text
+            for term in ("zona estacionamiento", "carga", "descarga")
+        ):
+            severity = max(severity, 3)
+        if "acera" in text:
+            severity = max(severity, 2)
+
+        return severity
 
     def _safe_int(self, value: Any, default: int = 0) -> int:
         """Safely convert value to int."""
