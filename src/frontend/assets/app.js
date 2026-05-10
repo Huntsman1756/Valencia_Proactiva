@@ -679,9 +679,7 @@ function createEventCard(card, index) {
     : t("dataAvailable");
   const actionLabel = labelForAction(card.action);
   const impact = impactInfo(event);
-  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
-    ? alternative.name
-    : actionLabel || labelForPoi(alternative?.poi_type);
+  const alternativeName = displayAlternativeName(alternative, actionLabel || labelForPoi(alternative?.poi_type));
   const sourceText = formatMessage("sourceLine", {
     source: labelForSource(event.source),
     updated: formatUpdated(event.updated_at || event.created_at),
@@ -777,9 +775,7 @@ function renderSelectedEvent(card) {
     ? formatMessage("places", { count: alternative.extra_data.numplazas })
     : t("dataAvailable");
   const actionLabel = labelForAction(card.action) || t("noAdminAction");
-  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
-    ? alternative.name
-    : labelForPoi(alternative?.poi_type);
+  const alternativeName = displayAlternativeName(alternative, labelForPoi(alternative?.poi_type));
   const adminUrl = citizenActionUrl(card.action);
   const adminLinkLabel = labelForActionLink(card.action);
   const adminLink = adminUrl
@@ -855,6 +851,15 @@ function labelForActionLink(action) {
     return t("requestHelpLink");
   }
   return t("openActionLink");
+}
+
+function displayAlternativeName(alternative, fallback = "") {
+  const rawName = String(alternative?.name || "").trim();
+  const normalized = rawName.toLowerCase();
+  if (!rawName || normalized === "sin titulo" || /^[0-9a-z]$/i.test(rawName)) {
+    return fallback || labelForPoi(alternative?.poi_type);
+  }
+  return rawName;
 }
 
 function impactInfo(event) {
@@ -1416,9 +1421,7 @@ function buildSnapshotPayload(card) {
   const { event, alternative } = card;
   const impact = impactInfo(event);
   const snapshotUrl = `${window.location.origin}${window.location.pathname}#event-${event.id}`;
-  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
-    ? alternative.name
-    : labelForPoi(alternative?.poi_type);
+  const alternativeName = displayAlternativeName(alternative, labelForPoi(alternative?.poi_type));
   return {
     title: "VLC PROACTIVA snapshot",
     generated_at: new Date().toISOString(),

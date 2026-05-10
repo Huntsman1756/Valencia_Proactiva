@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Institutional credibility UI pass - 2026-05-10
+- Frontend: paleta azul/verde menos saturada, marca superior más sobria y panel derecho reducido para sentirse como detalle contextual, no tercera columna protagonista.
+- Frontend: feed inferior más bajo y compacto para devolver protagonismo al mapa; páginas informativas afinan ancho de lectura, interlineado y ritmo editorial.
+- Frontend: se evita mostrar valores crudos demasiado pobres como nombre de alternativa (`3`, `A`, etc.); en esos casos se muestra el tipo de POI legible.
+
 ### Changed - Final demo polish - 2026-05-10
 - README: los datos derivados reales (`impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`) quedan visibles al inicio para que el jurado pueda inspeccionar el output generado.
 - Frontend: `staging` desaparece del copy público y pasa a `validación diferida` / `avisos en proceso de geolocalización`; ZBE restringida usa tono naranja informativo y los botones de feedback alcanzan 44px de alto mínimo.
