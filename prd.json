@@ -127,6 +127,18 @@
         "Los textos ES/VAL corrigen acentos y etiquetas visibles.",
         "Smoke frontend valida leyenda, capas y popup."
       ]
+    },
+    {
+      "id": "R-12",
+      "title": "Reorganizacion explicativa de producto y FAQ",
+      "status": "done",
+      "acceptance": [
+        "El mapa solo pasa a lateral en pantallas anchas para evitar solape en anchos intermedios.",
+        "La cabecera explica que ofrece V-PRO, para quien es y como se usa.",
+        "La vista Eventos incluye una explicacion de que representa cada tarjeta.",
+        "Fuentes, Metodologia e Info incluyen contexto de producto, datos derivados, lectura del mapa, limitaciones y FAQ.",
+        "Smoke frontend valida overlapsTabs=false y presencia de guia/ayuda del mapa."
+      ]
     }
   ]
 }

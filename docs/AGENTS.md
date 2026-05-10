@@ -1037,3 +1037,4 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - T-116 cerrado: el mapa se baja a la fila de la lista para no tapar pestanas; DevTools en 824x630 confirma `overlapsTabs=false`.
 - T-116 UX mapa: leyenda visible en escritorio/expandido y popups en `event-points`, `alternative-points`, `impact-zones-fill` y `traffic-realtime`. El smoke hace click real en una capa y verifica `.maplibregl-popup-content`.
 - T-116 contenido: Fuentes/Metodologia/Info explican AD.TR.15, GitHub, datos abiertos, finalidad, trazabilidad, limites de staging y feedback agregado. ES/VAL revisados con acentos en labels principales.
+- R-12: para evitar que el mapa parezca superpuesto en anchos intermedios, el layout de dos columnas se activa solo desde 1100px. En anchos menores el mapa queda debajo de la lista y con ayuda visible. Smoke valida `layout.overlapsTabs=false`.

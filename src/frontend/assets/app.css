@@ -35,7 +35,7 @@ button {
 }
 
 .app-shell {
-  width: min(100%, 920px);
+  width: min(100%, 1180px);
   min-height: 100vh;
   margin: 0 auto;
   padding: 12px 14px 18px;
@@ -141,7 +141,7 @@ button {
 }
 
 .context-panel {
-  padding: 18px 0 12px;
+  padding: 18px 0 14px;
 }
 
 .eyebrow {
@@ -186,6 +186,53 @@ h1 {
 .source-row a:hover,
 .info-links a:hover {
   text-decoration: underline;
+}
+
+.product-guide {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.product-guide div,
+.event-guide,
+.map-explainer,
+.faq-item,
+.limitation-list li {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface), var(--surface-strong) 42%);
+}
+
+.product-guide div {
+  padding: 10px 11px;
+}
+
+.product-guide strong,
+.product-guide span {
+  display: block;
+}
+
+.product-guide strong,
+.event-guide strong,
+.map-explainer strong,
+.faq-item strong {
+  font-size: 13px;
+}
+
+.product-guide span,
+.event-guide p,
+.map-help,
+.map-explainer p,
+.faq-item p,
+.limitation-list {
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.product-guide span {
+  margin-top: 3px;
+  font-size: 12px;
 }
 
 .view-tabs,
@@ -253,6 +300,16 @@ h1 {
 .event-stack {
   display: grid;
   gap: 10px;
+}
+
+.event-guide {
+  margin-bottom: 10px;
+  padding: 11px 12px;
+}
+
+.event-guide p {
+  margin: 4px 0 0;
+  font-size: 13px;
 }
 
 .event-card {
@@ -438,6 +495,12 @@ h1 {
   font-weight: 800;
 }
 
+.map-help {
+  margin: 0;
+  padding: 0 10px 10px;
+  font-size: 12px;
+}
+
 .map-toolbar button {
   min-height: 30px;
   padding: 0 11px;
@@ -557,6 +620,16 @@ h1 {
   padding: 14px 0 4px;
 }
 
+.info-section {
+  display: grid;
+  gap: 8px;
+}
+
+.info-section h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
 .panel-heading h2 {
   margin: 0;
   font-size: 22px;
@@ -571,7 +644,8 @@ h1 {
 
 .source-list,
 .method-list,
-.info-metrics {
+.info-metrics,
+.faq-list {
   display: grid;
   gap: 8px;
 }
@@ -608,10 +682,33 @@ h1 {
   line-height: 1.45;
 }
 
+.limitation-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.limitation-list li {
+  padding: 9px 10px;
+}
+
 .info-copy {
   margin: 0;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.map-explainer,
+.faq-item {
+  padding: 11px 12px;
+}
+
+.map-explainer p,
+.faq-item p {
+  margin: 4px 0 0;
+  font-size: 13px;
 }
 
 .info-links {
@@ -663,11 +760,17 @@ h1 {
 }
 
 @media (min-width: 760px) {
+  .product-guide {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
   .app-shell {
     display: grid;
-    grid-template-columns: minmax(360px, 0.92fr) minmax(300px, 0.78fr);
+    grid-template-columns: minmax(520px, 0.95fr) minmax(360px, 0.72fr);
     grid-template-rows: auto auto auto 1fr;
-    gap: 0 18px;
+    gap: 0 22px;
     padding-top: 18px;
   }
 
@@ -677,13 +780,15 @@ h1 {
   }
 
   .context-panel {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 2;
+    max-width: 880px;
   }
 
   .view-tabs {
     grid-column: 1;
     grid-row: 3;
+    margin-top: 2px;
   }
 
   .view-panel,
@@ -714,6 +819,8 @@ h1 {
     grid-row: 4;
     align-self: start;
     margin-top: 0;
+    position: sticky;
+    top: 12px;
   }
 
   .map-canvas {

@@ -13,16 +13,18 @@
       "Valenbisi alternative filter persists",
       "MapLibre layers exist after map expansion",
       "map legend renders and a map popup opens on click",
+      "product guide, map help and FAQ/limitations content render",
+      "map does not overlap tabs in mobile or desktop smoke",
       "feedback toast confirms persisted vote"
     ]
   },
   "browser_devtools": {
     "status": "passed",
     "url": "http://localhost:3000",
-    "screenshot": "docs/reports/frontend-polish-current.png",
+    "screenshot": "docs/reports/frontend-product-explained.png",
     "console_errors": 0,
     "snapshot": "6 event cards, AD.TR.15 note, GitHub link, corrected tabs, map legend and expand control visible",
-    "layout_check": "824x630 viewport: overlapsTabs=false"
+    "layout_check": "1098px viewport: overlapsTabs=false; smoke mobile/desktop: layout.overlapsTabs=false"
   },
   "lighthouse_mobile": {
     "command": "npx --yes lighthouse http://localhost:8080 --output=json --output-path=docs/reports/lighthouse-mobile.json --quiet --chrome-flags='--headless --no-sandbox --disable-gpu' --form-factor=mobile --screenEmulation.mobile=true --screenEmulation.width=390 --screenEmulation.height=844 --screenEmulation.deviceScaleFactor=2 --only-categories=performance,accessibility,best-practices",

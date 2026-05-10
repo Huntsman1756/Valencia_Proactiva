@@ -95,6 +95,7 @@
 | T-114 | Separar ingesta POI de ingesta `UrbanEvent`: `aparcaments_pmr` debe poblar `points_of_interest`, no `urban_events`. | ✅ Cerrado 2026-05-10 — `record_kind` separa `event`/`poi`; ingesta real: 663 eventos, 2000 POIs PMR, 0 eventos `APARCAMIENTO`. | 2026-05-10 |
 | T-115 | Pase documental de consistencia: retirar rutas históricas `backend/app`, referencias OpenDataSoft antiguas y estados obsoletos en `README.md`, `METHODOLOGY.md`, `ROADMAP.md`, `CONTEXT.md`. | ✅ **Completado 2026-05-10** — README, METHODOLOGY, ROADMAP, CONTEXT, ARCHITECTURE, STATUS y TODO alineados al estado local no-VPS; las referencias restantes son contexto histórico o backlog. | 2026-05-10 |
 | T-116 | Pulido frontend concurso: evitar solape mapa/pestañas, ampliar Fuentes/Metodología/Info, añadir GitHub/AD.TR.15, leyenda y popups de mapa, revisar acentos ES/VAL. | ✅ **Completado 2026-05-10** — smoke mobile/desktop valida capas, leyenda y popup; DevTools confirma `overlapsTabs=false`. | 2026-05-10 |
+| T-117 | Reorganización explicativa de producto: cabecera con propuesta de valor, guía de uso, mapa sin lateral en anchos intermedios, pestañas con fuentes/metodología/info más completas, limitaciones y FAQ. | ✅ **Completado 2026-05-10** — smoke valida `layout.overlapsTabs=false`, guía de producto, ayuda de mapa, leyenda y popup. | 2026-05-10 |
 
 ---
 

@@ -37,6 +37,20 @@
           <span data-i18n="projectNote">Demo para el concurso municipal de datos abiertos.</span>
           <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">GitHub</a>
         </p>
+        <div class="product-guide" aria-label="Resumen del producto" data-i18n-attr="aria-label:productGuideLabel">
+          <div>
+            <strong data-i18n="guideWhatTitle">Qué hace</strong>
+            <span data-i18n="guideWhatText">Convierte datos urbanos abiertos en avisos y alternativas útiles.</span>
+          </div>
+          <div>
+            <strong data-i18n="guideWhoTitle">Para quién</strong>
+            <span data-i18n="guideWhoText">Ciudadanía, PMR, ciclistas, transporte público y comercios.</span>
+          </div>
+          <div>
+            <strong data-i18n="guideHowTitle">Cómo se usa</strong>
+            <span data-i18n="guideHowText">Elige perfil, revisa la tarjeta, abre ruta y deja feedback.</span>
+          </div>
+        </div>
       </section>
 
       <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
@@ -47,6 +61,10 @@
       </nav>
 
       <section class="event-list view-panel" data-panel="events" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+        <div class="event-guide">
+          <strong data-i18n="eventsGuideTitle">Qué estás viendo</strong>
+          <p data-i18n="eventsGuideText">Cada tarjeta resume un evento real, su distancia y una alternativa accionable calculada fuera de la zona de impacto.</p>
+        </div>
         <div class="alternative-toolbar" aria-label="Tipo de alternativa" data-i18n-attr="aria-label:alternativeToolbarLabel">
           <span data-i18n="alternativeToolbarTitle">Alternativas</span>
           <div id="poiFilters" class="poi-filters"></div>
@@ -63,6 +81,7 @@
           <span data-i18n="map">Mapa</span>
           <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
         </div>
+        <p class="map-help" data-i18n="mapHelp">El mapa explica dónde cae el evento, qué zona puede verse afectada y dónde están las alternativas. Haz clic en círculos, líneas o zonas para ver el detalle.</p>
         <div id="map" class="map-canvas"></div>
         <div class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
           <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>

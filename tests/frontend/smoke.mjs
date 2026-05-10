@@ -25,11 +25,11 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
-  await page.locator("#sourcesPanel").filter({ hasText: "Geoportal municipal" }).waitFor({ timeout: 5000 });
+  await page.locator("#sourcesPanel").filter({ hasText: "Per què importen les fonts" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='methodology']").click();
-  await page.locator("#methodologyPanel").filter({ hasText: "PostGIS" }).waitFor({ timeout: 5000 });
+  await page.locator("#methodologyPanel").filter({ hasText: "Com llegir el mapa" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='info']").click();
-  await page.locator("#additionalInfoPanel").filter({ hasText: "AD.TR.15" }).waitFor({ timeout: 5000 });
+  await page.locator("#additionalInfoPanel").filter({ hasText: "Limitacions actuals" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='events']").click();
   await page.locator("#toggleMap").click();
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
@@ -88,6 +88,17 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       events: Boolean(window.vproDebug?.map?.getLayer("event-points")),
       alternatives: Boolean(window.vproDebug?.map?.getLayer("alternative-points")),
     },
+    layout: (() => {
+      const tabs = document.querySelector(".view-tabs")?.getBoundingClientRect();
+      const map = document.querySelector(".map-shell")?.getBoundingClientRect();
+      return {
+        overlapsTabs: tabs && map
+          ? !(map.left >= tabs.right || map.right <= tabs.left || map.top >= tabs.bottom || map.bottom <= tabs.top)
+          : null,
+      };
+    })(),
+    guide: document.querySelector(".product-guide")?.textContent,
+    mapHelp: document.querySelector(".map-help")?.textContent,
     legend: document.querySelector(".map-legend")?.textContent,
     popupBound: Boolean(window.vproDebug?.map?.__vproInteractionsBound),
     popupText: document.querySelector(".maplibregl-popup-content")?.textContent,

@@ -416,6 +416,10 @@ function renderInfoPanels() {
       <h2>${t("sourcesTitle")}</h2>
       <p>${formatMessage("sourcesIntro", { eventSources: eventSourceCount || 1, poiTypes: alternativeTypes || 0 })}</p>
     </div>
+    <section class="info-section">
+      <h3>${t("sourcesWhyTitle")}</h3>
+      <p class="info-copy">${t("sourcesWhyText")}</p>
+    </section>
     <div class="source-list">
       ${SOURCE_CATALOG.map((source) => `
         <article class="source-row">
@@ -428,6 +432,10 @@ function renderInfoPanels() {
         </article>
       `).join("")}
     </div>
+    <section class="info-section">
+      <h3>${t("derivedDataTitle")}</h3>
+      <p class="info-copy">${t("derivedDataText")}</p>
+    </section>
   `;
 
   methodologyPanel.innerHTML = `
@@ -444,6 +452,21 @@ function renderInfoPanels() {
       <li>${t("methodStep5")}</li>
     </ol>
     <p class="info-copy">${t("methodologyNote")}</p>
+    <section class="info-section">
+      <h3>${t("mapMethodTitle")}</h3>
+      <article class="map-explainer">
+        <strong>${t("mapLayerEventsTitle")}</strong>
+        <p>${t("mapLayerEventsText")}</p>
+      </article>
+      <article class="map-explainer">
+        <strong>${t("mapLayerImpactTitle")}</strong>
+        <p>${t("mapLayerImpactText")}</p>
+      </article>
+      <article class="map-explainer">
+        <strong>${t("mapLayerAlternativesTitle")}</strong>
+        <p>${t("mapLayerAlternativesText")}</p>
+      </article>
+    </section>
   `;
 
   additionalInfoPanel.innerHTML = `
@@ -458,6 +481,31 @@ function renderInfoPanels() {
       <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
       <div><strong>20</strong><span>${t("metricNotices")}</span></div>
     </div>
+    <section class="info-section">
+      <h3>${t("limitationsTitle")}</h3>
+      <ul class="limitation-list">
+        <li>${t("limitation1")}</li>
+        <li>${t("limitation2")}</li>
+        <li>${t("limitation3")}</li>
+      </ul>
+    </section>
+    <section class="info-section">
+      <h3>${t("faqTitle")}</h3>
+      <div class="faq-list">
+        <article class="faq-item">
+          <strong>${t("faqQ1")}</strong>
+          <p>${t("faqA1")}</p>
+        </article>
+        <article class="faq-item">
+          <strong>${t("faqQ2")}</strong>
+          <p>${t("faqA2")}</p>
+        </article>
+        <article class="faq-item">
+          <strong>${t("faqQ3")}</strong>
+          <p>${t("faqA3")}</p>
+        </article>
+      </div>
+    </section>
     <div class="info-links">
       <a href="${GITHUB_URL}" target="_blank" rel="noopener">${t("githubLink")}</a>
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>

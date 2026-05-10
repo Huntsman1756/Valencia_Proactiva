@@ -119,3 +119,4 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **Frontend demo:** smoke mobile/desktop verde y Lighthouse mobile 93/100/100; MapLibre se carga bajo demanda al expandir el mapa para mantener rendimiento inicial.
 - **T-36:** ganadores anteriores documentados en `docs/concurso/ganadores-anteriores.md`; V-PRO se diferencia como bucle operativo de accion, no como visor o prediccion monofuncional.
 - **T-116:** pulido frontend de concurso cerrado: mapa sin solape de pestañas (`overlapsTabs=false`), leyenda y popups de capas, enlace GitHub/AD.TR.15 y revisión ES/VAL de acentos principales.
+- **R-12:** reorganización explicativa cerrada: el mapa pasa a lateral solo desde 1100px; cabecera, Eventos, Fuentes, Metodología e Info explican producto, uso, fuentes, mapa, limitaciones y FAQ.

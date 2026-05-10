@@ -11,6 +11,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: las pestañas `Fuentes`, `Metodología` e `Info` explican datos abiertos, finalidad, trazabilidad, límites de staging y concurso.
 - Frontend: añadida leyenda de mapa y popups clicables en eventos, alternativas, zonas de impacto y tráfico.
 - i18n: revisión de acentos y etiquetas principales en castellano y valenciano.
+- Frontend: reorganizada la página para explicar qué ofrece V-PRO, para quién es, cómo se usa, cómo leer las tarjetas, qué hace el mapa, limitaciones y FAQ.
+- Frontend: el layout lateral del mapa solo se activa desde 1100px; en anchos intermedios queda debajo para no invadir la lectura.
 
 ### Added - Estabilidad local no-VPS - 2026-05-10
 - Cerrado T-25: cobertura backend formal con `pytest --cov=src/backend --cov-fail-under=70`, 94 tests y 70,31%.

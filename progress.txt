@@ -59,3 +59,9 @@ R-10/T-36 cerrado.
 - Tabs Fuentes/Metodologia/Info ampliadas con concurso AD.TR.15, GitHub, datos abiertos, finalidad, trazabilidad y limites de staging.
 - Leyenda de mapa añadida; capas event-points, alternative-points, impact-zones-fill y traffic-realtime tienen popup/cursor.
 - ES/VAL revisado con acentos en labels principales; smoke valida heading valenciano, leyenda y popup.
+2026-05-10 13:45 - R-12 reorganizacion explicativa cerrada.
+- Breakpoint lateral del mapa subido a 1100px para que en anchos intermedios el mapa quede debajo y no parezca superpuesto.
+- Cabecera ampliada con Que ofrece / Para quien / Como se usa.
+- Eventos incluye texto de lectura de tarjetas; mapa incluye ayuda visible de capas y clicks.
+- Fuentes, Metodologia e Info ampliadas con datos derivados, lectura de mapa, limitaciones y FAQ.
+- Smoke mobile/desktop valida overlapsTabs=false, guia de producto, ayuda de mapa, leyenda y popup.
