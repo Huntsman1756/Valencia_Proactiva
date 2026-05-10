@@ -149,7 +149,7 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
    - El agregado anónimo se publica periódicamente en `exports/feedback_aggregated.csv` bajo CC-BY 4.0.
 
 6. **`OfficialNotice`** — tabla `official_notices`.
-   - Staging para fuentes oficiales complementarias sin geometría directa, como EMT València `estado-servicio`.
+   - Capa de validación diferida para fuentes oficiales complementarias sin geometría directa, como EMT València `estado-servicio`.
    - Campos: `source`, `source_id`, `notice_type`, `classification`, `title`, `description`, `url`, `published_at`, `source_updated_at`, `extra_data`.
    - Restricción única `(source, source_id)` para deduplicación. Solo alimenta `urban_events` mediante `promote_staged_official_notices()`, que exige geometría oficial o coincidencia del gazetteer versionado `src/backend/ingestion/data/valencia_gazetteer.json` y bloquea duplicados cercanos del núcleo open data.
 

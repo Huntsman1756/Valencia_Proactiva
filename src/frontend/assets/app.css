@@ -653,9 +653,9 @@ a:hover {
 }
 
 .zbe-result[data-level="restricted"] {
-  border-color: rgba(199, 58, 58, 0.3);
-  background: rgba(199, 58, 58, 0.1);
-  color: var(--red);
+  border-color: rgba(183, 101, 18, 0.32);
+  background: rgba(183, 101, 18, 0.12);
+  color: var(--orange);
 }
 
 .zbe-checker a {
@@ -1296,7 +1296,7 @@ body.has-section-tab .info-panel:not([hidden]) {
 
 .feedback-button {
   min-width: 40px;
-  height: 38px;
+  min-height: 44px;
   padding: 0 10px;
   border-radius: 7px;
   font-weight: 800;
@@ -1360,7 +1360,6 @@ body.has-section-tab .info-panel:not([hidden]) {
   display: grid;
   gap: 2px;
   padding: 9px 0;
-  border-top: 1px solid var(--line);
 }
 
 .detail-list dt {
@@ -1379,7 +1378,6 @@ body.has-section-tab .info-panel:not([hidden]) {
 
 .detail-block {
   padding-top: 14px;
-  border-top: 1px solid var(--line);
 }
 
 .detail-block h3 {

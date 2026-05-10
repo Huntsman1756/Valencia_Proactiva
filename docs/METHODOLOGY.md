@@ -17,20 +17,20 @@ El pipeline admite fuentes oficiales no CKAN (RSS, calendarios, paginas instituc
 Estas fuentes deben pasar por el mismo ciclo metodologico:
 - inventario en `docs/DATA_SOURCES.md`;
 - clasificacion de fuente (`open_data_core`, `official_feed`, `official_public_info`);
-- normalizacion a `OfficialNotice` staging cuando falte geometria directa, o a `UrbanEvent` / `PointOfInterest` solo si el destino esta justificado;
+- normalizacion a `OfficialNotice` como capa de validacion diferida cuando falte geometria directa, o a `UrbanEvent` / `PointOfInterest` solo si el destino esta justificado;
 - trazabilidad en `source`, `source_id` y `extra_data`;
 - deduplicacion frente a datasets del Portal de Datos Abiertos;
 - test de destino y deduplicacion antes de activar la ingesta.
 
 ### Promocion de `OfficialNotice` a `UrbanEvent`
 
-La promocion desde staging es conservadora y manual. Un aviso oficial solo puede convertirse en `UrbanEvent` si cumple una de estas condiciones:
+La promocion desde la capa de validacion diferida es conservadora y manual. Un aviso oficial solo puede convertirse en `UrbanEvent` si cumple una de estas condiciones:
 
 1. La fuente aporta geometria oficial directa en `extra_data.geometry`.
 2. El texto coincide con el gazetteer versionado `src/backend/ingestion/data/valencia_gazetteer.json`, pequeno, explicito y testeado.
 
 Reglas de bloqueo:
-- Avisos genericos sin calle, plaza o punto concreto permanecen en `official_notices`.
+- Avisos genericos sin calle, plaza o punto concreto permanecen en `official_notices` como avisos en proceso de geolocalizacion.
 - Si ya existe un evento `open_data_core` a menos de 120 m, se bloquea la promocion para evitar duplicados visuales.
 - `source_id` de eventos promovidos usa el prefijo `promoted:` y conserva `official_notice_source_id`, `official_url`, `affected_lines` y `location_confidence` en `extra_data`.
 - La ingesta normal no ejecuta la promocion automaticamente; se invoca con un paso separado del ingestor.
@@ -51,13 +51,13 @@ python -m src.scripts.run_official_sources --promote --dry-run
 Reglas:
 - El comando exige al menos `--fetch` o `--promote`.
 - `--fetch` almacena avisos en `official_notices`.
-- `--promote` aplica las reglas conservadoras staging -> `UrbanEvent`.
+- `--promote` aplica las reglas conservadoras de validacion diferida -> `UrbanEvent`.
 - `--dry-run` no escribe: con `--fetch` solo cuenta avisos remotos; con `--promote` usa preview de candidatos.
 - La promocion nunca se ejecuta por defecto.
 
 ## API interna de avisos oficiales
 
-`GET /api/v1/official-notices` permite auditar el staging de fuentes oficiales desde flujos admin/debug.
+`GET /api/v1/official-notices` permite auditar la capa de validacion diferida de fuentes oficiales desde flujos admin/debug.
 
 Parámetros:
 - `source`: filtro opcional por fuente, por ejemplo `emt_valencia:estado-servicio`.

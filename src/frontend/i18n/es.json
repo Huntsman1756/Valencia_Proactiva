@@ -158,7 +158,7 @@
   "sourceName_open_data_core": "Portal de Datos Abiertos + Geoportal municipal (14 datasets)",
   "sourceDescription_open_data_core": "Núcleo operativo verificado: ocupaciones, tráfico, ZBE y puntos de apoyo multimodales. No se oculta tras una cifra: debajo se indican las capas usadas.",
   "sourceName_emt_valencia_estado_servicio": "EMT Valencia: estado del servicio",
-  "sourceDescription_emt_valencia_estado_servicio": "Avisos oficiales en staging. No se muestran como evento si no hay geometría fiable o coincidencia segura con el callejero versionado.",
+  "sourceDescription_emt_valencia_estado_servicio": "Avisos oficiales en validación diferida. No se muestran como evento si no hay geometría fiable o coincidencia segura con el callejero versionado.",
   "sourceName_vpro_feedback": "Feedback ciudadano VLC PROACTIVA",
   "sourceDescription_vpro_feedback": "Votos anónimos sobre acciones recomendadas. Se exportan agregados, sin token de sesión, como dataset derivado CC-BY 4.0.",
   "sourceDatasets": {
@@ -176,7 +176,7 @@
     ],
     "emt_valencia_estado_servicio": [
       "Avisos oficiales EMT de estado del servicio",
-      "Se guardan en staging si no hay geometría fiable"
+      "Se guardan como avisos en proceso de geolocalización si no hay geometría fiable"
     ],
     "vpro_feedback": [
       "impact_zones.geojson: zonas de impacto derivadas",
@@ -192,7 +192,7 @@
   "methodStep1": "Ingesta, clasificación e inferencia de severidad: separa datasets oficiales en eventos, POI y avisos, y deriva el impacto urbano cuando la fuente no publica gravedad explícita.",
   "methodStep2": "Motor de proximidad inteligente: PostGIS calcula áreas de afectación real con buffers dinámicos y garantiza que las alternativas sugeridas no se sitúen dentro del radio de conflicto.",
   "methodStep3": "Filtrado por perfil de usuario: la lógica de negocio adapta las recomendaciones; PMR recibe exclusivamente alternativas accesibles cuando aplica.",
-  "methodStep4": "Gobernanza conservadora: los avisos oficiales sin geometría fiable permanecen en staging hasta poder geolocalizarlos con seguridad.",
+  "methodStep4": "Gobernanza conservadora: los avisos oficiales sin geometría fiable permanecen en validación diferida hasta poder geolocalizarlos con seguridad.",
   "methodStep5": "Bucle de mejora: el feedback ciudadano se anonimiza y procesa para auditar la calidad del dato oficial y de nuestras recomendaciones.",
   "methodologyNote": "El objetivo es demostrar reutilización responsable y accionable de datos abiertos: evento → impacto → acción → evaluación ciudadana.",
   "mapMethodTitle": "Guía de interacción y simbología",
@@ -208,7 +208,7 @@
   "projectPurpose": "Su finalidad es que la ciudadanía, comercios y perfiles de movilidad específicos sepan qué ocurre cerca, qué zona queda afectada y qué alternativa concreta pueden usar antes de sufrir la interrupción.",
   "metricEvents": "eventos urbanos",
   "metricPois": "puntos de interés",
-  "metricNotices": "avisos EMT en staging",
+  "metricNotices": "avisos EMT en validación",
   "journalismWidgetTitle": "Centro de recursos para medios",
   "journalismWidgetText": "Infraestructura para el periodismo de datos: cada evento genera un snapshot trazable. Medios locales como Levante-EMV, Las Provincias o Valencia Plaza disponen de un recurso listo para publicar: mapa embebible con fuente, impacto y alternativa real.",
   "limitationsTitle": "Limitaciones actuales",
@@ -216,7 +216,7 @@
   "governanceReferenceText": "La referencia conceptual es la interoperabilidad pública de Estonia/X-Road aplicada a movilidad física: servicios conectados por reglas verificables, trazabilidad y acción ciudadana. VLC PROACTIVA no se integra con X-Road; traslada su lógica de confianza institucional al espacio urbano.",
   "limitation1": "Es una demo local: no sustituye a avisos oficiales, señalización ni indicaciones de seguridad.",
   "limitation2": "Las alternativas dependen de la calidad y actualización de los datasets municipales disponibles.",
-  "limitation3": "Los avisos sin geometría fiable se quedan en staging y no se convierten automáticamente en eventos del mapa.",
+  "limitation3": "Los avisos sin geometría fiable quedan en proceso de geolocalización y no se convierten automáticamente en eventos del mapa.",
   "faqTitle": "FAQ",
   "faqQ1": "¿Qué problema estructural resuelve?",
   "faqA1": "Elimina el abismo de fricción entre la apertura del dato y su uso real. Convierte la transparencia administrativa en una herramienta de supervivencia diaria para ciudadanía y comercio.",

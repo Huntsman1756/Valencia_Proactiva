@@ -53,7 +53,7 @@
 - [x] `T-20c`: URLs oficiales de trámites en plantillas.
 - [x] `T-21`: Alternative Finder multimodal.
 - [x] `T-26`: Exports derivados.
-- [x] `T-37..T-51`: fuentes oficiales complementarias EMT, staging `OfficialNotice`, promoción conservadora, gazetteer y API admin.
+- [x] `T-37..T-51`: fuentes oficiales complementarias EMT, `OfficialNotice` como capa de validación diferida, promoción conservadora, gazetteer y API admin.
 - [ ] API Documentation enriquecida con ejemplos por perfil.
 
 ## Fase 3 — Interfaz Local

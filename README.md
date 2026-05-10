@@ -10,6 +10,14 @@ Transformar el Portal de Datos Abiertos de Valencia de una herramienta **pasiva*
 
 La ciudadanía y los comercios reciben alternativas (rutas, aparcamientos, trámites) antes de experimentar el problema.
 
+## Datos derivados reales
+
+VLC PROACTIVA no solo consume datos abiertos: publica outputs derivados que el jurado puede inspeccionar directamente.
+
+- [`exports/impact_zones.geojson`](./exports/impact_zones.geojson) — zonas de impacto calculadas con PostGIS.
+- [`exports/mitigation_actions.csv`](./exports/mitigation_actions.csv) — acciones recomendadas por evento y perfil.
+- [`exports/feedback_aggregated.csv`](./exports/feedback_aggregated.csv) — utilidad agregada del feedback ciudadano, sin `session_token`.
+
 ## 🧱 Stack (definitivo — 2026-05-09)
 | Capa | Herramienta | Notas |
 |---|---|---|

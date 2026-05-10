@@ -158,7 +158,7 @@
   "sourceName_open_data_core": "Portal de Dades Obertes + Geoportal municipal (14 datasets)",
   "sourceDescription_open_data_core": "Nucli operatiu verificat: ocupacions, trànsit, ZBE i punts de suport multimodals. No s'amaga darrere d'una xifra: davall s'indiquen les capes usades.",
   "sourceName_emt_valencia_estado_servicio": "EMT València: estat del servici",
-  "sourceDescription_emt_valencia_estado_servicio": "Avisos oficials en staging. No es mostren com a esdeveniment si no hi ha geometria fiable o coincidència segura amb el carrerer versionat.",
+  "sourceDescription_emt_valencia_estado_servicio": "Avisos oficials en validació diferida. No es mostren com a esdeveniment si no hi ha geometria fiable o coincidència segura amb el carrerer versionat.",
   "sourceName_vpro_feedback": "Feedback ciutadà VLC PROACTIVA",
   "sourceDescription_vpro_feedback": "Vots anònims sobre accions recomanades. S'exporten agregats, sense token de sessió, com a dataset derivat CC-BY 4.0.",
   "sourceDatasets": {
@@ -176,7 +176,7 @@
     ],
     "emt_valencia_estado_servicio": [
       "Avisos oficials EMT d'estat del servici",
-      "Es guarden en staging si no hi ha geometria fiable"
+      "Es guarden com a avisos en procés de geolocalització si no hi ha geometria fiable"
     ],
     "vpro_feedback": [
       "impact_zones.geojson: zones d'impacte derivades",
@@ -192,7 +192,7 @@
   "methodStep1": "Ingesta, classificació i inferència de severitat: separa datasets oficials en esdeveniments, POI i avisos, i deriva l'impacte urbà quan la font no publica gravetat explícita.",
   "methodStep2": "Motor de proximitat intel·ligent: PostGIS calcula àrees d'afectació real amb buffers dinàmics i garantix que les alternatives suggerides no se situen dins del radi de conflicte.",
   "methodStep3": "Filtrat per perfil d'usuari: la lògica de negoci adapta les recomanacions; PMR rep exclusivament alternatives accessibles quan aplica.",
-  "methodStep4": "Governança conservadora: els avisos oficials sense geometria fiable romanen en staging fins que es poden geolocalitzar amb seguretat.",
+  "methodStep4": "Governança conservadora: els avisos oficials sense geometria fiable romanen en validació diferida fins que es poden geolocalitzar amb seguretat.",
   "methodStep5": "Bucle de millora: el feedback ciutadà s'anonimitza i es processa per a auditar la qualitat de la dada oficial i de les recomanacions.",
   "methodologyNote": "L'objectiu és demostrar reutilització responsable i accionable de dades obertes: esdeveniment → impacte → acció → avaluació ciutadana.",
   "mapMethodTitle": "Guia d'interacció i simbologia",
@@ -208,7 +208,7 @@
   "projectPurpose": "La finalitat és que la ciutadania, els comerços i perfils de mobilitat específics sàpien què ocorre prop, quina zona queda afectada i quina alternativa concreta poden usar abans de patir la interrupció.",
   "metricEvents": "esdeveniments urbans",
   "metricPois": "punts d'interés",
-  "metricNotices": "avisos EMT en staging",
+  "metricNotices": "avisos EMT en validació",
   "journalismWidgetTitle": "Centre de recursos per a mitjans",
   "journalismWidgetText": "Infraestructura per al periodisme de dades: cada esdeveniment genera un snapshot traçable. Mitjans locals com Levante-EMV, Las Provincias o Valencia Plaza disposen d'un recurs llest per a publicar: mapa embebible amb font, impacte i alternativa real.",
   "limitationsTitle": "Limitacions actuals",
@@ -216,7 +216,7 @@
   "governanceReferenceText": "La referència conceptual és la interoperabilitat pública d'Estònia/X-Road aplicada a mobilitat física: servicis connectats per regles verificables, traçabilitat i acció ciutadana. VLC PROACTIVA no s'integra amb X-Road; trasllada la seua lògica de confiança institucional a l'espai urbà.",
   "limitation1": "És una demo local: no substituïx avisos oficials, senyalització ni indicacions de seguretat.",
   "limitation2": "Les alternatives depenen de la qualitat i actualització dels datasets municipals disponibles.",
-  "limitation3": "Els avisos sense geometria fiable es queden en staging i no es convertixen automàticament en esdeveniments del mapa.",
+  "limitation3": "Els avisos sense geometria fiable queden en procés de geolocalització i no es convertixen automàticament en esdeveniments del mapa.",
   "faqTitle": "FAQ",
   "faqQ1": "Quin problema estructural resol?",
   "faqA1": "Elimina l'abisme de fricció entre l'obertura de la dada i el seu ús real. Convertix la transparència administrativa en una ferramenta de supervivència diària per a ciutadania i comerç.",

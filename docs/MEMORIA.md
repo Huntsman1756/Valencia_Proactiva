@@ -16,6 +16,8 @@
 
 VLC PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere datasets reales del portal municipal (ocupación de vía pública, estado del tráfico, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, puntos de destino multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes. Todo el código es MIT y los datos derivados CC-BY 4.0, cerrando una economía circular del dato: la ciudad publica información, V-PRO la convierte en servicio y devuelve conocimiento procesado, auditable y reutilizable.
 
+La hoja de ruta incorpora además una dimensión de seguridad urbana y perspectiva de género: futuras rutas iluminadas solo se activarán cuando exista una fuente oficial de alumbrado y una metodología que evite falsas garantías.
+
 ## 3. Problema que aborda
 
 El Portal de Datos Abiertos del Ayuntamiento publica actualmente **más de 250 datasets** sobre movilidad, urbanismo, servicios y transparencia municipal. Entre ellos, dos joyas clasificadas como "conjuntos de datos de Alto Valor" según el estándar europeo: `estat-transit-temps-real` (actualizado cada 3 minutos) y la familia de datasets de movilidad reducida. Sin embargo, **la carga de transformar esos datos en una decisión cotidiana recae íntegramente en la ciudadanía**.

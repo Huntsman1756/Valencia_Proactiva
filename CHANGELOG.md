@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Final demo polish - 2026-05-10
+- README: los datos derivados reales (`impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`) quedan visibles al inicio para que el jurado pueda inspeccionar el output generado.
+- Frontend: `staging` desaparece del copy público y pasa a `validación diferida` / `avisos en proceso de geolocalización`; ZBE restringida usa tono naranja informativo y los botones de feedback alcanzan 44px de alto mínimo.
+- Docs: memoria, metodología, estado y fuentes explican la validación diferida como una decisión de calidad de datos. Añadida frase de perspectiva de género/rutas iluminadas en el resumen ejecutivo.
+
 ### Changed - Narrative authority pass - 2026-05-10
 - Frontend: `Fuentes`, `Metodología` e `Info` refuerzan economía circular del dato, inferencia de severidad, centro de recursos para medios y feedback como sensor social de veracidad.
 - Frontend: la lista de datasets incorpora microbadges por modo/fuente (`BUS`, `BIC`, `PMR`, `ZBE`, etc.) y las métricas del bloque `Info` ganan peso visual.

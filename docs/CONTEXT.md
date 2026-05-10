@@ -64,7 +64,7 @@ Cada decisión de producto y técnica debe poder justificarse contra alguno de e
 - **Arquitectura definitiva:** Python 3.11 + FastAPI + SQLAlchemy 2 + PostgreSQL/PostGIS + Cron + Frontend vanilla + MapLibre GL JS. La infraestructura de producción queda diferida hasta estabilizar demo, memoria y release local.
 - **Fase A (Estabilización de repo):** ✅ cerrada. Layout canónico en `src/`, `config/`, `infra/`, `docs/` y `tests/`.
 - **Fase B (Fase 1 producto completa):** ✅ cerrada. API, modelo PostGIS, ingesta real y exports derivados operativos.
-- **Fase C (Proactive Engine):** ✅ cerrada en MVP. Plantillas YAML, alternativas multimodales, feedback y staging de avisos oficiales funcionan en local.
+- **Fase C (Proactive Engine):** ✅ cerrada en MVP. Plantillas YAML, alternativas multimodales, feedback y capa de validación diferida de avisos oficiales funcionan en local.
 - **Fase D (Frontend vanilla):** 🟡 operativa local. Interfaz Civic Utility con mapa MapLibre central, perfiles, idiomas, panel de detalle, feedback y pestañas de fuentes/metodología/info verificadas con Playwright.
 - **Fase E (Despliegue producción):** ⏸️ diferida. No tocar VPS hasta que el proyecto esté más estable.
 - **Fase F (Entregables concurso):** 🟡 en progreso. Docs, licencia, memoria con cifras reales y exports derivados están avanzados; faltan Anexo II oficial, vídeo/demo final y solicitud.
