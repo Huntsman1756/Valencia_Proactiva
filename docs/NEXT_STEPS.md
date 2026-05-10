@@ -398,11 +398,11 @@ Escribe `exports/feedback_aggregated.csv` con cabecera CC-BY 4.0.
 ### C.1 — Action Template Engine · **T-20** · Backend
 - Crear `src/backend/engine/__init__.py`, `src/backend/engine/action_templates.py`.
 - Cargar reglas YAML desde `src/backend/engine/templates/*.yaml` al arranque.
-- Esquema de regla (ejemplo en `templates/obra-severa.yaml`):
+- Esquema de regla (ejemplo en `templates/ocupacion-severa.yaml`):
 ```yaml
-id: obra-severa
+id: ocupacion-severa
 when:
-  event_type: OBRA
+  event_type: OCUPACION
   severity_gte: 3
 actions:
   - action_type: ROUTE_CHANGE
@@ -431,6 +431,7 @@ actions:
   - `exports/impact_zones.geojson`
   - `exports/mitigation_actions.csv`
   - `exports/action_templates.yaml` (consolidado)
+  - `exports/feedback_aggregated.csv` (agregado anonimo)
 - Cabecera: `# Fuente: Portal de Datos Abiertos del Ayuntamiento de València. Datos derivados por V-PRO bajo CC-BY 4.0.`
 
 **DoD Fase C:** ingestando obras reales se generan acciones automáticamente; el export produce archivos válidos referenciados desde el README.
@@ -462,7 +463,7 @@ src/frontend/
 `app.js`:
 - Cargar i18n según `navigator.language` (con fallback a `es`).
 - Inicializar MapLibre centrado en Valencia `[-0.3763, 39.4699]` zoom 13.
-- Al `moveend` (debounce 300 ms), `fetch('/api/v1/spatial/suggestions?lon=...&lat=...&radius_meters=1000')`.
+- Cargar `GET /api/v1/events/`, `GET /api/v1/spatial/impact-zones`, `GET /api/v1/spatial/events-layer` y alternativas con `GET /api/v1/spatial/alternatives?lon=...&lat=...&event_id=...&profile=...`.
 - Añadir capas `impact-zones-fill` y `urban-events-point`.
 - Click en feature → rellenar y mostrar `#action-card`.
 

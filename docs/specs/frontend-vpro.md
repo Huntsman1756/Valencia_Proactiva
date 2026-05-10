@@ -18,16 +18,18 @@ Construir una interfaz usable de V-PRO para mobile-first con apariencia de herra
 2. Obtiene eventos activos desde `GET /api/v1/events`.
 3. Para cada evento visible, consulta alternativas con `GET /api/v1/spatial/alternatives?lon=&lat=&event_id=&profile=`.
 4. Renderiza una lista de tarjetas ordenadas por severidad y cercania.
-5. La accion principal abre navegacion externa con el destino recomendado.
+5. La accion principal distingue entre destino externo y referencia administrativa. Google Maps es solo fallback de destino; no se presenta como ruta que evita incidencias.
 6. Los botones de feedback llaman a `POST /api/v1/feedback` cuando el evento trae `mitigation_actions`; si no hay accion asociada, dejan feedback local no persistido como fallback.
 7. El mapa central muestra eventos, POIs, trafico y zonas de impacto; al tocar `Expandir` pasa a vista completa.
-8. Las tabs `Fuentes`, `Metodologia` e `Info` explican trazabilidad, reglas de decision y estado operativo sin salir de la app.
+8. Las tabs `Fuentes`, `Metodologia` e `Info` son paginas internas de ancho completo; no se abren como drawer ni modal para evitar solapes con alertas o detalle.
+9. `Vehiculo y ZBE` orienta por distintivo ambiental y enlaza a la fuente municipal, sin sustituir ordenanza ni señalizacion.
+10. `Exportar snapshot` copia un payload trazable para medios locales, memoria o auditoria.
 
 ## Pantalla inicial
 ### Cabecera civica
 - Marca `V-PRO / Valencia Proactiva`.
 - Subtitulo de servicio publico basado en datos abiertos.
-- Navegacion compacta a secciones operativas.
+- Navegacion compacta integrada: Eventos, Fuentes, Metodologia e Info sin cajas duplicadas.
 - Estado de datos dinamico y selector CAS/VAL alineado a la derecha.
 
 ### Carril izquierdo
@@ -63,11 +65,11 @@ Las tarjetas deben priorizar lectura operativa: badge de severidad compacto, dis
 ### Vistas informativas
 - `Fuentes`: lista las fuentes principales y distingue datos abiertos, fuentes oficiales complementarias y dato derivado.
 - `Metodologia`: resume separacion evento/POI, zona de impacto, filtros por perfil y staging de avisos sin geometria.
-- `Info`: muestra el estado operativo de la demo local.
+- `Info`: muestra finalidad del proyecto, concurso AD.TR.15, estado operativo, limitaciones, FAQ, GitHub y bases.
 
 ### Filtros de alternativa
 - El modo `Todas` mantiene la logica de perfil: `PMR` exige `accessible=true`.
-- Los filtros concretos (`Valenbisi`, `EMT`, `FGV`, `Bici`, `VE`, etc.) exploran esa capa multimodal aunque el perfil activo sea PMR.
+- Los filtros concretos usan texto explicito: `Valenbisi`, `Paradas EMT`, `Metro / FGV`, `Aparcamientos bici`, `Carriles bici`, `Recarga vehiculo electrico`, etc. Se evitan siglas sin contexto como `VE` aislado.
 
 ## Contratos de API
 ### Eventos

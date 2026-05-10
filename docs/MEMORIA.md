@@ -7,12 +7,12 @@
 
 ## 1. Identificación del proyecto
 - **Título:** VLC PROACTIVA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
-- **Categoría a la que concurre:** Datos Abiertos. *(Opcionalmente se valorará una candidatura paralela en Periodismo de Datos — ver § 12.)*
+- **Categoría a la que concurre:** Datos Abiertos. La reutilización periodística se plantea como salida abierta para terceros, no como candidatura paralela del mismo equipo (ver § 12).
 - **Ámbito territorial:** Municipio de València.
 - **Tipo de entregable:** Plataforma web reutilizable (API + frontend) con código abierto (MIT) y datos derivados bajo licencia CC-BY 4.0.
 
 ## 2. Resumen ejecutivo
-**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC PROACTIVA te muestra una alternativa viable adaptada a tu perfil: peatonal, comercio, movilidad reducida, bicicleta o transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
+**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC PROACTIVA te muestra una alternativa viable adaptada a tu perfil: general, comercio, movilidad reducida, bicicleta o transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
 
 VLC PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere datasets reales del portal municipal (ocupación de vía pública, estado del tráfico, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, puntos de destino multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes. Todo el código es MIT y los datos derivados CC-BY 4.0.
 
@@ -33,7 +33,7 @@ El dato existe, es de alta calidad y está abierto. Lo que falla es **el último
 V-PRO introduce un flujo explícito de tres pasos:
 
 1. **Aviso** — detección automática de una interrupción urbana a partir de los datasets oficiales.
-2. **Alternativa** — sugerencia georreferenciada personalizada según perfil (genérico, comercial, PMR, ciclista), priorizando lo que está fuera de la zona de impacto.
+2. **Alternativa** — sugerencia georreferenciada personalizada según perfil (general, comercio, PMR, bicicleta o transporte público), priorizando lo que está fuera de la zona de impacto.
 3. **Acción** — acceso directo a trámites municipales relacionados (ayudas, exenciones, avisos) alojados en `valencia.es` y `sede.valencia.es`.
 
 ### Pipeline de datos
@@ -54,11 +54,11 @@ Scraper → Normalizer → Ingestor
   (urban_events, impact_zones, mitigation_actions, feedback)
            │
            ▼
-   FastAPI / suggestions
+   FastAPI / events + alternatives + layers + feedback
            │
            ▼
   Frontend vanilla + MapLibre GL JS
-  (ActionCard + feedback 👍/👎)
+  (mapa + panel operativo + feedback)
 ```
 
 ### Perfiles de usuario soportados (MVP)

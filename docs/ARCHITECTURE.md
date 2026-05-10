@@ -154,11 +154,12 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
    - Restricción única `(source, source_id)` para deduplicación. Solo alimenta `urban_events` mediante `promote_staged_official_notices()`, que exige geometría oficial o coincidencia del gazetteer versionado `src/backend/ingestion/data/valencia_gazetteer.json` y bloquea duplicados cercanos del núcleo open data.
 
 ### Flujo de consulta espacial
-1. Cliente envía `(lon, lat, radius_meters, profile?)` a `POST /api/v1/spatial/suggestions`.
-2. Backend reproyecta el punto a EPSG:3857 y ejecuta `ST_DWithin` contra `urban_events.geometry` reproyectada.
-3. Para cada evento en el radio, se adjuntan su `ImpactZone`, sus `MitigationAction` filtradas por `profile` (si se proporciona) y ordenadas por `priority`.
-4. El Alternative Finder consulta `points_of_interest` priorizando los marcados como `accessible=true` si el perfil es PMR.
-5. Respuesta JSON consumible por el frontend vanilla.
+1. El frontend carga `GET /api/v1/events/`, `GET /api/v1/spatial/impact-zones` y `GET /api/v1/spatial/events-layer` para construir la vista operativa.
+2. Para el evento seleccionado solicita `GET /api/v1/spatial/alternatives?lon=&lat=&event_id=&profile=&poi_type=`.
+3. Backend usa PostGIS para calcular cercanía, descartar alternativas dentro de la zona de impacto cuando aplica y priorizar `accessible=true` si el perfil es PMR.
+4. Las `MitigationAction` enlazan acciones administrativas reales cuando existe una URL municipal útil; si no existe, la UI muestra solo referencia informativa.
+5. `POST /api/v1/feedback` persiste el voto anónimo y el export publica el agregado en `exports/feedback_aggregated.csv`.
+6. `POST /api/v1/spatial/suggestions` se conserva por compatibilidad, pero la interfaz ciudadana usa los endpoints explícitos anteriores.
 
 ## 🔄 Pipeline de datos (post-ADR-002 y ADR-004: sin Celery, cliente ArcGIS REST)
 ```
@@ -190,13 +191,15 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
                  feedback)
                                  │
                                  ▼
-                  FastAPI  /api/v1/spatial/suggestions
+                  FastAPI  /api/v1/events
+                          /api/v1/spatial/impact-zones
+                          /api/v1/spatial/events-layer
                           /api/v1/spatial/alternatives
                           /api/v1/feedback
                                  │
                                  ▼
                   Frontend vanilla + MapLibre GL JS
-                  (ActionCard · perfil usuario · 👍/👎)
+                  (eventos · fuentes · metodología · ZBE · feedback)
 ```
 
 Ejemplo de entrada cron:

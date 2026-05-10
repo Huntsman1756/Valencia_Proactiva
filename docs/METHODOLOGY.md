@@ -1,7 +1,7 @@
 # METHODOLOGY — Metodología de ingesta, tratamiento y análisis de datos
 
 > Documento requerido por el criterio 3 ("Viabilidad, sostenibilidad y calidad del tratamiento de los datos") de las bases del concurso AD.TR.15.
-> Describe el pipeline completo de V-PRO: ingesta → normalización → análisis geoespacial → generación de acciones.
+> Describe el pipeline completo de V-PRO: ingesta → normalización → análisis geoespacial → generación de acciones → interfaz ciudadana → feedback agregado.
 
 ## 1. Principios metodológicos
 1. **Geospatial-first:** toda la información se modela con coordenadas y áreas de influencia.
@@ -99,7 +99,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
      │                           │
      └─────────────┬─────────────┘
                    ▼
-      [6] API de sugerencias proactivas (FastAPI)
+      [6] API operativa (eventos, capas, alternativas, feedback)
                    │
                    ▼
      [Frontend vanilla HTML + JS + MapLibre GL JS]
@@ -149,7 +149,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
 - Ejemplo de regla:
   ```yaml
   - when:
-      event_type: OBRA
+      event_type: OCUPACION
       severity_gte: 3
     actions:
       - type: ROUTE_CHANGE
@@ -166,14 +166,30 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
   ```
 - Ventaja metodológica: las reglas son auditables, versionables y editables sin redeploy.
 
-### 3.6. Consulta espacial para sugerencias proactivas
-- Endpoint: `POST /api/v1/spatial/suggestions`.
-- Algoritmo:
-  1. Recibir `(lon, lat, radius_meters)` del cliente.
-  2. Reproyectar el punto a EPSG:3857 (unidades en metros).
-  3. `ST_DWithin` contra `urban_events.geometry` reproyectada.
-  4. Para cada evento dentro del radio, adjuntar su `ImpactZone` y sus `MitigationAction` ordenadas por `priority`.
-  5. Devolver la respuesta como JSON con el evento, la zona de impacto y la lista de acciones.
+### 3.6. Consulta espacial para eventos, capas y alternativas
+El frontend actual consume endpoints explícitos, no una única respuesta opaca:
+
+- `GET /api/v1/events/` — lista de eventos urbanos con tipo, severidad, geometría, fuente y metadatos.
+- `GET /api/v1/spatial/impact-zones` — zonas de impacto derivadas con PostGIS.
+- `GET /api/v1/spatial/events-layer` — capas geográficas auxiliares, por ejemplo tráfico.
+- `GET /api/v1/spatial/alternatives?lon=&lat=&event_id=&profile=&poi_type=` — POIs multimodales cercanos, filtrables por perfil y tipo.
+- `POST /api/v1/feedback` — voto ciudadano anónimo sobre la utilidad de una acción recomendada.
+
+Algoritmo operativo:
+1. El cliente carga eventos activos, zonas de impacto y capas auxiliares.
+2. Para cada evento visible solicita alternativas cercanas desde el punto del evento, con `event_id` para descartar POIs dentro de la zona de impacto cuando aplica.
+3. El backend prioriza `accessible=true` para PMR y respeta el filtro `poi_type` cuando la persona explora un modo concreto.
+4. La UI muestra evento, fuente, impacto estimado, alternativa recomendada, acción administrativa relevante y feedback.
+5. El feedback se almacena sin PII y se agrega para exportación abierta.
+
+`POST /api/v1/spatial/suggestions` se conserva por compatibilidad técnica, pero no es el contrato principal de la interfaz ciudadana.
+
+### 3.7. Interfaz ciudadana y contenido explicativo
+- Frontend vanilla HTML/CSS/JS con MapLibre; no hay build step ni framework.
+- La vista `Eventos` mantiene la operación principal: perfiles, filtros, mapa, lista y panel de detalle.
+- `Fuentes`, `Metodología` e `Info` son pestañas de página completa dentro del área principal. No son drawers ni ventanas flotantes, para evitar solapes con alertas o paneles de evento.
+- El comprobador `Vehículo y ZBE` es orientativo y conservador: explica el distintivo ambiental y enlaza a la referencia municipal, pero no sustituye ordenanza, señalización ni notificación oficial.
+- `Exportar snapshot` genera un payload trazable para medios o memoria: fuente, impacto, alternativa y HTML embebible.
 
 ## 4. Calidad del dato
 
@@ -194,6 +210,8 @@ Estas métricas las imprime `src/scripts/run_ingest.py` en stdout y se capturan 
 - La estimación de severidad sigue siendo derivada cuando el portal no publica gravedad explícita. Es mejor que mostrar todo como `1`, pero debe explicarse como impacto operativo estimado y no como prioridad oficial municipal.
 - Los eventos puntuales (sin área) reciben un buffer por defecto que puede no reflejar el área real de afectación.
 - Algunos datasets del portal pueden cambiar de slug o formato; el sistema loguea el error pero no intenta auto-recuperarse.
+- Las rutas externas de Google Maps no conocen las incidencias internas de V-PRO; solo sirven como fallback de destino. El routing propio con Valhalla queda documentado como evolución post-MVP.
+- El comprobador ZBE no decide si un vehículo puede circular legalmente: solo orienta por distintivo ambiental y remite a la fuente municipal.
 
 ## 5. Reproducibilidad
 ```bash
@@ -207,10 +225,11 @@ curl "http://localhost:8000/api/v1/spatial/events/nearby?lon=-0.3763&lat=39.4699
 ```
 
 ## 6. Publicación de los datos derivados
-Los datasets generados (zonas de impacto, acciones, plantillas) se publicarán como:
+Los datasets generados (zonas de impacto, acciones, plantillas y feedback agregado) se publicarán como:
 - `exports/impact_zones.geojson` — todas las zonas activas.
 - `exports/mitigation_actions.csv` — acciones por evento con enlaces a trámites.
 - `exports/action_templates.yaml` — reglas declarativas.
+- `exports/feedback_aggregated.csv` — votos agregados por acción, perfil y tipo de evento, sin `session_token`.
 
 Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh -lc 'VPRO_EXPORT_DIR=/exports python -m scripts.export_derived_data'`.
 
@@ -219,3 +238,5 @@ Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh
 - Datos meteorológicos de AEMET.
 - Datos de calidad del aire.
 - Integración con expedientes administrativos municipales vía sede electrónica.
+- Routing open source con Valhalla: usar `impact_zones` como `exclude_polygons` para calcular rutas que eviten cortes cuando el grafo local esté disponible.
+- Perfil peatonal con rutas iluminadas, condicionado a una fuente oficial de alumbrado público y metodología específica para no generar falsa sensación de seguridad.

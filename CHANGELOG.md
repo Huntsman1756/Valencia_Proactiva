@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Sincronización de documentación canónica - 2026-05-10
+- Docs: `MEMORIA.md`, `METHODOLOGY.md`, `ARCHITECTURE.md`, `frontend-vpro.md`, `NEXT_STEPS.md` y `DECISIONS.md` quedan alineados con la interfaz actual: pestañas `Fuentes/Metodología/Info` a página completa, endpoints explícitos (`events`, `impact-zones`, `events-layer`, `alternatives`, `feedback`), ZBE orientativa, snapshot periodístico y feedback agregado.
+- Docs: corregida la contradicción sobre candidatura paralela a Periodismo de Datos; V-PRO concurre a Datos Abiertos y habilita reutilización periodística por terceros.
+- Docs: ejemplos antiguos `OBRA` pasan a `OCUPACION` y el flujo principal deja de documentar `/spatial/suggestions` como contrato de UI.
+
 ### Changed - Pestañas informativas - 2026-05-10
 - Frontend: `Fuentes`, `Metodología` e `Info` dejan de abrirse como drawer lateral y pasan a pestañas individuales a página completa dentro del área principal, sin mapa ni panel derecho superpuestos.
 - Tests: el smoke valida que la pestaña activa oculte la lista de eventos y que volver a `Eventos` restaure el carril operativo.

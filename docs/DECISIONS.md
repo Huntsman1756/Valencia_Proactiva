@@ -184,7 +184,7 @@ Se adopta la opción 2. El proyecto pivota:
 - Se añaden como `PointOfInterest` los datasets de aparcamientos (incluyendo PMR), bici, EMT, FGV, itinerarios ciclistas, cargadores VE.
 - Se incorpora el ángulo explícito de **accesibilidad** como caso de uso principal (no accesorio).
 - Se añade un **feedback loop ciudadano** (👍/👎 en la ActionCard), agregado y publicado como nuevo dataset CC-BY 4.0 bajo autoría de V-PRO.
-- Se abre la posibilidad de presentar una candidatura paralela en la categoría **Periodismo de Datos** con un artículo de análisis temporal sobre los mismos datos (decisión pendiente del Product Owner).
+- La posibilidad de una candidatura paralela en **Periodismo de Datos** queda descartada posteriormente: las bases AD.TR.15 limitan a un proyecto por participante. V-PRO concurre a Datos Abiertos y habilita reutilización periodística por terceros mediante datasets derivados y snapshots.
 
 ### Consequences
 **Positivas:**
