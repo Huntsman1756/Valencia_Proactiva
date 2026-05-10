@@ -24,7 +24,7 @@
     {
       "id": "R-02",
       "title": "Frontend con fuentes, metodologia e informacion adicional",
-      "status": "in_progress",
+      "status": "done",
       "acceptance": [
         "La vista principal mantiene la lista de eventos y mapa como apoyo.",
         "Cada tarjeta muestra fuente y ultima actualizacion.",
@@ -36,7 +36,7 @@
     {
       "id": "R-03",
       "title": "Demo multimodal estable",
-      "status": "planned",
+      "status": "done",
       "acceptance": [
         "El smoke frontend pasa en mobile y desktop.",
         "La demo muestra datos reales de eventos y alternativas.",

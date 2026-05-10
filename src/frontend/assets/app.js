@@ -1,5 +1,22 @@
 const API_BASE = localStorage.getItem("vpro_api_base") || defaultApiBase();
 const DEFAULT_CENTER = [-0.3763, 39.4699];
+const POI_FILTERS = [
+  "ALL",
+  "APARCAMIENTO_PMR",
+  "PARKING",
+  "VALENBISI",
+  "PARADA_EMT",
+  "ESTACION_FGV",
+  "BOCA_FGV",
+  "APARCAMIENTO_BICI",
+  "ITINERARIO_CICLISTA",
+  "CARGADOR_VE",
+];
+const SOURCE_CATALOG = [
+  { id: "open_data_core", datasetCount: 14, kindKey: "sourceKindOpenData" },
+  { id: "emt_valencia_estado_servicio", datasetCount: 1, kindKey: "sourceKindOfficialFeed" },
+  { id: "vpro_feedback", datasetCount: 1, kindKey: "sourceKindDerived" },
+];
 
 const state = {
   profile: localStorage.getItem("vpro_profile") || "PMR",
@@ -9,6 +26,8 @@ const state = {
   cards: [],
   impactZones: [],
   trafficEvents: [],
+  activeView: "events",
+  poiTypeFilter: localStorage.getItem("vpro_poi_type") || "ALL",
   map: null,
   sessionToken: getSessionToken(),
 };
@@ -18,6 +37,10 @@ const statusText = document.querySelector("#statusText");
 const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
 const toggleMap = document.querySelector("#toggleMap");
+const poiFilters = document.querySelector("#poiFilters");
+const sourcesPanel = document.querySelector("#sourcesPanel");
+const methodologyPanel = document.querySelector("#methodologyPanel");
+const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -26,6 +49,8 @@ async function init() {
   applyTranslations();
   setupProfiles();
   setupLanguageSelector();
+  setupViews();
+  setupPoiFilters();
   setupMap();
   setupMapToggle();
   loadDashboard();
@@ -55,7 +80,11 @@ function applyTranslations() {
   document.querySelectorAll("[data-profile]").forEach((button) => {
     button.textContent = profileLabel(button.dataset.profile);
   });
+  document.querySelectorAll("[data-poi-filter]").forEach((button) => {
+    button.textContent = labelForPoiFilter(button.dataset.poiFilter);
+  });
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
+  renderInfoPanels();
 }
 
 function setupProfiles() {
@@ -96,6 +125,44 @@ function setupLanguageSelector() {
         statusText.textContent = formatMessage("activeEvents", { count: state.cards.length });
       }
     });
+  });
+}
+
+function setupViews() {
+  document.querySelectorAll("[data-view]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.activeView = button.dataset.view;
+      document.querySelectorAll("[data-view]").forEach((item) => {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      document.querySelectorAll("[data-panel]").forEach((panel) => {
+        panel.hidden = panel.dataset.panel !== state.activeView;
+      });
+      mapShell.hidden = state.activeView !== "events";
+      if (state.activeView === "events") {
+        setTimeout(() => state.map?.resize(), 120);
+      }
+    });
+  });
+}
+
+function setupPoiFilters() {
+  poiFilters.innerHTML = "";
+  POI_FILTERS.forEach((type) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.poiFilter = type;
+    button.textContent = labelForPoiFilter(type);
+    button.setAttribute("aria-pressed", String(type === state.poiTypeFilter));
+    button.addEventListener("click", () => {
+      state.poiTypeFilter = type;
+      localStorage.setItem("vpro_poi_type", type);
+      document.querySelectorAll("[data-poi-filter]").forEach((item) => {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      loadDashboard();
+    });
+    poiFilters.appendChild(button);
   });
 }
 
@@ -155,6 +222,7 @@ async function loadDashboard() {
     const cards = await Promise.all(state.events.map(buildCardModel));
     state.cards = cards.sort((a, b) => b.event.severity - a.event.severity);
     renderCards(state.cards);
+    renderInfoPanels();
     updateMap(state.cards);
     statusText.textContent = formatMessage("activeEvents", { count: state.cards.length });
   } catch (error) {
@@ -170,9 +238,14 @@ async function buildCardModel(event) {
     lon,
     lat,
     radius_meters: "5000",
-    profile: state.profile,
     event_id: String(event.id),
   });
+  if (state.poiTypeFilter === "ALL" || state.poiTypeFilter === "APARCAMIENTO_PMR") {
+    params.set("profile", state.profile);
+  }
+  if (state.poiTypeFilter !== "ALL") {
+    params.set("poi_type", state.poiTypeFilter);
+  }
   const alternatives = await fetchJson(`${API_BASE}/api/v1/spatial/alternatives?${params}`);
   return {
     event,
@@ -216,11 +289,22 @@ function createEventCard(card) {
     ? formatMessage("places", { count: alternative.extra_data.numplazas })
     : t("dataAvailable");
   const actionLabel = labelForAction(card.action);
-  const alternativeName = actionLabel || (alternative?.name && alternative.name !== "Sin titulo"
+  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
     ? alternative.name
-    : labelForPoi(alternative?.poi_type));
+    : actionLabel || labelForPoi(alternative?.poi_type);
+  const sourceText = formatMessage("sourceLine", {
+    source: labelForSource(event.source),
+    updated: formatUpdated(event.updated_at || event.created_at),
+  });
+  const alternativeSource = alternative
+    ? formatMessage("alternativeSourceLine", { source: labelForSource(alternative.source) })
+    : "";
 
   article.innerHTML = `
+    <div class="source-strip">
+      <span>${escapeHtml(sourceText)}</span>
+      <span>${escapeHtml(event.source_id || "")}</span>
+    </div>
     <div class="event-header">
       <div>
         <div class="event-type">
@@ -236,6 +320,7 @@ function createEventCard(card) {
       <span class="key-data-icon" aria-hidden="true">⌖</span>
       <p>
         <strong>${escapeHtml(alternativeName)}</strong>
+        ${alternativeSource ? `<span>${escapeHtml(alternativeSource)}</span>` : ""}
         <span>${alternative ? `${distance} · ${places}` : t("noAlternative")}</span>
       </p>
     </div>
@@ -258,6 +343,59 @@ function createEventCard(card) {
 
 function renderEmpty(message) {
   eventList.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
+}
+
+function renderInfoPanels() {
+  const eventSourceCount = new Set(state.events.map((event) => event.source).filter(Boolean)).size;
+  const alternativeTypes = new Set(
+    state.cards.map((card) => card.alternative?.poi_type).filter(Boolean),
+  ).size;
+
+  sourcesPanel.innerHTML = `
+    <div class="panel-heading">
+      <p class="eyebrow">${t("sourcesEyebrow")}</p>
+      <h2>${t("sourcesTitle")}</h2>
+      <p>${formatMessage("sourcesIntro", { eventSources: eventSourceCount || 1, poiTypes: alternativeTypes || 0 })}</p>
+    </div>
+    <div class="source-list">
+      ${SOURCE_CATALOG.map((source) => `
+        <article class="source-row">
+          <div>
+            <strong>${t(`sourceName_${source.id}`)}</strong>
+            <span>${t(`sourceDescription_${source.id}`)}</span>
+          </div>
+          <small>${t(source.kindKey)} · ${formatMessage("datasetCount", { count: source.datasetCount })}</small>
+        </article>
+      `).join("")}
+    </div>
+  `;
+
+  methodologyPanel.innerHTML = `
+    <div class="panel-heading">
+      <p class="eyebrow">${t("methodologyEyebrow")}</p>
+      <h2>${t("methodologyTitle")}</h2>
+      <p>${t("methodologyIntro")}</p>
+    </div>
+    <ol class="method-list">
+      <li>${t("methodStep1")}</li>
+      <li>${t("methodStep2")}</li>
+      <li>${t("methodStep3")}</li>
+      <li>${t("methodStep4")}</li>
+    </ol>
+  `;
+
+  additionalInfoPanel.innerHTML = `
+    <div class="panel-heading">
+      <p class="eyebrow">${t("infoEyebrow")}</p>
+      <h2>${t("infoTitle")}</h2>
+      <p>${t("infoIntro")}</p>
+    </div>
+    <div class="info-metrics">
+      <div><strong>663</strong><span>${t("metricEvents")}</span></div>
+      <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
+      <div><strong>20</strong><span>${t("metricNotices")}</span></div>
+    </div>
+  `;
 }
 
 function updateMap(cards) {
@@ -477,6 +615,14 @@ function labelForPoi(type) {
   return state.messages.poiTypes?.[type] || state.messages.poiTypes?.DEFAULT || type || "";
 }
 
+function labelForPoiFilter(type) {
+  return state.messages.poiFilters?.[type] || labelForPoi(type);
+}
+
+function labelForSource(source) {
+  return state.messages.sources?.[source] || state.messages.sources?.DEFAULT || source || "";
+}
+
 function labelForAction(action) {
   if (!action) {
     return null;
@@ -539,6 +685,22 @@ function formatMessage(key, values) {
     (message, [name, value]) => message.replaceAll(`{${name}}`, String(value)),
     t(key),
   );
+}
+
+function formatUpdated(value) {
+  if (!value) {
+    return t("updatedNow");
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return t("updatedNow");
+  }
+  return new Intl.DateTimeFormat(state.language === "val" ? "ca-ES" : "es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 }
 
 function languageFromNavigator() {

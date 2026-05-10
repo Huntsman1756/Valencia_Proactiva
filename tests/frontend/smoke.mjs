@@ -20,6 +20,16 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.reload({ waitUntil: "networkidle" });
   await page.locator("[data-lang='val']").click();
   await page.locator("h1").filter({ hasText: "El que esta passant prop" }).waitFor({ timeout: 5000 });
+  await page.locator(".source-strip").first().waitFor({ timeout: 10000 });
+  await page.locator("[data-poi-filter='VALENBISI']").click();
+  await page.locator(".event-card").first().waitFor({ timeout: 5000 });
+  await page.locator("[data-view='sources']").click();
+  await page.locator("#sourcesPanel").filter({ hasText: "Geoportal municipal" }).waitFor({ timeout: 5000 });
+  await page.locator("[data-view='methodology']").click();
+  await page.locator("#methodologyPanel").filter({ hasText: "PostGIS" }).waitFor({ timeout: 5000 });
+  await page.locator("[data-view='info']").click();
+  await page.locator("#additionalInfoPanel").filter({ hasText: "13.710" }).waitFor({ timeout: 5000 });
+  await page.locator("[data-view='events']").click();
   await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator(".feedback-button[data-vote='1']").first().click();
   await page.locator("#toast").waitFor({ state: "visible", timeout: 5000 });
@@ -35,6 +45,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     heading: document.querySelector("h1")?.textContent,
     htmlLang: document.documentElement.lang,
     storedLanguage: localStorage.getItem("vpro_language"),
+    sourceStrip: document.querySelector(".source-strip")?.textContent,
+    activePoiFilter: localStorage.getItem("vpro_poi_type"),
+    tabs: Array.from(document.querySelectorAll("[data-view]")).map((item) => item.textContent),
     layers: {
       impactZones: Boolean(window.vproDebug?.map?.getLayer("impact-zones-fill")),
       traffic: Boolean(window.vproDebug?.map?.getLayer("traffic-realtime")),

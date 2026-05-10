@@ -943,6 +943,64 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 
 ---
 
+## SesiÃ³n 2026-05-10 â€” Tirada Ralph ingesta + trazabilidad frontend
+
+### Codex
+**Tareas ejecutadas:**
+- Creada rama `ralph/ingesta-fuentes-info`.
+- AÃ±adidos `prd.json` y `progress.txt` para seguir el metodo Ralph: historias R-01/R-02/R-03, criterios de aceptaciÃ³n y log de avance.
+- Ejecutada ingesta real en Docker: `scraped=14814`, `normalized=14814`, `stored_pois=11710`, `stored_events=0` por duplicados previos, `skipped_duplicates=3104`, `errors=0`.
+- Verificados conteos post-ingesta: `urban_events=663`, `points_of_interest=13710`, `mitigation_actions=506`, `official_notices=20`, `feedback=19+`.
+- Ejecutado `run_official_sources --fetch --dry-run`, `--fetch` y `--promote --dry-run`; EMT staging guarda 20 avisos y no promociona sin geometrÃ­a fiable.
+- Ajustado frontend vanilla con tabs `Eventos`, `Fuentes`, `MetodologÃ­a` e `Info`.
+- Cada tarjeta muestra fuente, `source_id` y ultima actualizaciÃ³n.
+- AÃ±adido filtro de alternativas por tipo POI: PMR, parking, Valenbisi, EMT, FGV, metro/bocas, bici, carril bici y cargadores VE.
+- Corregido layout desktop de tabs para evitar estiramiento vertical.
+- Smoke Playwright ampliado para tabs, fuente visible y filtro Valenbisi.
+
+**VerificaciÃ³n ejecutada:**
+- `python -m src.scripts.verify_datasets` â†’ 14/14 datasets OK.
+- `docker compose -f infra\docker-compose.yml exec -T api python -m scripts.run_ingest` â†’ `errors=0`.
+- API alternatives por tipo: Valenbisi, EMT, FGV, bici, cargadores VE, parkings e itinerarios devuelven resultados.
+- API admin `official_notices`: con token `200`, sin token `401`, filtro `SPORT_EVENT` devuelve resultados.
+- `node --check src\frontend\assets\app.js` â†’ OK.
+- `node --check tests\frontend\smoke.mjs` â†’ OK.
+- JSON i18n CAS/VAL parsea correctamente.
+- Smoke Playwright contra `http://localhost:8080` y `http://localhost:3000` â†’ mobile/desktop verde; capturas actualizadas en `docs/reports/frontend-mobile.png` y `docs/reports/frontend-desktop.png`.
+- `python -m ruff check src tests` â†’ OK.
+- `python -m mypy src` â†’ OK.
+- `python -m pytest -q` â†’ 79 passed, 2 warnings.
+- `python -m pip_audit -r config\requirements.txt --strict` â†’ sin vulnerabilidades conocidas.
+- `docker compose -f infra\docker-compose.yml up -d --build` â†’ OK.
+- `GET http://localhost:8000/health` â†’ 200.
+
+**Supuestos asumidos (a verificar):**
+- La metrica `feedback=19+` puede subir por los smoke tests, porque validan voto real.
+- Los avisos EMT quedan en staging hasta que exista geometrÃ­a oficial o match fiable de gazetteer; no se fuerza promociÃ³n visual.
+
+**Preguntas abiertas:**
+- Siguiente fase sugerida: T-26 exports de datos derivados o T-29 cifras reproducibles para la memoria.
+
+**Archivos tocados:**
+- `prd.json`
+- `progress.txt`
+- `src/frontend/index.html`
+- `src/frontend/assets/app.js`
+- `src/frontend/assets/app.css`
+- `src/frontend/i18n/es.json`
+- `src/frontend/i18n/val.json`
+- `tests/frontend/smoke.mjs`
+- `docs/STATUS.md`
+- `docs/TODO.md`
+- `docs/AGENTS.md`
+- `docs/specs/frontend-vpro.md`
+- `CHANGELOG.md`
+
+**Tareas completadas:** T-52
+**Tareas creadas:** ninguna
+
+---
+
 ## Plantilla para futuras sesiones
 
 ```markdown

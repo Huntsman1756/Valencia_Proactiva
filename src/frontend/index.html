@@ -35,9 +35,24 @@
         <p id="statusText" class="status-text" data-i18n="loading">Buscando acontecimientos activos...</p>
       </section>
 
-      <section class="event-list" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+      <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
+        <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
+        <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
+        <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodologia</button>
+        <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
+      </nav>
+
+      <section class="event-list view-panel" data-panel="events" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+        <div class="alternative-toolbar" aria-label="Tipo de alternativa" data-i18n-attr="aria-label:alternativeToolbarLabel">
+          <span data-i18n="alternativeToolbarTitle">Alternativas</span>
+          <div id="poiFilters" class="poi-filters"></div>
+        </div>
         <div id="eventList" class="event-stack"></div>
       </section>
+
+      <section id="sourcesPanel" class="view-panel info-panel" data-panel="sources" hidden></section>
+      <section id="methodologyPanel" class="view-panel info-panel" data-panel="methodology" hidden></section>
+      <section id="additionalInfoPanel" class="view-panel info-panel" data-panel="info" hidden></section>
 
       <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
         <div class="map-toolbar">

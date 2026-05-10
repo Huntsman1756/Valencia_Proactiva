@@ -21,6 +21,7 @@ Construir la primera interfaz usable de V-PRO para mobile-first. La app debe per
 5. La accion principal abre navegacion externa con el destino recomendado.
 6. Los botones de feedback llaman a `POST /api/v1/feedback` cuando el evento trae `mitigation_actions`; si no hay accion asociada, dejan feedback local no persistido como fallback.
 7. El mapa compacto muestra eventos y POIs; al tocarlo se expande a vista completa.
+8. Las tabs `Fuentes`, `Metodologia` e `Info` explican trazabilidad, reglas de decision y estado operativo sin salir de la app.
 
 ## Pantalla inicial
 ### Barra superior
@@ -35,6 +36,7 @@ Construir la primera interfaz usable de V-PRO para mobile-first. La app debe per
 Cada tarjeta incluye:
 - Tipo y severidad.
 - Titulo y descripcion breve.
+- Fuente, `source_id` y ultima actualizacion.
 - Distancia aproximada al punto de referencia.
 - Dato clave de alternativa: tipo, distancia y plazas si existen.
 - Boton principal `Ruta`.
@@ -46,6 +48,15 @@ Las tarjetas deben priorizar lectura operativa: badge de severidad compacto, dis
 - Altura compacta en mobile.
 - Expande a pantalla completa.
 - Capas iniciales: eventos y alternativas.
+
+### Vistas informativas
+- `Fuentes`: lista las fuentes principales y distingue datos abiertos, fuentes oficiales complementarias y dato derivado.
+- `Metodologia`: resume separacion evento/POI, zona de impacto, filtros por perfil y staging de avisos sin geometria.
+- `Info`: muestra el estado operativo de la demo local.
+
+### Filtros de alternativa
+- El modo `Todas` mantiene la logica de perfil: `PMR` exige `accessible=true`.
+- Los filtros concretos (`Valenbisi`, `EMT`, `FGV`, `Bici`, `VE`, etc.) exploran esa capa multimodal aunque el perfil activo sea PMR.
 
 ## Contratos de API
 ### Eventos
@@ -59,6 +70,9 @@ Campos usados:
 - `severity`
 - `center`
 - `geometry`
+- `source`
+- `source_id`
+- `updated_at`
 
 ### Alternativas
 `GET /api/v1/spatial/alternatives?lon={eventLon}&lat={eventLat}&radius_meters=5000&profile={profile}&event_id={eventId}`
@@ -70,6 +84,8 @@ Campos usados:
 - `extra_data.numplazas`
 - `geometry.coordinates`
 - `distance_meters`
+- `source`
+- `source_id`
 
 ### Feedback
 `POST /api/v1/feedback`

@@ -11,6 +11,15 @@
 - **Última release estable:** *ninguna*.
 - **Commits recientes:** *no auditados esta sesión*. El siguiente agente empieza con `git log --oneline -20`.
 
+## ActualizaciÃ³n 2026-05-10 Â· Tirada Ralph
+- **Branch activa de trabajo:** `ralph/ingesta-fuentes-info`.
+- **Ingesta real ejecutada:** `scraped=14814`, `normalized=14814`, `stored_pois=11710`, `stored_events=0` por duplicado previo, `skipped_duplicates=3104`, `errors=0`.
+- **Conteos BD post-ingesta:** `urban_events=663`, `points_of_interest=13710`, `mitigation_actions=506`, `official_notices=20`, `feedback=19+`.
+- **POIs multimodales verificados:** PMR, parkings, ORA, no regulados, motos, bicis, itinerarios ciclistas, EMT, FGV estaciones/bocas, Valenbisi y cargadores VE.
+- **Fuentes oficiales:** `run_official_sources --fetch --dry-run` y `--fetch` verdes; `--promote --dry-run` escanea 20 avisos y no promociona ninguno por falta de geometrÃ­a/gazetteer fiable.
+- **Frontend:** tabs `Eventos/Fuentes/MetodologÃ­a/Info`, fuente y `source_id` visibles por tarjeta, filtros de alternativas por tipo POI, CAS/VAL a la derecha, smoke Playwright verde en `localhost:8080` y `localhost:3000`.
+- **VerificaciÃ³n:** `ruff`, `mypy`, `pytest -q` (79 passed), `pip-audit`, `docker compose up -d --build`, `/health`, API admin `official_notices` y smoke frontend verdes.
+
 ## Resumen ejecutivo
 Proyecto V-PRO, candidato al premio AD.TR.15 categoría Datos Abiertos. **Plataforma de movilidad proactiva** con 5 perfiles de usuario (Genérico, Comercial, PMR, Ciclista, Transporte público) y feedback loop ciudadano, basada en datasets reales del portal municipal (verificados 2026-05-09).
 
@@ -64,6 +73,8 @@ Arquitectura firmada en 4 ADRs:
 - Credenciales fuera de git, `.env.example` con placeholders.
 
 ## Blockers activos
+> ActualizaciÃ³n 2026-05-10: no hay bloqueantes activos en entorno local. Docker, ingesta, API y frontend fueron verificados en la tirada Ralph; las filas histÃ³ricas siguientes quedan superadas por esta verificaciÃ³n.
+
 | Blocker | Propietario | Tarea |
 |---|---|---|
 | Validación end-to-end: Docker + ingesta real con stored > 0 | Backend + DevOps | T-111 go/no-go (pendiente de Docker funcional) |

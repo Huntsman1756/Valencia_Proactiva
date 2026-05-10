@@ -5,6 +5,15 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Tirada Ralph ingesta y trazabilidad frontend - 2026-05-10
+- Anadidos `prd.json` y `progress.txt` para ejecutar la tirada con PRD y progreso estilo Ralph.
+- Ejecutada ingesta real en Docker contra 14 datasets: `scraped=14814`, `normalized=14814`, `stored_pois=11710`, `skipped_duplicates=3104`, `errors=0`; BD final con `urban_events=663` y `points_of_interest=13710`.
+- Ejecutada fuente oficial EMT `estado-servicio`: dry-run OK, fetch real con 20 avisos en `official_notices`, y promocion dry-run sin candidatos por falta de geometria fiable.
+- Frontend: anadidas tabs `Eventos`, `Fuentes`, `Metodologia` e `Info`.
+- Frontend: cada tarjeta muestra fuente, `source_id` y ultima actualizacion.
+- Frontend: anadidos filtros de alternativas por tipo POI para PMR, parking, Valenbisi, EMT, FGV, metro/bocas, bici, carril bici y cargadores VE.
+- Smoke Playwright ampliado para cubrir tabs informativas, fuente visible y filtro Valenbisi; capturas mobile/desktop actualizadas.
+
 ### Added — Alternative Finder multimodal y API admin avisos · 2026-05-10
 - Cerrado T-21: añadidos datasets POI multimodales para parkings, ORA, no regulados, motos, bicis, PMR, cargadores VE, EMT, FGV estaciones/bocas, Valenbisi e itinerarios ciclistas.
 - `verify_datasets.py` valida los 14 datasets configurados desde `DATASETS`.

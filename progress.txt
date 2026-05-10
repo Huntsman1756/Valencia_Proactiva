@@ -9,3 +9,17 @@ Objetivo inmediato: cerrar R-01 con ingesta real y reporte de conteos antes de t
 - official_sources fetch real: stored_official_notices=20, errors=0.
 - promote dry-run: scanned_official_notices=20, promotion_candidates=0, would_promote_events=0, errors=0.
 Siguiente: R-02 frontend con trazabilidad, pestanas y alternativas multimodales.
+2026-05-10 09:25 - R-02 cerrado.
+- Frontend: tabs Eventos/Fuentes/Metodologia/Info.
+- Tarjetas: fuente, source_id y ultima actualizacion visibles.
+- Alternativas: filtro por tipo POI con Valenbisi, EMT, FGV, bici, VE y aparcamientos.
+- Smoke Playwright verde contra localhost:8080 y localhost:3000 en mobile/desktop.
+- Capturas actualizadas: docs/reports/frontend-mobile.png y docs/reports/frontend-desktop.png.
+Siguiente: R-03 verificacion final + docs + push.
+2026-05-10 09:45 - R-03 cerrado.
+- official_notices admin API: con token 200, sin token 401, filtro SPORT_EVENT devuelve resultados.
+- API alternatives verificada por tipo: Valenbisi, EMT, FGV estaciones/bocas, bici, itinerario ciclista, cargadores VE y parking.
+- Calidad: ruff OK, mypy OK, pytest 79 passed, pip-audit OK.
+- Docker: compose up -d --build OK, /health 200.
+- Frontend: node --check, JSON i18n, smoke Playwright en 8080 y 3000 OK.
+- Docs actualizados: STATUS, TODO, AGENTS, frontend spec y CHANGELOG.
