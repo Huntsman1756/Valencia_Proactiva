@@ -1,0 +1,48 @@
+{
+  "project": "Valencia Proactiva (V-PRO)",
+  "method": "Ralph-inspired PRD + progress log",
+  "date": "2026-05-10",
+  "objective": "Cerrar la tirada de ingesta real, trazabilidad de fuentes y vista informativa del frontend sin romper el MVP vanilla.",
+  "constraints": [
+    "Portal de Datos Abiertos de Valencia sigue siendo el nucleo puntuable.",
+    "Fuentes oficiales complementarias solo entran como staging/trazabilidad si son oficiales y no sustituyen el nucleo open data.",
+    "Frontend vanilla, mobile-first, estilo Civic Utility, sin landing ni estetica generica de IA.",
+    "Cada cierre requiere verificacion ejecutable y actualizacion documental."
+  ],
+  "stories": [
+    {
+      "id": "R-01",
+      "title": "Ingesta real y reporte operativo",
+      "status": "done",
+      "acceptance": [
+        "verify_datasets confirma 14/14 datasets.",
+        "run_ingest se ejecuta en Docker contra BD real.",
+        "Se registran conteos por urban_events, points_of_interest, mitigation_actions, feedback y official_notices.",
+        "run_official_sources --fetch --dry-run y --fetch se ejecutan y se documenta el resultado."
+      ]
+    },
+    {
+      "id": "R-02",
+      "title": "Frontend con fuentes, metodologia e informacion adicional",
+      "status": "in_progress",
+      "acceptance": [
+        "La vista principal mantiene la lista de eventos y mapa como apoyo.",
+        "Cada tarjeta muestra fuente y ultima actualizacion.",
+        "Se anaden vistas/tabs de Fuentes, Metodologia e Informacion adicional.",
+        "El usuario puede explorar alternativas por tipo POI multimodal.",
+        "CAS/VAL queda separado a la derecha y los textos existen en ambos idiomas."
+      ]
+    },
+    {
+      "id": "R-03",
+      "title": "Demo multimodal estable",
+      "status": "planned",
+      "acceptance": [
+        "El smoke frontend pasa en mobile y desktop.",
+        "La demo muestra datos reales de eventos y alternativas.",
+        "Se verifican filtros de alternativas para al menos Valenbisi, EMT/FGV, bici, cargadores VE y aparcamiento.",
+        "Se actualizan STATUS, TODO, AGENTS y CHANGELOG."
+      ]
+    }
+  ]
+}

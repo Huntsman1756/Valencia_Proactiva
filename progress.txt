@@ -1,0 +1,11 @@
+2026-05-10 00:00 - Inicio tirada Ralph. Rama: ralph/ingesta-fuentes-info.
+Objetivo inmediato: cerrar R-01 con ingesta real y reporte de conteos antes de tocar UI.
+2026-05-10 09:04 - R-01 cerrado.
+- verify_datasets: 14/14 datasets OK.
+- run_ingest Docker: scraped=14814, normalized=14814, stored=11710, stored_events=0, stored_pois=11710, skipped_duplicates=3104, errors=0.
+- Conteos post-ingesta: urban_events=663, points_of_interest=13710, mitigation_actions=506, feedback=19.
+- POIs por tipo: PMR=2000, ORA=2000, no_regulado=2000, moto=2000, bici=2000, itinerario_ciclista=2000, EMT=1125, FGV estaciones=142, FGV bocas=133, Valenbisi=273, cargadores VE=14, parkings=23.
+- official_sources fetch dry-run: 20 avisos, errors=0.
+- official_sources fetch real: stored_official_notices=20, errors=0.
+- promote dry-run: scanned_official_notices=20, promotion_candidates=0, would_promote_events=0, errors=0.
+Siguiente: R-02 frontend con trazabilidad, pestanas y alternativas multimodales.
