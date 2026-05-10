@@ -117,3 +117,29 @@ def test_submit_feedback_requires_existing_action():
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Mitigation action not found"
+
+
+def test_submit_feedback_rate_limit_returns_429():
+    fake_db = _FakeDb(action=object())
+    _override_db(fake_db)
+    app.state.limiter.reset()
+    client = TestClient(app)
+
+    response = None
+    for index in range(31):
+        response = client.post(
+            "/api/v1/feedback",
+            json={
+                "mitigation_action_id": 1,
+                "vote": 1,
+                "session_token": f"session_{index}",
+                "profile": "GENERIC",
+            },
+        )
+
+    app.dependency_overrides.clear()
+    app.state.limiter.reset()
+
+    assert response is not None
+    assert response.status_code == 429
+    assert response.json()["detail"] == "Rate limit exceeded"

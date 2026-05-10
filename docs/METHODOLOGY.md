@@ -109,14 +109,14 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
 ## 3. Etapas
 
 ### 3.1. Ingesta (scraping del portal)
-- Módulo: `backend/app/ingestion/scraper_opendata.py`.
+- Módulo: `src/backend/ingestion/scraper_opendata.py`.
 - Tecnología: cliente HTTP asíncrono (`httpx.AsyncClient`, timeout 30 s).
 - Formato preferido: GeoJSON (FeatureCollection) para mantener geometría nativa.
-- Endpoint preferido: API v2.1 de OpenDataSoft — `/api/explore/v2.1/catalog/datasets/<id>/exports/geojson`.
+- Endpoint preferido: ArcGIS REST del Geoportal municipal (`geoportal.valencia.es/server/rest/services/OPENDATA/.../MapServer/.../query?f=geojson`). CKAN se mantiene como capa de descubrimiento y verificación de paquetes.
 - Errores HTTP → log estructurado, se continúa con el resto de datasets.
 
 ### 3.2. Normalización
-- Módulo: `backend/app/ingestion/normalizer.py`.
+- Módulo: `src/backend/ingestion/normalizer.py`.
 - Entrada: lista de *features* GeoJSON.
 - Salida: diccionarios conformes al esquema `UrbanEvent`.
 - Operaciones:
@@ -127,7 +127,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
 - Registros sin geometría o con geometría inválida → descartados y registrados en logs.
 
 ### 3.3. Persistencia
-- Módulo: `backend/app/ingestion/ingestor.py`.
+- Módulo: `src/backend/ingestion/ingestor.py`.
 - Base de datos: PostgreSQL 15 + PostGIS.
 - Tablas: `urban_events`, `impact_zones`, `mitigation_actions` (ver `ARCHITECTURE.md`).
 - **Deduplicación:** se consulta `SELECT source_id FROM urban_events` antes de insertar; los registros con `source_id` ya presente se omiten.
@@ -143,9 +143,9 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
   5. Insertar como `ImpactZone` vinculada al evento.
 - **Motivación del CRS:** operar directamente en grados (EPSG:4326) da buffers deformados y de tamaño impredecible. UTM 30N es el huso correcto para Valencia y permite distancias reales en metros.
 
-### 3.5. Motor de plantillas de acción *(Fase 2, pendiente de implementación)*
-- Módulo previsto: `backend/app/engine/action_templates.py`.
-- Reglas declarativas en YAML (`backend/app/engine/templates/*.yaml`).
+### 3.5. Motor de plantillas de acción
+- Módulo: `src/backend/engine/action_templates.py`.
+- Reglas declarativas en YAML (`src/backend/engine/templates/*.yaml`).
 - Ejemplo de regla:
   ```yaml
   - when:
@@ -199,10 +199,10 @@ Estas métricas las imprime `src/scripts/run_ingest.py` en stdout y se capturan 
 ```bash
 git clone <repo>
 cd valenciav3
-cp backend/.env.example backend/.env
-docker compose up -d --build
+cp config/.env.example .env
+docker compose -f infra/docker-compose.yml up -d --build
 # Esperar a que la DB esté lista
-docker compose exec api python -m src.scripts.run_ingest
+docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest
 curl "http://localhost:8000/api/v1/spatial/events/nearby?lon=-0.3763&lat=39.4699&radius_meters=1000"
 ```
 
@@ -212,7 +212,7 @@ Los datasets generados (zonas de impacto, acciones, plantillas) se publicarán c
 - `exports/mitigation_actions.csv` — acciones por evento con enlaces a trámites.
 - `exports/action_templates.yaml` — reglas declarativas.
 
-Comando de exportación previsto (Fase 2): `python -m app.exports.dump_all`.
+Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh -lc 'VPRO_EXPORT_DIR=/exports python -m scripts.export_derived_data'`.
 
 ## 7. Integración futura (post-MVP)
 - Datos en tiempo real de tráfico y transporte.

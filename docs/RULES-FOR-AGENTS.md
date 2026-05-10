@@ -22,9 +22,9 @@
 
 ### 1.1 No marcar una tarea como completada sin verificación ejecutable
 - "Hecho" = **tests verdes** + **arranca sin errores** + **estructura coincide con `ARCHITECTURE.md § Estructura canónica`**.
-- Si la tarea es de reorganización, verificar con `docker compose up -d --build` que el backend arranca. No basta con `git mv`.
+- Si la tarea es de reorganización, verificar con `docker compose -f infra/docker-compose.yml up -d --build` que el backend arranca. No basta con `git mv`.
 - Si la tarea toca modelos o schemas, verificar con `pytest -q` que los tests (actualizados) pasan.
-- Si la tarea toca ingesta, verificar con `python -m src.scripts.run_ingest` (cuando exista) que se inserta al menos una fila.
+- Si la tarea toca ingesta, verificar con `docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest` o `python -m src.scripts.run_ingest` desde el entorno local configurado, y comprobar que se inserta al menos una fila.
 
 ### 1.2 Toda tarea cierra con los 4 docs actualizados
 En el mismo commit:
@@ -226,7 +226,7 @@ Situación real: a veces el agente no puede ejecutar un paso del go/no-go (Docke
 
 ### 11.1 Clasificar la verificación
 - **Estructural** (estática): `grep`, `ls`, `find`, inspección de archivos, lint. Casi siempre ejecutable.
-- **Funcional** (dinámica): `docker compose up`, `pytest`, `curl`, CI remoto. Puede estar bloqueada.
+- **Funcional** (dinámica): `docker compose -f infra/docker-compose.yml up`, `pytest`, `curl`, CI remoto. Puede estar bloqueada.
 
 **Regla:** la sesión puede declarar ✅ la parte estructural y marcar la parte funcional como `⚠️ pendiente validación en entorno funcional` con su criterio textual. **Nunca declarar ✅ de algo no ejecutado.**
 
@@ -237,7 +237,7 @@ Ejemplo mínimo:
 ```markdown
 | Item | Estado | Motivo |
 |---|---|---|
-| `docker compose up -d --build` limpio | ⚠️ | Red Docker bloqueada en entorno de auditoría |
+| `docker compose -f infra/docker-compose.yml up -d --build` limpio | ⚠️ | Red Docker bloqueada en entorno de auditoría |
 | `curl http://localhost:8000/health` → 200 | ⚠️ | Depende de Docker |
 | `python -m scripts.run_ingest` con stored > 0 | ⚠️ | Depende de Docker + BD |
 ```

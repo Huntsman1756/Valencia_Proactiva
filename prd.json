@@ -2,7 +2,7 @@
   "project": "Valencia Proactiva (V-PRO)",
   "method": "Ralph-inspired PRD + progress log",
   "date": "2026-05-10",
-  "objective": "Cerrar la tirada de ingesta real, trazabilidad de fuentes y vista informativa del frontend sin romper el MVP vanilla.",
+  "objective": "Cerrar la tirada de estabilidad local no-VPS: QA formal, documentacion consistente, demo frontend y entregables de concurso.",
   "constraints": [
     "Portal de Datos Abiertos de Valencia sigue siendo el nucleo puntuable.",
     "Fuentes oficiales complementarias solo entran como staging/trazabilidad si son oficiales y no sustituyen el nucleo open data.",
@@ -74,6 +74,46 @@
         "Cada URL devuelve 200 o un estado aceptable documentado en verificacion.",
         "Las plantillas YAML citan al menos 4 URLs verificadas.",
         "La documentacion refleja el cierre de T-20c."
+      ]
+    },
+    {
+      "id": "R-07",
+      "title": "T-25/T-112 QA formal local",
+      "status": "done",
+      "acceptance": [
+        "pytest con cobertura backend >=70 pasa en local.",
+        "Existe test real que fuerza un 429 de slowapi.",
+        "STATUS/TODO reflejan tests, cobertura y rate-limit real."
+      ]
+    },
+    {
+      "id": "R-08",
+      "title": "T-115 consistencia documental no-VPS",
+      "status": "done",
+      "acceptance": [
+        "ROADMAP refleja el estado real de fases A-D y deja E/VPS diferida.",
+        "TODO/STATUS no listan como pendientes tareas ya cerradas.",
+        "progress.txt registra aprendizajes de la tirada."
+      ]
+    },
+    {
+      "id": "R-09",
+      "title": "Frontend demo y Lighthouse local",
+      "status": "done",
+      "acceptance": [
+        "Smoke o browser test verifica Golden Path local.",
+        "Lighthouse mobile se ejecuta y se documenta resultado.",
+        "Se corrigen problemas locales de accesibilidad/performance de bajo riesgo."
+      ]
+    },
+    {
+      "id": "R-10",
+      "title": "T-36 investigacion ganadores anteriores",
+      "status": "done",
+      "acceptance": [
+        "docs/concurso/ganadores-anteriores.md contiene ganadores o evidencia oficial disponible.",
+        "La memoria/narrativa incorpora riesgos de solapamiento si aplica.",
+        "Se citan fuentes oficiales consultadas."
       ]
     }
   ]

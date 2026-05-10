@@ -4,9 +4,9 @@
 > Versión HTML generada al cierre de fase. Si divergen, el MD es la verdad.
 
 ## Estado global
-- **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y es idempotente en segundo run. Tests verdes (79/79), `ruff`, `mypy` y `pip-audit` verdes.
+- **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y es idempotente en segundo run. Tests verdes (94/94), cobertura backend 70,31%, `ruff`, `mypy` y `pip-audit` verdes.
 - **Fase producto:** 3 · *Interfaz proactiva local* — ingesta end-to-end funcional contra BD real. Action Template Engine `T-20` genera acciones por perfil, feedback loop `/api/v1/feedback` persiste votos reales, Alternative Finder multimodal con 12 datasets POI, staging `official_notices` para avisos oficiales EMT sin geometría y promoción conservadora opcional a `UrbanEvent` mediante gazetteer versionado con validación geográfica reproducible, CLI operativo y API admin de avisos oficiales, endpoint `/api/v1/spatial/alternatives` operativo, endpoint de capas espaciales para mapa, frontend vanilla `src/frontend` servido por Nginx en `localhost:8080`, dirección visual `Civic Utility` documentada, y configuración Nginx de producción preparada con security headers.
-- **Fase concurso AD.TR.15:** 0 · *Entregables* — 60% (docs + licencia + ADRs + MEMORIA borrador ✅; Anexo II oficial, demo, vídeo pendientes).
+- **Fase concurso AD.TR.15:** 0 · *Entregables* — 70% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados ✅; Anexo II oficial, demo/vídeo y solicitud pendientes).
 - **Branch activa:** `main`.
 - **Última release estable:** *ninguna*.
 - **Commits recientes:** *no auditados esta sesión*. El siguiente agente empieza con `git log --oneline -20`.
@@ -18,7 +18,7 @@
 - **POIs multimodales verificados:** PMR, parkings, ORA, no regulados, motos, bicis, itinerarios ciclistas, EMT, FGV estaciones/bocas, Valenbisi y cargadores VE.
 - **Fuentes oficiales:** `run_official_sources --fetch --dry-run` y `--fetch` verdes; `--promote --dry-run` escanea 20 avisos y no promociona ninguno por falta de geometrÃ­a/gazetteer fiable.
 - **Frontend:** tabs `Eventos/Fuentes/MetodologÃ­a/Info`, fuente y `source_id` visibles por tarjeta, filtros de alternativas por tipo POI, CAS/VAL a la derecha, smoke Playwright verde en `localhost:8080` y `localhost:3000`.
-- **VerificaciÃ³n:** `ruff`, `mypy`, `pytest -q` (79 passed), `pip-audit`, `docker compose up -d --build`, `/health`, API admin `official_notices` y smoke frontend verdes.
+- **VerificaciÃ³n:** `ruff`, `mypy`, `pytest -q` con cobertura (94 passed, 70,31%), `pip-audit`, `docker compose up -d --build`, `/health`, API admin `official_notices` y smoke frontend verdes.
 
 ## Resumen ejecutivo
 Proyecto V-PRO, candidato al premio AD.TR.15 categoría Datos Abiertos. **Plataforma de movilidad proactiva** con 5 perfiles de usuario (Genérico, Comercial, PMR, Ciclista, Transporte público) y feedback loop ciudadano, basada en datasets reales del portal municipal (verificados 2026-05-09).
@@ -80,12 +80,11 @@ Arquitectura firmada en 4 ADRs:
 | Validación end-to-end: Docker + ingesta real con stored > 0 | Backend + DevOps | T-111 go/no-go (pendiente de Docker funcional) |
 | `backend/` vacío en raíz — Windows file lock impide eliminación instantánea | DevOps | T-103 (workaround: `Remove-Item -Recurse -Force backend` en shell limpio) |
 
-## Próximas acciones (Fase B.2 — NEXT_STEPS)
-1. **Ejecutar `run_ingest.py` en entorno Docker funcional** → verificar `stored > 0`. Si no, mapear discrepancias de campos ArcGIS.
-2. **Feedback loop**: endpoint `/api/v1/feedback` (B.2).
-3. **Cobertura de tests ≥70%** (B.3).
-4. **T-21** (P2): ampliar datasets multimodales restantes (Valenbisi, EMT/FGV, bici, cargadores VE).
-5. **T-24** (P2): endurecer Nginx de producción con security headers.
+## Próximas acciones (sin VPS)
+1. **Frontend demo:** Lighthouse mobile ≥90, accesibilidad y Golden Path estable para vídeo.
+2. **Concurso:** `T-36` ganadores anteriores, revisión de lenguaje inclusivo y adaptación al Anexo II oficial cuando esté publicado.
+3. **Docs:** cerrar `T-115` con barrido de referencias históricas obsoletas.
+4. **Dev hygiene:** `T-33` pre-commit y `T-34b` deduplicación cargadores VE.
 
 Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_STEPS.md) para el plan operativo fase a fase.
 
@@ -93,13 +92,14 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Métrica | Valor |
 |---|---|
 | Backend LOC (aprox) | ~1.8k (post-pivote) |
-| Tests | 79 passed, 0 failed |
-| Cobertura | no medida formalmente — T-25 abierta (`--cov-fail-under=70` pendiente) |
+| Tests | 94 passed, 0 failed |
+| Cobertura | 70,31% (`python -m pytest tests -q --cov=src/backend --cov-report=term-missing --cov-fail-under=70`) |
 | Vulnerabilidades | `pip-audit -r config/requirements.txt --strict` verde (0 vulnerabilidades conocidas) |
 | CI | workflow `.github/workflows/ci.yml` existe; no corrido todavía (pendiente primer push) |
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
 | Frontend local | ✅ `http://localhost:8080` vía Nginx muestra 6 tarjetas reales + mapa con capas, CAS/VAL runtime, selector de idioma alineado a la derecha, dirección visual Civic Utility y feedback persistido; capturas en `docs/reports/frontend-mobile.png` y `docs/reports/frontend-desktop.png` |
+| Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
 | Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
 | Deploy | no provisto |
 
@@ -115,3 +115,6 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **T-26:** export derivados cerrado con src/scripts/export_derived_data.py y archivos versionados exports/impact_zones.geojson (663 zonas), exports/mitigation_actions.csv (506 acciones) y exports/feedback_aggregated.csv (agregado anonimo).
 - **T-29:** cifras reproducibles de memoria cerradas: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR, ZBE 27,44 km2 y 20,38% del termino municipal. Query y resultado en docs/reports/memoria-figures.*.
 - **T-20c:** catalogo de 12 URLs oficiales municipales cerrado en docs/concurso/tramites-referenciados.md; 6 URLs enlazadas desde plantillas YAML.
+- **T-25/T-112:** QA formal cerrado con cobertura 70,31%, 94 tests y rate-limit 429 real.
+- **Frontend demo:** smoke mobile/desktop verde y Lighthouse mobile 93/100/100; MapLibre se carga bajo demanda al expandir el mapa para mantener rendimiento inicial.
+- **T-36:** ganadores anteriores documentados en `docs/concurso/ganadores-anteriores.md`; V-PRO se diferencia como bucle operativo de accion, no como visor o prediccion monofuncional.

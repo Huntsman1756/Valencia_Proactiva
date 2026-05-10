@@ -1,4 +1,5 @@
 from datetime import datetime
+import asyncio
 
 from ingestion.normalizer import Normalizer
 from ingestion.scraper_opendata import ArcGiSCRaper, DATASETS
@@ -231,6 +232,126 @@ class TestArcGiSCRaper:
 
 
 class TestIngestorRecordRouting:
+    def test_store_records_merges_event_and_poi_results(self, monkeypatch):
+        ingestor = Ingestor()
+
+        monkeypatch.setattr(
+            ingestor,
+            "_store_events",
+            lambda records: {
+                "stored": len(records),
+                "skipped_duplicates": 1,
+                "errors": 0,
+            },
+        )
+        monkeypatch.setattr(
+            ingestor,
+            "_store_pois",
+            lambda records: {
+                "stored": len(records) * 2,
+                "skipped_duplicates": 2,
+                "errors": 1,
+            },
+        )
+
+        result = ingestor._store_records(
+            [{"type": "OCUPACION"}],
+            [{"type": "APARCAMIENTO"}],
+        )
+
+        assert result == {
+            "stored": 3,
+            "stored_events": 1,
+            "stored_pois": 2,
+            "skipped_duplicates": 3,
+            "errors": 1,
+        }
+
+    def test_run_aborts_when_scraper_returns_no_data(self):
+        class FakeScraper:
+            async def fetch_all(self):
+                return []
+
+        ingestor = Ingestor()
+        ingestor.scraper = FakeScraper()
+
+        result = asyncio.run(ingestor.run())
+
+        assert result == {"scraped": 0, "normalized": 0, "stored": 0, "errors": 0}
+
+    def test_run_normalizes_and_stores_partitioned_records(self, monkeypatch):
+        class FakeScraper:
+            async def fetch_all(self):
+                return [{"raw": 1}, {"raw": 2}]
+
+        class FakeNormalizer:
+            def normalize(self, raw_data):
+                assert raw_data == [{"raw": 1}, {"raw": 2}]
+                return [
+                    {"record_kind": "event", "type": "OCUPACION"},
+                    {"record_kind": "poi", "type": "APARCAMIENTO"},
+                ]
+
+        ingestor = Ingestor()
+        ingestor.scraper = FakeScraper()
+        ingestor.normalizer = FakeNormalizer()
+        monkeypatch.setattr(
+            ingestor,
+            "_store_records",
+            lambda events, pois: {
+                "stored": len(events) + len(pois),
+                "stored_events": len(events),
+                "stored_pois": len(pois),
+                "skipped_duplicates": 0,
+                "errors": 0,
+            },
+        )
+
+        result = asyncio.run(ingestor.run())
+
+        assert result["scraped"] == 2
+        assert result["normalized"] == 2
+        assert result["stored_events"] == 1
+        assert result["stored_pois"] == 1
+
+    def test_run_official_sources_stores_fetched_notices(self, monkeypatch):
+        class FakeOfficialClient:
+            async def fetch(self):
+                return [{"source": "emt", "source_id": "1"}]
+
+        ingestor = Ingestor()
+        ingestor.emt_estado_servicio = FakeOfficialClient()
+        monkeypatch.setattr(
+            ingestor,
+            "_store_official_notices",
+            lambda notices: {
+                "stored": len(notices),
+                "stored_official_notices": len(notices),
+                "skipped_duplicates": 0,
+                "errors": 0,
+            },
+        )
+
+        result = asyncio.run(ingestor.run_official_sources())
+
+        assert result["scraped"] == 1
+        assert result["stored_official_notices"] == 1
+
+    def test_preview_promotions_is_read_only_summary(self, monkeypatch):
+        ingestor = Ingestor()
+        monkeypatch.setattr(
+            ingestor,
+            "_build_official_notice_promotion_candidates",
+            lambda: ([{"notice": 1}, {"notice": 2}], [{"event": 1}]),
+        )
+
+        assert ingestor.preview_staged_official_notice_promotions() == {
+            "scanned_official_notices": 2,
+            "promotion_candidates": 1,
+            "would_promote_events": 1,
+            "errors": 0,
+        }
+
     def test_partition_records_splits_events_and_pois(self):
         ingestor = Ingestor()
 

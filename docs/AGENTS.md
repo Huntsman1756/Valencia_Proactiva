@@ -1028,3 +1028,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Cerrado T-29: cifras reproducibles documentadas en docs/reports/memoria-figures.sql y .json; docs/MEMORIA.md actualizado.
 - Cerrado T-20c: catalogo docs/concurso/tramites-referenciados.md con 12 URLs oficiales y plantillas YAML enlazadas a tramites reales.
 - Regla para agentes: cuando se anadan nuevas acciones proactivas, incluir payload.url solo si la URL esta en docs/concurso/tramites-referenciados.md o queda verificada y anadida en la misma tirada.
+
+## Sesion 2026-05-10 - Ralph estabilidad local no-VPS
+- T-25/T-112 cerrados: cobertura formal 70,31% con 94 tests y rate-limit 429 real en feedback.
+- Frontend: MapLibre no debe cargarse en el HTML inicial; se carga bajo demanda en setupMap() al expandir el mapa y como fallback diferido. Esto mantiene Lighthouse mobile >90 sin perder verificacion de capas en smoke.
+- Lighthouse CLI en Windows puede devolver EPERM al limpiar el perfil temporal de Chrome aunque escriba docs/reports/lighthouse-mobile.json; validar el JSON y registrar scores en rontend-verification.json.
+- Para futuras iteraciones Ralph no-VPS: no tocar T-23/T-27/T-28 hasta cerrar demo, memoria final y release.

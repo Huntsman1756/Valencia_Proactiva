@@ -215,7 +215,7 @@ Ejemplo de entrada cron:
 - SSH key-only. Password auth disabled.
 - Todo el tráfico público vía Cloudflare Tunnel (sin puertos abiertos en el VPS).
 - Tailscale para acceso administrativo interno.
-- Secretos fuera de git. `backend/.env` pendiente de retirar del working tree tras rotación.
+- Secretos fuera de git: `.env` local ignorado y `config/.env.example` limitado a placeholders.
 - `unattended-upgrades` activo.
 - CI ejecuta `pip-audit` y `ruff` en cada PR.
 

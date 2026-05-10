@@ -59,15 +59,15 @@ Cada decisión de producto y técnica debe poder justificarse contra alguno de e
 
 ---
 
-## 🧭 Estado actual del proyecto (snapshot — 2026-05-09)
+## 🧭 Estado actual del proyecto (snapshot — 2026-05-10)
 
-- **Arquitectura definitiva:** Python 3.11 + FastAPI + SQLAlchemy 2 + PostgreSQL/PostGIS + Cron + Frontend vanilla + MapLibre GL JS. Infra Hetzner CX22 + Nginx + Cloudflare Tunnel + Tailscale.
-- **Fase A (Estabilización de repo):** 🔴 pendiente — ver `NEXT_STEPS.md § Fase A`.
-- **Fase B (Fase 1 producto completa):** 🔴 pendiente (scaffolding ✅, bugs bloqueantes pendientes).
-- **Fase C (Proactive Engine):** 🔴 pendiente.
-- **Fase D (Frontend vanilla):** 🔴 pendiente.
-- **Fase E (Despliegue producción):** 🔴 pendiente.
-- **Fase F (Entregables concurso):** 🟡 en progreso (docs + licencia + borrador memoria ✅).
+- **Arquitectura definitiva:** Python 3.11 + FastAPI + SQLAlchemy 2 + PostgreSQL/PostGIS + Cron + Frontend vanilla + MapLibre GL JS. La infraestructura de producción queda diferida hasta estabilizar demo, memoria y release local.
+- **Fase A (Estabilización de repo):** ✅ cerrada. Layout canónico en `src/`, `config/`, `infra/`, `docs/` y `tests/`.
+- **Fase B (Fase 1 producto completa):** ✅ cerrada. API, modelo PostGIS, ingesta real y exports derivados operativos.
+- **Fase C (Proactive Engine):** ✅ cerrada en MVP. Plantillas YAML, alternativas multimodales, feedback y staging de avisos oficiales funcionan en local.
+- **Fase D (Frontend vanilla):** 🟡 operativa local. Lista de eventos, perfiles, idiomas, mapa MapLibre bajo demanda y pestañas de fuentes/metodología/info verificadas con Playwright.
+- **Fase E (Despliegue producción):** ⏸️ diferida. No tocar VPS hasta que el proyecto esté más estable.
+- **Fase F (Entregables concurso):** 🟡 en progreso. Docs, licencia, memoria con cifras reales y exports derivados están avanzados; faltan Anexo II oficial, vídeo/demo final y solicitud.
 
 **Para continuar el trabajo (orden estricto):**
 1. `docs/STATUS.md` — salud actual.
@@ -85,7 +85,5 @@ Cada decisión de producto y técnica debe poder justificarse contra alguno de e
 - `docs/concurso/AD.TR.15_BasesConvdatosabiertosyperiodismodedatos_2026.md`
 - `docs/concurso/AcuerdoJGL_convocatoriaPremios.md`
 - `docs/concurso/acuerdo_JGL.md`
-
-> Nota: estos documentos actualmente viven en la raíz. Se moverán a `docs/concurso/` como parte de la tarea `T-31` en la reorganización canónica de Fase A.
 
 Estos documentos contienen las bases del premio / convocatoria de datos abiertos y sirven como contexto institucional para justificar casos de uso y alcance del MVP.

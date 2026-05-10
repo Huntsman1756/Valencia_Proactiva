@@ -39,19 +39,18 @@ La ciudadanía y los comercios reciben alternativas (rutas, aparcamientos, trám
 - [`CHANGELOG.md`](./CHANGELOG.md), [`CONTRIBUTING.md`](./CONTRIBUTING.md), [`LICENSE`](./LICENSE).
 
 ## 🚀 Arranque rápido (desarrollo)
-> Nota: las rutas a continuación asumen el layout actual. Tras la reorganización canónica planificada en [`NEXT_STEPS.md § Fase A.2`](./NEXT_STEPS.md), las rutas cambian (compose en `infra/`, Dockerfile en `config/`, código en `src/backend/`).
 
 ```bash
-cp backend/.env.example backend/.env
-docker compose up -d --build
+cp config/.env.example .env
+docker compose -f infra/docker-compose.yml up -d --build
 curl http://localhost:8000/health
 # Swagger: http://localhost:8000/docs
 ```
 Puertos host: Postgres/PostGIS `5434`, API `8000`.
 
-Ingesta manual (tras los fixes de Fase A):
+Ingesta manual:
 ```bash
-docker compose exec api python -m src.scripts.run_ingest
+docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest
 ```
 
 ## 🔓 Compromiso con los datos abiertos

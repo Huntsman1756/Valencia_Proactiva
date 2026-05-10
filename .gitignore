@@ -44,3 +44,4 @@ docs/_build/
 
 # Local agent scratch artifacts
 .superpowers/
+.tmp/

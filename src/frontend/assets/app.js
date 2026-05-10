@@ -17,6 +17,8 @@ const SOURCE_CATALOG = [
   { id: "emt_valencia_estado_servicio", datasetCount: 1, kindKey: "sourceKindOfficialFeed" },
   { id: "vpro_feedback", datasetCount: 1, kindKey: "sourceKindDerived" },
 ];
+const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css";
+const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
 
 const state = {
   profile: localStorage.getItem("vpro_profile") || "PMR",
@@ -51,9 +53,9 @@ async function init() {
   setupLanguageSelector();
   setupViews();
   setupPoiFilters();
-  setupMap();
   setupMapToggle();
-  loadDashboard();
+  await loadDashboard();
+  scheduleMapSetup();
 }
 
 async function loadMessages() {
@@ -166,7 +168,17 @@ function setupPoiFilters() {
   });
 }
 
-function setupMap() {
+function scheduleMapSetup() {
+  setTimeout(() => setupMap(), 12000);
+}
+
+async function setupMap() {
+  if (state.map) {
+    return;
+  }
+
+  await loadMapLibre();
+
   if (!window.maplibregl) {
     return;
   }
@@ -190,8 +202,37 @@ function setupMap() {
   });
 }
 
+async function loadMapLibre() {
+  if (window.maplibregl) {
+    return;
+  }
+  if (!document.querySelector(`link[href="${MAPLIBRE_CSS_URL}"]`)) {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = MAPLIBRE_CSS_URL;
+    document.head.appendChild(link);
+  }
+  await loadScript(MAPLIBRE_JS_URL);
+}
+
+function loadScript(src) {
+  const existing = document.querySelector(`script[src="${src}"]`);
+  if (existing) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
 function setupMapToggle() {
-  toggleMap.addEventListener("click", () => {
+  toggleMap.addEventListener("click", async () => {
+    await setupMap();
     const expanded = mapShell.classList.toggle("is-expanded");
     toggleMap.textContent = expanded ? t("close") : t("expand");
     toggleMap.setAttribute("aria-expanded", String(expanded));

@@ -5,6 +5,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Estabilidad local no-VPS - 2026-05-10
+- Cerrado T-25: cobertura backend formal con `pytest --cov=src/backend --cov-fail-under=70`, 94 tests y 70,31%.
+- Cerrado T-112: test real de rate-limit 429 en `/api/v1/feedback`.
+- Frontend: MapLibre pasa a carga bajo demanda al expandir el mapa; Lighthouse mobile queda en Performance 93, Accessibility 100 y Best Practices 100.
+- Cerrado T-36: documento `docs/concurso/ganadores-anteriores.md` con ganadores localizados, fuentes e implicaciones narrativas.
+- `docs/ROADMAP.md` reescrito al estado real de dev y deja VPS/despliegue diferido.
+
 ### Added - Exports, cifras y tramites oficiales - 2026-05-10
 - Cerrado T-26 con `src/scripts/export_derived_data.py` y exports CC-BY 4.0: 663 `impact_zones`, 506 `mitigation_actions` y feedback agregado anonimo.
 - Cerrado T-29 con cifras reproducibles para `docs/MEMORIA.md`: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR y ZBE 27,44 km2 (20,38% del termino municipal).

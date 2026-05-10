@@ -30,7 +30,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-view='info']").click();
   await page.locator("#additionalInfoPanel").filter({ hasText: "13.710" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='events']").click();
+  await page.locator("#toggleMap").click();
+  await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
   await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
+  await page.locator("#toggleMap").click();
   await page.locator(".feedback-button[data-vote='1']").first().click();
   await page.locator("#toast").waitFor({ state: "visible", timeout: 5000 });
 

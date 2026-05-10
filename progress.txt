@@ -39,3 +39,18 @@ R-05 en curso: calcular cifras reproducibles para MEMORIA §8.
 - Catalogo docs/concurso/tramites-referenciados.md con 12 URLs oficiales.
 - Plantillas YAML enlazan URLs oficiales para comercio, PMR, bici, trafico, Fallas/ZBE y cita previa.
 - Test de plantillas cubre al menos 4 URLs oficiales en dominios valencia.es/sede.valencia.es.
+2026-05-10 12:25 - Inicio tercera tirada Ralph no-VPS.
+Objetivo: estabilidad local antes de VPS: QA formal, documentacion consistente, frontend demo/Lighthouse y entregables de concurso.
+R-07/T-25/T-112 cerrado.
+- Cobertura formal: python -m pytest tests -q --cov=src/backend --cov-report=term-missing --cov-fail-under=70 -> 94 passed, 70,31%.
+- Rate-limit real: test_submit_feedback_rate_limit_returns_429 ejecuta 31 POST a /api/v1/feedback y verifica 429.
+R-08 en curso: ROADMAP/STATUS/TODO se actualizan para reflejar estado real y dejar VPS diferido.
+R-08/T-115 parcial util cerrado.
+- ROADMAP.md reescrito al estado real: fases A-C cerradas, D operativa local, E/VPS diferida, F en progreso.
+- STATUS/TODO sincronizados con cobertura, Lighthouse y T-36.
+R-09 frontend demo cerrado.
+- Smoke Playwright mobile/desktop verde contra localhost.
+- Lighthouse mobile reportado en docs/reports/lighthouse-mobile.json: performance=93, accessibility=100, best-practices=100.
+- Cambio clave: MapLibre se carga bajo demanda al expandir mapa para no bloquear la primera interaccion.
+R-10/T-36 cerrado.
+- docs/concurso/ganadores-anteriores.md documenta 2025, 2024 y primera edicion; principal riesgo: no parecer visor/prediccion monofuncional de movilidad.
