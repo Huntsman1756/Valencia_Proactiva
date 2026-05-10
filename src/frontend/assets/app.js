@@ -800,6 +800,7 @@ function renderSelectedEvent(card) {
       <h3>${t("feedbackQuestion")}</h3>
       <div class="detail-actions">
         <button type="button" class="route-button">${t("route")}</button>
+        <button type="button" class="snapshot-button">${t("exportSnapshot")}</button>
         <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
           <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}">+</button>
           <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}">-</button>
@@ -809,6 +810,7 @@ function renderSelectedEvent(card) {
   `;
 
   selectedEventPanel.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
+  selectedEventPanel.querySelector(".snapshot-button").addEventListener("click", () => exportSnapshot(card));
   selectedEventPanel.querySelectorAll(".feedback-button").forEach((button) => {
     button.addEventListener("click", () => submitFeedback(button, card));
   });
@@ -929,6 +931,10 @@ function renderInfoPanels() {
       <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
       <div><strong>20</strong><span>${t("metricNotices")}</span></div>
     </div>
+    <details class="info-accordion" open>
+      <summary>${t("journalismWidgetTitle")}</summary>
+      <p class="info-copy">${t("journalismWidgetText")}</p>
+    </details>
     <details class="info-accordion" open>
       <summary>${t("governanceReferenceTitle")}</summary>
       <p class="info-copy">${t("governanceReferenceText")}</p>
@@ -1324,6 +1330,70 @@ async function submitFeedback(button, card) {
   } catch (error) {
     showToast(t("feedbackError"));
   }
+}
+
+async function exportSnapshot(card) {
+  const payload = buildSnapshotPayload(card);
+  const serialized = JSON.stringify(payload, null, 2);
+  const copied = await copyText(serialized);
+  showToast(copied ? t("snapshotCopied") : t("snapshotCopyFallback"));
+  vibrate(10);
+}
+
+function buildSnapshotPayload(card) {
+  const { event, alternative } = card;
+  const impact = impactInfo(event);
+  const snapshotUrl = `${window.location.origin}${window.location.pathname}#event-${event.id}`;
+  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
+    ? alternative.name
+    : labelForPoi(alternative?.poi_type);
+  return {
+    title: "VLC PROACTIVA snapshot",
+    generated_at: new Date().toISOString(),
+    license: "CC-BY 4.0",
+    source_attribution: t("footerAttribution"),
+    event: {
+      id: event.id,
+      title: event.title,
+      type: labelForType(event.type),
+      status: event.status || "active",
+      impact: impact.label,
+      source: labelForSource(event.source),
+      source_id: event.source_id || null,
+      updated: event.updated_at || event.created_at || null,
+      center: event.center || null,
+    },
+    alternative: alternative ? {
+      id: alternative.id,
+      name: alternativeName,
+      type: labelForPoi(alternative.poi_type),
+      distance_meters: Math.round(alternative.distance_meters || 0),
+      source: labelForSource(alternative.source),
+      accessible: Boolean(alternative.accessible),
+    } : null,
+    embed_html: `<iframe title="VLC PROACTIVA - ${escapeHtml(event.title)}" src="${snapshotUrl}" width="100%" height="520" loading="lazy"></iframe>`,
+  };
+}
+
+async function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (error) {
+      // Fall through to the legacy path when browser permissions block clipboard.
+    }
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
 }
 
 async function fetchJson(url, options) {

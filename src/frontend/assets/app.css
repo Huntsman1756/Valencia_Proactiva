@@ -1208,6 +1208,7 @@ body.has-info-panel {
 
 .route-button,
 .feedback-button,
+.snapshot-button,
 .detail-link {
   border: 1px solid var(--line-strong);
   background: var(--surface);
@@ -1234,6 +1235,16 @@ body.has-info-panel {
   min-width: 40px;
   height: 38px;
   border-radius: 7px;
+  font-weight: 800;
+}
+
+.snapshot-button {
+  min-height: 38px;
+  padding: 0 12px;
+  border-color: var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
   font-weight: 800;
 }
 
@@ -1781,6 +1792,7 @@ body.has-info-panel {
   .event-card,
   .route-button,
   .feedback-button,
+  .snapshot-button,
   .profile-selector button,
   .poi-filters button {
     transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
@@ -1788,7 +1800,8 @@ body.has-info-panel {
 
   .event-card:hover,
   .route-button:hover,
-  .feedback-button:hover {
+  .feedback-button:hover,
+  .snapshot-button:hover {
     transform: translateY(-1px);
   }
 }

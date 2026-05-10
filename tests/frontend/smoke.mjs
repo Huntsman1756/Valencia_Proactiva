@@ -96,8 +96,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator("#toggleMap").click();
+  await page.locator("#selectedEventPanel .snapshot-button").click();
+  await page.locator("#toast").filter({ hasText: "Snapshot periodístic copiat" }).waitFor({ timeout: 5000 });
   await page.locator("#selectedEventPanel .feedback-button[data-vote='1']").click();
-  await page.locator("#toast").waitFor({ state: "visible", timeout: 5000 });
+  await page.locator("#toast").filter({ hasText: "Feedback registrat" }).waitFor({ timeout: 5000 });
 
   const data = await page.evaluate(() => ({
     title: document.title,
@@ -116,6 +118,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
     profileImpact: document.querySelector("#profileImpact")?.textContent,
     routeText: document.querySelector(".route-button")?.textContent,
+    snapshotText: document.querySelector(".snapshot-button")?.textContent,
     routeDisclaimer: document.querySelector(".route-note")?.textContent,
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
@@ -169,6 +172,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (!data.routeDisclaimer?.includes("Google")) {
     throw new Error("Route disclaimer missing Google Maps limitation");
+  }
+  if (!data.snapshotText?.includes("snapshot")) {
+    throw new Error("Journalism snapshot action is missing");
   }
   if (data.alertMode !== "prepared" || !data.veracityText?.includes("Verificat per")) {
     throw new Error(`Missing alert/veracity signals: ${JSON.stringify({ alertMode: data.alertMode, veracityText: data.veracityText })}`);

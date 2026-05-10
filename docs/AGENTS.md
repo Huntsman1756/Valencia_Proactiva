@@ -1088,3 +1088,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - `Modo Alerta` queda como estado preparado de alto contraste; no debe pintar refugios, evacuacion, imbornales ni recursos criticos hasta tener fuentes oficiales verificadas.
 - UX: skeletons de carga y microfeedback haptico estan permitidos si no bloquean accesibilidad ni pruebas headless.
 - Docs: la vision de futuro se documenta como roadmap post-MVP (VLC-Voice, prediccion, crowdsourcing verificado, backoffice y Web Push), no como funcionalidad actual de la demo.
+
+## Sesion 2026-05-10 - Ecosistema, medios y replicabilidad
+- Frontend: `Exportar snapshot` copia JSON CC-BY 4.0 con fuente, impacto, alternativa y `embed_html`; sirve como widget base para periodismo local sin capturas manuales.
+- Producto: perspectiva de genero/seguridad y rutas iluminadas quedan condicionadas a fuente oficial de alumbrado publico y metodologia; no activar sin datos verificados.
+- Producto: pasaporte de resiliencia comercial queda como evolucion post-MVP con validacion administrativa; no otorgar sellos reales desde la demo.
+- Docs: README debe explicar replicabilidad por ciudad (fuentes, plantillas YAML, marca/despliegue) y MEMORIA debe mantener bajo coste operativo + privacidad por diseno.

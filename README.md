@@ -23,6 +23,16 @@ La ciudadanía y los comercios reciben alternativas (rutas, aparcamientos, trám
 | Red interna | Tailscale | Acceso administrativo |
 | VPS | Hetzner CX22 | Ubuntu 24.04 · ~4 €/mes |
 
+## Kit de replicabilidad
+
+VLC PROACTIVA nace en València, pero el motor no está acoplado a una ciudad concreta. Otra administración puede reutilizarlo cambiando tres piezas:
+
+1. **Catálogo de fuentes:** adaptar `docs/DATA_SOURCES.md` y los scrapers a su portal CKAN o ArcGIS REST.
+2. **Reglas de acción:** modificar las plantillas YAML de `src/backend/engine/templates/` para sus trámites, perfiles y prioridades locales.
+3. **Marca y despliegue:** mantener el frontend vanilla/MapLibre, cambiar textos, logos y dominio, y desplegar con Docker + Nginx + cron.
+
+La arquitectura evita dependencias cerradas y costes recurrentes altos: HTML/CSS/JS vanilla, FastAPI, PostgreSQL/PostGIS, MapLibre, OpenFreeMap y cron. El objetivo es **gobernanza de código abierto**: una inversión pública reutilizable por Alicante, Castellón, municipios de l'Horta o cualquier ciudad con datos abiertos trazables.
+
 ## 🗂️ Documentación del repositorio
 - [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — stack, estructura canónica y modelo de datos.
 - [`docs/CONTEXT.md`](./docs/CONTEXT.md) — visión, stakeholders y reglas del proyecto.

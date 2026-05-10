@@ -119,6 +119,8 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **Metodología documentada** en `METHODOLOGY.md` (ingesta, normalización, validación geométrica, deduplicación, generación de buffers, motor de plantillas).
 - **Reproducibilidad total:** un único `docker compose up` levanta todo el sistema.
 - **Sostenibilidad económica:** stack íntegramente open-source (PostgreSQL+PostGIS, FastAPI, MapLibre GL JS, OpenFreeMap, Nginx, Cloudflare Tunnel, Tailscale) desplegable en Hetzner CX22 (~4 €/mes). **Sin dependencias de plataforma cerrada ni servicios de pago recurrentes.** Coste total estimado < 5 €/mes.
+- **Bajo coste operativo:** VLC PROACTIVA ha sido diseñada con una arquitectura *vanilla-first* que minimiza los costes de mantenimiento y dependencias de terceros, permitiendo su ejecución en infraestructuras municipales estándar con un consumo de recursos despreciable.
+- **Privacidad por diseño:** la plataforma no requiere registro ni recoge datos personales. El feedback ciudadano es estrictamente anónimo y se procesa sin IP ni perfil identificable antes de agregarse, cumpliendo LOPDGDD/RGPD.
 - **Continuidad y replicabilidad:** el modelo es trasladable a cualquier municipio con portal de datos abiertos (CKAN o ArcGIS REST); solo cambia el catálogo de datasets.
 - **Calidad del dato:** validación geométrica con Shapely, deduplicación por `(source, source_id)`, tests automatizados con `pytest` (meta ≥70% cobertura), pipeline CI con `ruff` + `mypy` + `pytest` + `pip-audit`.
 
@@ -127,6 +129,7 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **Datos derivados CC-BY 4.0:** `exports/impact_zones.geojson`, `exports/mitigation_actions.csv`, `exports/action_templates.yaml`, **`exports/feedback_aggregated.csv`** (dataset generado por la propia comunidad usuaria).
 - **API pública** documentada con OpenAPI/Swagger — cualquier entidad puede construir sobre V-PRO.
 - **Metodología abierta** en `METHODOLOGY.md` con limitaciones y supuestos explícitos.
+- **Widget para medios:** cada evento puede exportarse como snapshot trazable con fuente, impacto, alternativa y código embebible, facilitando que medios locales lo reutilicen en piezas de periodismo de datos sobre obras, Fallas, maratones o movilidad.
 - **Decisiones arquitectónicas** registradas como Architecture Decision Records en `docs/DECISIONS.md` (4 ADRs firmados).
 - **Contribuciones externas bienvenidas** mediante PR según `CONTRIBUTING.md`.
 - **Compromiso de publicación** en el Portal de Datos Abiertos si resulta premiado, conforme a la cláusula 12 de las bases.
@@ -177,6 +180,8 @@ VLC PROACTIVA se plantea como una capa de inteligencia urbana, no como una web a
 - **Modo Alerta / resiliencia.** La interfaz queda preparada para un modo de alto contraste orientado a emergencias, pero no mostrará refugios, evacuación, imbornales ni recursos críticos hasta disponer de fuentes oficiales verificadas y metodología documentada.
 - **VLC-Voice.** Evolución conversacional para consultas como "¿puedo descargar mercancía mañana en la calle Colón a las 9?", siempre consultando el motor de reglas y fuentes oficiales, no sustituyéndolas.
 - **Modelado predictivo.** Uso histórico de Fallas, maratones y grandes eventos para anticipar saturación urbana y ventanas de impacto, diferenciando predicción de aviso oficial.
+- **Perspectiva de género y seguridad urbana.** Futuro perfil peatonal con rutas iluminadas: solo se activará tras verificar una fuente oficial de alumbrado público y definir una metodología que no convierta una recomendación en falsa sensación de seguridad.
+- **Pasaporte de resiliencia comercial.** Evolución del perfil Comercio para que un negocio afectado por una obra prolongada pueda acreditar digitalmente la afección y publicar información operativa ("seguimos abiertos", acceso recomendado, campaña local), previa validación administrativa.
 - **Crowdsourcing verificado.** El feedback ciudadano actuará como sensor social: varias señales coincidentes podrán generar incidencias pendientes de validación municipal y métricas agregadas CC-BY 4.0.
 - **Backoffice municipal.** Panel para personal técnico con índice de estrés urbano, concentración de impactos por barrio y recomendaciones sobre dónde evitar nuevas actuaciones simultáneas.
 - **Notificaciones proactivas.** Web Push para zonas habituales de una persona o comercio, siempre con consentimiento explícito y sin almacenar ubicaciones personales innecesarias.
@@ -195,6 +200,7 @@ Las bases AD.TR.15 (punto 5) establecen que *"las personas, agrupaciones de pers
 No obstante, los datos derivados que V-PRO publica (zonas de impacto, acciones de mitigación, feedback agregado, todos bajo CC-BY 4.0) están disponibles para que **personas periodistas independientes** puedan producir reportajes de datos usándolos, y presentar **sus propios proyectos** a la categoría de Periodismo de Datos como participantes distintos. V-PRO fomenta esa reutilización:
 
 - Ejemplo de línea de investigación reutilizable: *"El mapa silencioso de las ocupaciones urbanas en Valencia: correlación entre barrios con más interrupciones y barrios con mayor índice de vulnerabilidad."*
+- Cada evento del frontend permite exportar un **snapshot periodístico** con fuente, impacto, alternativa y HTML embebible, para que un medio local pueda insertar un mapa contextual en una noticia sin depender de capturas manuales.
 - El equipo de V-PRO se compromete a ofrecer soporte técnico (sin compartir autoría) a cualquier persona periodista que quiera usar los datos derivados para una candidatura propia.
 
 Este compromiso refuerza el **criterio 4** (colaboración y apertura) del jurado: V-PRO habilita ecosistema, no compite con él.

@@ -66,6 +66,7 @@
 - [x] Tabs `Eventos`, `Fuentes`, `Metodología`, `Info`.
 - [x] Lighthouse mobile ≥90 Performance y Accessibility.
 - [x] Señales de veracidad del dato, skeleton de carga, microfeedback móvil y modo alerta preparado sin datos ficticios de emergencia.
+- [x] Exportación de snapshot periodístico por evento, con fuente, impacto, alternativa y HTML embebible.
 - [ ] Pase final WCAG/teclado/contraste.
 - [x] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
 
@@ -85,6 +86,8 @@
 - [ ] `T-126`: crowdsourcing verificado de incidencias, con umbral, moderación y validación municipal antes de promover a evento.
 - [ ] `T-127`: backoffice municipal con índice de estrés urbano y concentración de impactos por barrio.
 - [ ] `T-128`: Web Push por zona habitual, con consentimiento explícito y minimización de datos.
+- [ ] `T-130`: perfil peatonal con rutas iluminadas, condicionado a fuente oficial de alumbrado público y metodología de seguridad urbana.
+- [ ] `T-131`: pasaporte de resiliencia comercial para comercios afectados por obras prolongadas, condicionado a validación administrativa.
 
 ## Definition of Done Global
 

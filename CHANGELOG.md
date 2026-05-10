@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Ecosistema y replicabilidad - 2026-05-10
+- Frontend: el panel de detalle permite `Exportar snapshot`, copiando un payload JSON CC-BY 4.0 con fuente, impacto, alternativa y HTML embebible para medios locales.
+- Docs: `README.md` incorpora un kit de replicabilidad para adaptar VLC PROACTIVA a otros municipios con CKAN o ArcGIS REST.
+- Docs: `MEMORIA.md` refuerza bajo coste operativo, privacidad por diseño, widget periodístico, perspectiva de género/seguridad como futuro condicionado y pasaporte de resiliencia comercial como evolución validada por administración.
+
 ### Added - Confianza del dato y resiliencia - 2026-05-10
 - Frontend: cada evento muestra un sello de veracidad (`Verificado por...`) y el panel de detalle añade impacto temporal previsto.
 - Frontend: añadido skeleton de carga, microfeedback háptico en móviles compatibles y modo `Alerta` de alto contraste como estado preparado, sin pintar capas ficticias de emergencia.

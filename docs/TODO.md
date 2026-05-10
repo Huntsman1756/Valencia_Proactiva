@@ -102,6 +102,7 @@
 | T-117 | Reorganización explicativa de producto: cabecera con propuesta de valor, guía de uso, mapa sin lateral en anchos intermedios, pestañas con fuentes/metodología/info más completas, limitaciones y FAQ. | ✅ **Completado 2026-05-10** — smoke valida `layout.overlapsTabs=false`, guía de producto, ayuda de mapa, leyenda y popup. | 2026-05-10 |
 | T-123 | Claridad de mapa y contenidos: integrar nav sin cajas, evitar red de tráfico normal, limitar zonas de impacto a eventos visibles, ampliar leyenda y romper el patrón 3x3 en Fuentes/Metodología/Info. | ✅ **Completado 2026-05-10** — nav incrustada, tráfico solo con incidencia relevante, zonas visibles por evento mostrado, leyenda mayor, pins propios `E`/`A`, filtros sin siglas opacas, `Vista resumida` operativo, drawers no modales y paneles informativos con separadores/acordeones. | 2026-05-10 |
 | T-129 | Señales de confianza y resiliencia frontend: sello de veracidad por evento, impacto temporal, skeleton de carga, microfeedback móvil y modo alerta preparado sin capas ficticias de emergencia. | ✅ **Completado 2026-05-10** — UI marca datos verificados, documenta duración prevista, vibra en interacciones compatibles y activa un modo alerta de alto contraste que avisa de que faltan fuentes oficiales de emergencia. | 2026-05-10 |
+| T-132 | Widget para medios: exportar snapshot trazable por evento con fuente, impacto, alternativa y HTML embebible. | ✅ **Completado 2026-05-10** — el panel de detalle copia un payload JSON CC-BY 4.0 con `embed_html`; smoke Playwright valida la acción bilingüe. | 2026-05-10 |
 
 ---
 
@@ -124,6 +125,8 @@
 | T-126 | Crowdsourcing verificado de incidencias. | Promover a evento solo con umbral, moderación y validación municipal. |
 | T-127 | Backoffice municipal con índice de estrés urbano. | Vista para personal técnico, no para ciudadanía general. |
 | T-128 | Web Push por zona habitual. | Consentimiento explícito, minimización de datos y baja sencilla. |
+| T-130 | Perfil peatonal con rutas iluminadas y perspectiva de género/seguridad. | Requiere verificar fuente oficial de alumbrado público y metodología que evite falsa sensación de seguridad. |
+| T-131 | Pasaporte de resiliencia comercial. | Requiere validación municipal antes de otorgar sellos o permitir ofertas vinculadas a una afección. |
 | T-44 | Integración con datos en tiempo real (tráfico, EMT live). | Reconsiderar Celery/Redis si llega. |
 | T-45 | Métricas de uso / dashboard analítico. | Sin trackers externos: logs + cron de agregación. |
 
