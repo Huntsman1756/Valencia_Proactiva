@@ -6,6 +6,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 ## [Unreleased]
 
 ### Changed - Claridad de producto y perfiles - 2026-05-10
+- Frontend: navegación de secciones integrada en el header; `Fuentes`, `Metodología` e `Info` se abren como drawer superpuesto para mantener el mapa como superficie principal.
+- Frontend: botones de navegación externa pasan a estilo outlined; el CTA administrativo mantiene peso visual sólido.
 - Frontend: eliminada la navegación superior duplicada; quedan las secciones operativas `Eventos`, `Fuentes`, `Metodología` e `Info`.
 - Frontend: marca pública visible consolidada como `VLC PROACTIVA`; se retiran restos visibles de `V-PRO` en la UI.
 - Frontend: cada perfil prioriza una capa distinta de alternativas (`Comercio -> PARKING`, `PMR -> APARCAMIENTO_PMR`, `Bici -> VALENBISI`, `Transporte -> PARADA_EMT`) y muestra una explicación compacta del criterio aplicado.
@@ -13,6 +15,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: la pestaña `Fuentes` lista datasets concretos usados, no solo el número agregado.
 - Backend: `comercio-ocupacion` deja de apuntar a ayudas genéricas `AE.CM.35` y prioriza la gestión municipal de carga y descarga `TR.AR.45`.
 - Frontend: añadida carga con debounce para evitar ráfagas de peticiones y falsos `429` al cambiar perfiles o filtros rápido.
+- Producto: añadidas tareas T-120/T-121 para Valhalla con `exclude_polygons` y Modo Alerta basado solo en fuentes oficiales verificadas.
 
 ### Changed - Predespliegue concurso y Golden Path - 2026-05-10
 - Demo: `talls-transit-falles` deja de ser Golden Path activo fuera de temporada; queda documentado como histórico/fallback.

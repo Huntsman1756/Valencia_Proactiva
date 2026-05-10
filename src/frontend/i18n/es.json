@@ -55,6 +55,7 @@
   "map": "Mapa",
   "expand": "Expandir",
   "close": "Cerrar",
+  "closePanel": "Cerrar",
   "mapHelp": "El mapa explica dónde cae el evento, qué zona puede verse afectada y dónde están las alternativas. Haz clic en círculos, líneas o zonas para ver el detalle.",
   "mapLegendLabel": "Leyenda del mapa",
   "legendEvent": "Evento activo",

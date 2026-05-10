@@ -20,6 +20,13 @@
           </span>
         </a>
 
+        <nav class="section-nav view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
+          <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
+          <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
+          <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodología</button>
+          <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
+        </nav>
+
         <div class="header-actions">
           <p id="statusText" class="data-status" data-i18n="loading">Buscando acontecimientos activos...</p>
           <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
@@ -77,13 +84,6 @@
         </aside>
 
         <section class="map-workspace" aria-label="Área principal" data-i18n-attr="aria-label:mainAreaLabel">
-          <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
-            <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
-            <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
-            <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodología</button>
-            <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
-          </nav>
-
           <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
             <div class="map-toolbar">
               <span data-i18n="map">Mapa</span>
@@ -122,6 +122,7 @@
       </section>
     </main>
 
+    <div id="panelBackdrop" class="panel-backdrop" hidden></div>
     <div id="toast" class="toast" role="status" hidden></div>
 
     <noscript>VLC PROACTIVA necesita JavaScript para mostrar eventos urbanos y alternativas cercanas.</noscript>

@@ -55,6 +55,7 @@
   "map": "Mapa",
   "expand": "Ampliar",
   "close": "Tancar",
+  "closePanel": "Tancar",
   "mapHelp": "El mapa explica on cau l'esdeveniment, quina zona pot veure's afectada i on estan les alternatives. Fes clic en cercles, línies o zones per a veure el detall.",
   "mapLegendLabel": "Llegenda del mapa",
   "legendEvent": "Esdeveniment actiu",

@@ -81,6 +81,10 @@ a:hover {
   box-shadow: 0 1px 0 rgba(11, 32, 56, 0.03);
 }
 
+.has-info-panel .civic-header {
+  z-index: 80;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -147,6 +151,12 @@ a:hover {
   justify-content: flex-end;
   gap: 8px;
   min-width: 0;
+}
+
+.section-nav {
+  grid-column: 1 / -1;
+  order: 3;
+  align-items: center;
 }
 
 .data-status {
@@ -503,7 +513,7 @@ a:hover {
   display: flex;
   gap: 7px;
   overflow-x: auto;
-  padding: 1px 0 10px;
+  padding: 2px 0;
   scrollbar-width: none;
 }
 
@@ -648,6 +658,39 @@ a:hover {
 .event-list,
 .info-panel {
   padding: 14px;
+}
+
+.panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  background: rgba(11, 32, 56, 0.28);
+}
+
+.info-panel:not([hidden]) {
+  position: fixed;
+  top: 76px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 70;
+  width: min(520px, calc(100vw - 20px));
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  box-shadow: 0 24px 70px rgba(11, 32, 56, 0.22);
+}
+
+.panel-close {
+  justify-self: end;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 850;
 }
 
 .section-heading {
@@ -854,8 +897,8 @@ a:hover {
   padding: 0 16px;
   border-color: var(--blue);
   border-radius: 7px;
-  background: var(--blue);
-  color: #fff;
+  background: transparent;
+  color: var(--blue);
   font-weight: 800;
 }
 
@@ -1152,9 +1195,21 @@ a:hover {
 
 @media (min-width: 1180px) {
   .civic-header {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 300px minmax(360px, 1fr) auto;
     min-height: 72px;
     padding: 0 24px;
+  }
+
+  .section-nav {
+    grid-column: auto;
+    order: initial;
+    justify-content: center;
+  }
+
+  .info-panel:not([hidden]) {
+    top: 86px;
+    right: 22px;
+    bottom: 18px;
   }
 
   .workspace {

@@ -65,7 +65,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator("#toggleMap").click();
-  await page.locator(".feedback-button[data-vote='1']").first().click();
+  await page.locator("#selectedEventPanel .feedback-button[data-vote='1']").click();
   await page.locator("#toast").waitFor({ state: "visible", timeout: 5000 });
 
   const data = await page.evaluate(() => ({

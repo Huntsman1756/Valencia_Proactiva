@@ -77,6 +77,7 @@ const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
 const detailRail = document.querySelector(".detail-rail");
 const selectedEventPanel = document.querySelector("#selectedEventPanel");
 const profileImpact = document.querySelector("#profileImpact");
+const panelBackdrop = document.querySelector("#panelBackdrop");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -186,22 +187,61 @@ function setupLanguageSelector() {
 }
 
 function setupViews() {
+  panelBackdrop?.addEventListener("click", closeInfoPanel);
+  document.addEventListener("click", (event) => {
+    if (event.target.closest("[data-close-panel]")) {
+      closeInfoPanel();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.activeView !== "events") {
+      closeInfoPanel();
+    }
+  });
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.activeView = button.dataset.view;
+      const nextView = button.dataset.view;
+      state.activeView = nextView;
       document.querySelectorAll("[data-view]").forEach((item) => {
         item.setAttribute("aria-pressed", String(item === button));
       });
-      document.querySelectorAll("[data-panel]").forEach((panel) => {
-        panel.hidden = panel.dataset.panel !== state.activeView;
-      });
-      mapShell.hidden = state.activeView !== "events";
-      detailRail.hidden = state.activeView !== "events";
-      if (state.activeView === "events") {
+      if (nextView === "events") {
+        closeInfoPanel({ keepEventsPressed: true });
         setTimeout(() => state.map?.resize(), 120);
+        return;
       }
+      openInfoPanel(nextView);
     });
   });
+}
+
+function openInfoPanel(view) {
+  document.querySelectorAll("[data-panel]").forEach((panel) => {
+    const active = panel.dataset.panel === view;
+    panel.hidden = !active;
+    panel.setAttribute("aria-modal", String(active));
+  });
+  if (panelBackdrop) {
+    panelBackdrop.hidden = false;
+  }
+  document.body.classList.add("has-info-panel");
+}
+
+function closeInfoPanel(options = {}) {
+  state.activeView = "events";
+  document.querySelectorAll("[data-panel]").forEach((panel) => {
+    panel.hidden = true;
+    panel.removeAttribute("aria-modal");
+  });
+  if (panelBackdrop) {
+    panelBackdrop.hidden = true;
+  }
+  document.body.classList.remove("has-info-panel");
+  if (!options.keepEventsPressed) {
+    document.querySelectorAll("[data-view]").forEach((item) => {
+      item.setAttribute("aria-pressed", String(item.dataset.view === "events"));
+    });
+  }
 }
 
 function setupQuickFilters() {
@@ -639,6 +679,7 @@ function renderInfoPanels() {
   ).size;
 
   sourcesPanel.innerHTML = `
+    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("sourcesEyebrow")}</p>
       <h2>${t("sourcesTitle")}</h2>
@@ -670,6 +711,7 @@ function renderInfoPanels() {
   `;
 
   methodologyPanel.innerHTML = `
+    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("methodologyEyebrow")}</p>
       <h2>${t("methodologyTitle")}</h2>
@@ -701,6 +743,7 @@ function renderInfoPanels() {
   `;
 
   additionalInfoPanel.innerHTML = `
+    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("infoEyebrow")}</p>
       <h2>${t("infoTitle")}</h2>
@@ -742,6 +785,10 @@ function renderInfoPanels() {
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
     </div>
   `;
+}
+
+function panelCloseButton() {
+  return `<button type="button" class="panel-close" data-close-panel aria-label="${escapeHtml(t("closePanel"))}">${escapeHtml(t("closePanel"))}</button>`;
 }
 
 function updateMap(cards) {
