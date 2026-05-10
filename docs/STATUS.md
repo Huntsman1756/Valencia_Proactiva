@@ -7,7 +7,7 @@
 - **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y es idempotente en segundo run. Tests verdes (94/94), cobertura backend 70,31%, `ruff`, `mypy` y `pip-audit` verdes.
 - **Fase producto:** 3 · *Interfaz proactiva local* — ingesta end-to-end funcional contra BD real. Action Template Engine `T-20` genera acciones por perfil, feedback loop `/api/v1/feedback` persiste votos reales, Alternative Finder multimodal con 12 datasets POI, staging `official_notices` para avisos oficiales EMT sin geometría y promoción conservadora opcional a `UrbanEvent` mediante gazetteer versionado con validación geográfica reproducible, CLI operativo y API admin de avisos oficiales, endpoint `/api/v1/spatial/alternatives` operativo, endpoint de capas espaciales para mapa, frontend vanilla `src/frontend` servido por Nginx en `localhost:8080`, dirección visual `Civic Utility` documentada, y configuración Nginx de producción preparada con security headers.
 - **Fase concurso AD.TR.15:** 0 · *Entregables* — 75% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados ✅; Golden Path activo cambiado a `ocupacio-via-publica`; Anexo II oficial, demo/vídeo y solicitud pendientes).
-- **Branch activa:** `main`.
+- **Branch activa:** `ralph/ingesta-fuentes-info`.
 - **Última release estable:** *ninguna*.
 - **Commits recientes:** *no auditados esta sesión*. El siguiente agente empieza con `git log --oneline -20`.
 
@@ -74,18 +74,13 @@ Arquitectura firmada en 4 ADRs:
 - Credenciales fuera de git, `.env.example` con placeholders.
 
 ## Blockers activos
-> ActualizaciÃ³n 2026-05-10: no hay bloqueantes activos en entorno local. Docker, ingesta, API y frontend fueron verificados en la tirada Ralph; las filas histÃ³ricas siguientes quedan superadas por esta verificaciÃ³n.
+No hay bloqueantes activos para la demo local. Docker, ingesta, API, frontend, smoke Playwright, `ruff`, `mypy`, `pytest`, `pip-audit`, rebuild Docker y `/health` están verificados el 2026-05-10.
 
-| Blocker | Propietario | Tarea |
-|---|---|---|
-| Validación end-to-end: Docker + ingesta real con stored > 0 | Backend + DevOps | T-111 go/no-go (pendiente de Docker funcional) |
-| `backend/` vacío en raíz — Windows file lock impide eliminación instantánea | DevOps | T-103 (workaround: `Remove-Item -Recurse -Force backend` en shell limpio) |
-
-## Próximas acciones (sin VPS)
-1. **Frontend demo:** Lighthouse mobile ≥90, accesibilidad y Golden Path estable para vídeo usando `ocupacio-via-publica` actual, no `talls-transit-falles`.
-2. **Concurso:** `T-36` ganadores anteriores, revisión de lenguaje inclusivo y adaptación al Anexo II oficial cuando esté publicado.
-3. **Docs:** cerrar `T-115` con barrido de referencias históricas obsoletas.
-4. **Dev hygiene:** `T-33` pre-commit y `T-34b` deduplicación cargadores VE.
+## Próximas acciones
+1. **Producción/VPS:** cerrar T-23, T-27 y T-28 si el VPS ya está disponible. T-24 está preparado y solo falta validación pública con dominio.
+2. **Concurso:** preparar Anexo II oficial, vídeo demo 90 s, revisión final de lenguaje y solicitud AD.TR.15.
+3. **Producto post-MVP:** T-120 Valhalla para rutas que eviten `impact_zones`; T-121 Modo Alerta solo cuando existan fuentes oficiales verificadas.
+4. **Higiene opcional:** T-33 pre-commit y T-34b deduplicación de cargadores VE.
 
 Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_STEPS.md) para el plan operativo fase a fase.
 
@@ -96,7 +91,7 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Tests | 94 passed, 0 failed |
 | Cobertura | 70,31% (`python -m pytest tests -q --cov=src/backend --cov-report=term-missing --cov-fail-under=70`) |
 | Vulnerabilidades | `pip-audit -r config/requirements.txt --strict` verde (0 vulnerabilidades conocidas) |
-| CI | workflow `.github/workflows/ci.yml` existe; no corrido todavía (pendiente primer push) |
+| CI | workflow `.github/workflows/ci.yml` existe; no auditado en esta sesión tras el push remoto |
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
 | Golden Path predespliegue | ✅ Demo recomendada: perfil Comercial sobre `ocupacio-via-publica` actual con enlace municipal real; `talls-transit-falles` queda como histórico/fallback documentado |
@@ -104,13 +99,13 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Frontend civic utility | ✅ Rediseño map-first con cabecera institucional, perfiles/filtros en carril izquierdo, MapLibre central, detalle seleccionado a la derecha, hoja móvil en flujo y perfil Comercial; smoke Playwright mobile/desktop verde |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
 | Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
-| Deploy | no provisto |
+| Deploy | pendiente de T-23/T-27/T-28 sobre VPS disponible |
 
 ## Última actualización
-- **Fecha:** 2026-05-10 (T-21 multimodal cerrado + T-51 API admin `official_notices`)
+- **Fecha:** 2026-05-10 (R-18 severidad operativa + front flotante)
 - **Autor:** Codex
 - **Entorno de la sesión ejecutora:** Opencode CLI + Qwen 3.6 sobre Windows — ver `docs/RULES-FOR-AGENTS.md § 10`.
-- **Siguiente revisión prevista:** tras ampliar Alternative Finder con datasets multimodales restantes o endurecer Nginx de producción en T-24.
+- **Siguiente revisión prevista:** preparación de VPS/producción si se confirma dominio, SSH y sistema operativo del servidor.
 - **Nota de fuentes:** las bases permiten mantener el nucleo en el Portal de Datos Abiertos y usar fuentes oficiales complementarias trazables para eventos vivos si se documentan como `official_feed`/`official_public_info` y no sustituyen los datasets abiertos municipales.
 - **T-21:** Alternative Finder multimodal cerrado: parkings, ORA, no regulados, motos, bicis, PMR, cargadores VE, EMT, FGV estaciones/bocas, Valenbisi e itinerarios ciclistas como `PointOfInterest`. `verify_datasets` confirma 14/14 capas CKAN/ArcGIS.
 - **T-37/T-38/T-39/T-46/T-47/T-48/T-49/T-50/T-51:** inventario preliminar de fuentes oficiales complementarias añadido en `docs/DATA_SOURCES.md § 2.4`; `src/scripts/verify_official_sources.py` verifica endpoints y deja reporte en `docs/reports/official-sources-check.json`. EMT `estado-servicio` ya tiene parser, staging `OfficialNotice`, promoción conservadora opcional a `UrbanEvent`, tests anti-duplicado, gazetteer versionado, reporte reproducible contra `EJES_CALLE.json`, CLI operativo y API admin `GET /api/v1/official-notices`.

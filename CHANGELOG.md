@@ -5,6 +5,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Estado de despliegue - 2026-05-10
+- Docs: `STATUS.md` y `ROADMAP.md` actualizados para reflejar que la demo local está estable y que producción/VPS puede iniciarse como T-23/T-27/T-28 si ya hay servidor disponible.
+- Docs: se corrigen restos obsoletos sobre rama activa, blockers históricos, Lighthouse y Golden Path.
+
 ### Changed - Severidad operativa y layout flotante - 2026-05-10
 - Backend: `OCUPACION` deriva severidad operativa desde superficie (`M2`) y tipo de afección cuando el portal no publica gravedad explícita; evita que la demo muestre todo como severidad 1.
 - Tests: añadida cobertura para acera, superficie media, estacionamiento/chaflán y gran superficie.

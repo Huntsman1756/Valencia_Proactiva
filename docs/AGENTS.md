@@ -1062,3 +1062,8 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Reingesta dev ejecutada: `refreshed_events=229` en primer pase y distribución final `OCUPACION 1=39, 2=42, 3=172`; `TRAFICO 1=410` porque el estado oficial actual no eleva impacto.
 - Frontend: se rompe el layout cuadriculado en desktop con mapa como superficie principal y paneles flotantes para perfil, eventos y detalle; se añade modo claro/oscuro y badges `Impacto`.
 - Docs: actualizado sistema de diseño con excepción controlada para translucidez funcional y metodología con la regla de severidad.
+
+## Sesion 2026-05-10 - Consistencia previa a VPS
+- Revisados `STATUS.md`, `TODO.md`, `NEXT_STEPS.md` y `ROADMAP.md` tras la pregunta sobre despliegue.
+- Corregidos restos obsoletos: rama activa, blockers históricos, siguientes acciones sin VPS, Lighthouse y Golden Path.
+- Estado resultante: demo local estable; producción puede iniciarse con T-23/T-27/T-28 si el VPS ya está disponible. Concurso sigue teniendo pendientes Anexo II, vídeo, revisión final y solicitud.

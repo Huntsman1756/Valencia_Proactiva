@@ -2,7 +2,7 @@
 
 > Estado global en vivo: [`docs/STATUS.md`](./STATUS.md).
 > Última actualización: 2026-05-10.
-> Regla operativa actual: no ejecutar despliegue/VPS hasta cerrar estabilidad local, demo y entregables del concurso.
+> Regla operativa actual: la demo local ya está estable. Si el VPS está disponible, se puede abrir una fase de staging/producción sin bloquear los entregables del concurso.
 
 ## Mapeo Fase A-F
 
@@ -11,8 +11,8 @@
 | **A** Estabilización | Repo canónico, seguridad baseline, CI | ✅ Cerrada | Pre-commit local opcional (`T-33`) |
 | **B** Data Intelligence Foundation | Ingesta real, PostGIS, tests ≥70% | ✅ Cerrada | Mantener fixtures/reportes al cambiar fuentes |
 | **C** Proactive Engine | Action Template Engine, Alternative Finder, exports CC-BY | ✅ Cerrada | OpenAPI enriquecida (`Task 2.5`) |
-| **D** Interfaz local | Frontend vanilla + MapLibre bilingüe | 🟡 Operativa local | Lighthouse, accesibilidad y Golden Path final |
-| **E** Producción | VPS, tunnel, cron, dominio público | ⏸️ Diferida | Se hará cuando el proyecto esté más estable |
+| **D** Interfaz local | Frontend vanilla + MapLibre bilingüe | ✅ Operativa local | Pase final WCAG manual |
+| **E** Producción | VPS, tunnel, cron, dominio público | 🟡 Lista para iniciar | T-23, T-27, T-28 sobre VPS real |
 | **F** Concurso AD.TR.15 | Memoria, vídeo, anexos, solicitud | 🟡 En progreso | Anexo oficial, vídeo, revisión final y presentación |
 
 ## Fase 0 — Concurso AD.TR.15
@@ -32,7 +32,7 @@
 - [ ] **Task 0.9:** Preparar documentación administrativa.
 - [ ] **Task 0.10:** Revisión de lenguaje inclusivo/no sexista.
 - [ ] **Task 0.12:** Vídeo demo 1-2 min.
-- [ ] **Task 0.16 / T-36:** Investigar ganadores anteriores.
+- [x] **Task 0.16 / T-36:** Investigar ganadores anteriores.
 - [ ] **Task 0.18:** Presentar solicitud en Sede Electrónica dentro de plazo.
 
 ## Fase 1 — Data Intelligence Foundation
@@ -64,13 +64,13 @@
 - [x] Selector de perfil persistente.
 - [x] Runtime bilingüe CAS/VAL.
 - [x] Tabs `Eventos`, `Fuentes`, `Metodología`, `Info`.
-- [ ] Lighthouse mobile ≥90 Performance y Accessibility.
+- [x] Lighthouse mobile ≥90 Performance y Accessibility.
 - [ ] Pase final WCAG/teclado/contraste.
-- [ ] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
+- [x] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
 
 ## Fase 4 — Producción
 
-> Diferida por decisión de producto. No avanzar en VPS hasta cerrar estabilidad local y demo.
+> Lista para iniciar cuando se confirme acceso SSH, dominio y sistema operativo del VPS.
 
 - [ ] `T-23`: VPS Hetzner.
 - [ ] `T-24`: validar Nginx/security headers en dominio público.
@@ -83,7 +83,7 @@
 - [x] Cobertura backend ≥70%.
 - [x] Datos derivados publicados en repo como GeoJSON/CSV.
 - [x] Action Loop demostrable en local: evento → zona de impacto → acción → feedback.
-- [ ] Lighthouse móvil ≥90.
+- [x] Lighthouse móvil ≥90.
 - [ ] Vídeo demo y memoria final lista para Sede.
 - [ ] Release GitHub con exports.
 - [ ] Producción pública con cron activo.
