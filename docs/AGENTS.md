@@ -1031,10 +1031,16 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 
 ## Sesion 2026-05-10 - Ralph estabilidad local no-VPS
 - T-25/T-112 cerrados: cobertura formal 70,31% con 94 tests y rate-limit 429 real en feedback.
-- Frontend: MapLibre no debe cargarse en el HTML inicial; se carga bajo demanda en setupMap() al expandir el mapa y como fallback diferido. Esto mantiene Lighthouse mobile >90 sin perder verificacion de capas en smoke.
+- Frontend: MapLibre no debe cargarse en el HTML inicial; tras R-13 se inicia con `requestIdleCallback`/timeout corto para que el mapa central no quede vacio demasiado tiempo, manteniendo `setupMap()` como fallback al expandir.
 - Lighthouse CLI en Windows puede devolver EPERM al limpiar el perfil temporal de Chrome aunque escriba docs/reports/lighthouse-mobile.json; validar el JSON y registrar scores en rontend-verification.json.
 - Para futuras iteraciones Ralph no-VPS: no tocar T-23/T-27/T-28 hasta cerrar demo, memoria final y release.
 - T-116 cerrado: el mapa se baja a la fila de la lista para no tapar pestanas; DevTools en 824x630 confirma `overlapsTabs=false`.
 - T-116 UX mapa: leyenda visible en escritorio/expandido y popups en `event-points`, `alternative-points`, `impact-zones-fill` y `traffic-realtime`. El smoke hace click real en una capa y verifica `.maplibregl-popup-content`.
 - T-116 contenido: Fuentes/Metodologia/Info explican AD.TR.15, GitHub, datos abiertos, finalidad, trazabilidad, limites de staging y feedback agregado. ES/VAL revisados con acentos en labels principales.
 - R-12: para evitar que el mapa parezca superpuesto en anchos intermedios, el layout de dos columnas se activa solo desde 1100px. En anchos menores el mapa queda debajo de la lista y con ayuda visible. Smoke valida `layout.overlapsTabs=false`.
+
+## Sesion 2026-05-10 - Rediseño Civic Utility map-first
+- R-13 cerrado: `src/frontend/index.html`, `app.css` y `app.js` pasan a cabecera civica, carril izquierdo de perfiles/filtros, mapa central MapLibre y panel derecho de detalle/accion.
+- Se añade el perfil runtime `COMMERCIAL` al selector bilingüe, alineado con el backend y plantillas de acciones.
+- Regla de UI: el detalle movil debe estar en flujo, no como overlay fijo, para no interceptar clicks de tarjetas ni feedback.
+- Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, `node tests/frontend/smoke.mjs` con capturas mobile/desktop regeneradas.

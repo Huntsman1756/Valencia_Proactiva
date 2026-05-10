@@ -18,6 +18,7 @@
 - **POIs multimodales verificados:** PMR, parkings, ORA, no regulados, motos, bicis, itinerarios ciclistas, EMT, FGV estaciones/bocas, Valenbisi y cargadores VE.
 - **Fuentes oficiales:** `run_official_sources --fetch --dry-run` y `--fetch` verdes; `--promote --dry-run` escanea 20 avisos y no promociona ninguno por falta de geometrÃ­a/gazetteer fiable.
 - **Frontend:** tabs `Eventos/Fuentes/MetodologÃ­a/Info`, fuente y `source_id` visibles por tarjeta, filtros de alternativas por tipo POI, CAS/VAL a la derecha, smoke Playwright verde en `localhost:8080` y `localhost:3000`.
+- **Frontend rediseÃ±ado:** cabecera civica, carril izquierdo de perfiles/filtros, mapa central MapLibre, panel derecho de detalle/accion y hoja movil en flujo. Se aÃ±ade perfil `Comercial` al selector runtime y se mantiene smoke verde en mobile/desktop.
 - **VerificaciÃ³n:** `ruff`, `mypy`, `pytest -q` con cobertura (94 passed, 70,31%), `pip-audit`, `docker compose up -d --build`, `/health`, API admin `official_notices` y smoke frontend verdes.
 
 ## Resumen ejecutivo
@@ -99,6 +100,7 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
 | Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, tabs Fuentes/Metodología/Info ampliadas y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
+| Frontend civic utility | ✅ Rediseño map-first con cabecera institucional, perfiles/filtros en carril izquierdo, MapLibre central, detalle seleccionado a la derecha, hoja móvil en flujo y perfil Comercial; smoke Playwright mobile/desktop verde |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
 | Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
 | Deploy | no provisto |
@@ -116,7 +118,8 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **T-29:** cifras reproducibles de memoria cerradas: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR, ZBE 27,44 km2 y 20,38% del termino municipal. Query y resultado en docs/reports/memoria-figures.*.
 - **T-20c:** catalogo de 12 URLs oficiales municipales cerrado en docs/concurso/tramites-referenciados.md; 6 URLs enlazadas desde plantillas YAML.
 - **T-25/T-112:** QA formal cerrado con cobertura 70,31%, 94 tests y rate-limit 429 real.
-- **Frontend demo:** smoke mobile/desktop verde y Lighthouse mobile 93/100/100; MapLibre se carga bajo demanda al expandir el mapa para mantener rendimiento inicial.
+- **Frontend demo:** smoke mobile/desktop verde y Lighthouse mobile 93/100/100 en medicion previa; tras R-13 MapLibre se carga con idle/timeout corto para servir el layout map-first.
 - **T-36:** ganadores anteriores documentados en `docs/concurso/ganadores-anteriores.md`; V-PRO se diferencia como bucle operativo de accion, no como visor o prediccion monofuncional.
 - **T-116:** pulido frontend de concurso cerrado: mapa sin solape de pestañas (`overlapsTabs=false`), leyenda y popups de capas, enlace GitHub/AD.TR.15 y revisión ES/VAL de acentos principales.
 - **R-12:** reorganización explicativa cerrada: el mapa pasa a lateral solo desde 1100px; cabecera, Eventos, Fuentes, Metodología e Info explican producto, uso, fuentes, mapa, limitaciones y FAQ.
+- **R-13:** rediseño Civic Utility map-first cerrado: nueva cabecera cívica, carril izquierdo, mapa central, panel derecho de acción, perfil Comercial, hoja móvil en flujo y smoke Playwright mobile/desktop verde.

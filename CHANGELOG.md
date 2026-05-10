@@ -5,6 +5,14 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Rediseño civic utility map-first - 2026-05-10
+- Frontend: reemplazada la estructura anterior por cabecera civica, carril izquierdo de perfil/filtros, mapa central MapLibre y panel derecho de detalle/accion.
+- Frontend: añadido perfil `Comercial` al selector CAS/VAL runtime, manteniendo perfiles `Generico`, `PMR`, `Bici` y `Transporte`.
+- Frontend: el panel de detalle muestra estado, ubicacion, area afectada, alternativa recomendada, accion administrativa, ruta y feedback.
+- Frontend: en movil el mapa queda primero y el detalle funciona como hoja inferior en flujo, sin interceptar clicks de tarjetas.
+- Docs: actualizados `docs/specs/frontend-vpro.md` y `docs/design/vpro-design-system.md` para fijar el patron map-first operativo.
+- Verificacion: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs` y `node tests/frontend/smoke.mjs` verdes en mobile/desktop.
+
 ### Changed - Pulido frontend concurso y mapa - 2026-05-10
 - Frontend: el mapa queda alineado bajo las pestañas en escritorio para evitar solapes visuales.
 - Frontend: añadida nota visible de candidatura AD.TR.15 y enlace al repositorio GitHub.
@@ -17,7 +25,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 ### Added - Estabilidad local no-VPS - 2026-05-10
 - Cerrado T-25: cobertura backend formal con `pytest --cov=src/backend --cov-fail-under=70`, 94 tests y 70,31%.
 - Cerrado T-112: test real de rate-limit 429 en `/api/v1/feedback`.
-- Frontend: MapLibre pasa a carga bajo demanda al expandir el mapa; Lighthouse mobile queda en Performance 93, Accessibility 100 y Best Practices 100.
+- Frontend: MapLibre pasa a carga diferida controlada; Lighthouse mobile queda en Performance 93, Accessibility 100 y Best Practices 100 en la medicion previa.
 - Cerrado T-36: documento `docs/concurso/ganadores-anteriores.md` con ganadores localizados, fuentes e implicaciones narrativas.
 - `docs/ROADMAP.md` reescrito al estado real de dev y deja VPS/despliegue diferido.
 

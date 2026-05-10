@@ -3,92 +3,127 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f7faf8">
-    <title>V-PRO</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23057a55'/%3E%3Cpath d='M9 8h4l3 12 3-12h4l-5 16h-4L9 8z' fill='%23fff'/%3E%3C/svg%3E">
+    <meta name="theme-color" content="#f4f6f8">
+    <title>V-PRO Valencia Proactiva</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d3b66'/%3E%3Cpath d='M16 5a8 8 0 0 0-8 8c0 5.5 8 14 8 14s8-8.5 8-14a8 8 0 0 0-8-8Zm0 11.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Z' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="./assets/app.css">
   </head>
   <body>
     <main class="app-shell" aria-live="polite">
-      <header class="topbar">
-        <div class="topbar-main">
-          <div class="brand" aria-label="V-PRO">
-            <span class="brand-mark">V</span>
-            <span>V-PRO</span>
+      <header class="civic-header">
+        <a class="brand" href="#events" aria-label="V-PRO Valencia Proactiva">
+          <span class="brand-mark" aria-hidden="true">V</span>
+          <span class="brand-copy">
+            <strong>V-PRO</strong>
+            <span data-i18n="brandName">Valencia Proactiva</span>
+          </span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Navegación principal" data-i18n-attr="aria-label:primaryNavLabel">
+          <a href="#events" data-i18n="navStart">Inicio</a>
+          <a href="#map" data-i18n="navMap">Mapa</a>
+          <a href="#events" data-i18n="navEvents">Eventos</a>
+          <a href="#poiFilters" data-i18n="navAlternatives">Alternativas</a>
+          <a href="#additionalInfoPanel" data-i18n="navInfo">Sobre V-PRO</a>
+        </nav>
+
+        <div class="header-actions">
+          <p id="statusText" class="data-status" data-i18n="loading">Buscando acontecimientos activos...</p>
+          <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
+            <button type="button" data-lang="es">CAS</button>
+            <button type="button" data-lang="val">VAL</button>
           </div>
-          <nav class="profile-selector" aria-label="Perfil de movilidad" data-i18n-attr="aria-label:profileSelectorLabel">
-            <button type="button" data-profile="GENERIC">Generico</button>
-            <button type="button" data-profile="PMR">PMR</button>
-            <button type="button" data-profile="CYCLIST">Bici</button>
-            <button type="button" data-profile="PUBLIC_TRANSPORT">Transporte</button>
-          </nav>
-        </div>
-        <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
-          <button type="button" data-lang="es">CAS</button>
-          <button type="button" data-lang="val">VAL</button>
         </div>
       </header>
 
-      <section class="context-panel">
-        <p class="eyebrow" data-i18n="eyebrow">Valencia ahora</p>
-        <h1 data-i18n="title">Lo que esta pasando cerca</h1>
-        <p id="statusText" class="status-text" data-i18n="loading">Buscando acontecimientos activos...</p>
-        <p class="project-note">
-          <span data-i18n="projectNote">Demo para el concurso municipal de datos abiertos.</span>
-          <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">GitHub</a>
-        </p>
-        <div class="product-guide" aria-label="Resumen del producto" data-i18n-attr="aria-label:productGuideLabel">
-          <div>
-            <strong data-i18n="guideWhatTitle">Qué hace</strong>
-            <span data-i18n="guideWhatText">Convierte datos urbanos abiertos en avisos y alternativas útiles.</span>
-          </div>
-          <div>
-            <strong data-i18n="guideWhoTitle">Para quién</strong>
-            <span data-i18n="guideWhoText">Ciudadanía, PMR, ciclistas, transporte público y comercios.</span>
-          </div>
-          <div>
-            <strong data-i18n="guideHowTitle">Cómo se usa</strong>
-            <span data-i18n="guideHowText">Elige perfil, revisa la tarjeta, abre ruta y deja feedback.</span>
-          </div>
-        </div>
-      </section>
+      <section class="workspace">
+        <aside class="left-rail" aria-label="Panel de configuración" data-i18n-attr="aria-label:leftRailLabel">
+          <section class="assist-panel">
+            <p data-i18n="assistKicker">Hola</p>
+            <h1 data-i18n="title">Lo que está pasando cerca</h1>
+            <p data-i18n="assistText">Selecciona tu perfil para recibir alternativas personalizadas con fuentes trazables.</p>
+          </section>
 
-      <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
-        <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
-        <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
-        <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodologia</button>
-        <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
-      </nav>
+          <section class="rail-section profile-panel">
+            <h2 data-i18n="profileTitle">Tu perfil</h2>
+            <nav class="profile-selector" aria-label="Perfil de movilidad" data-i18n-attr="aria-label:profileSelectorLabel">
+              <button type="button" data-profile="GENERIC"></button>
+              <button type="button" data-profile="COMMERCIAL"></button>
+              <button type="button" data-profile="PMR"></button>
+              <button type="button" data-profile="CYCLIST"></button>
+              <button type="button" data-profile="PUBLIC_TRANSPORT"></button>
+            </nav>
+          </section>
 
-      <section class="event-list view-panel" data-panel="events" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
-        <div class="event-guide">
-          <strong data-i18n="eventsGuideTitle">Qué estás viendo</strong>
-          <p data-i18n="eventsGuideText">Cada tarjeta resume un evento real, su distancia y una alternativa accionable calculada fuera de la zona de impacto.</p>
-        </div>
-        <div class="alternative-toolbar" aria-label="Tipo de alternativa" data-i18n-attr="aria-label:alternativeToolbarLabel">
-          <span data-i18n="alternativeToolbarTitle">Alternativas</span>
-          <div id="poiFilters" class="poi-filters"></div>
-        </div>
-        <div id="eventList" class="event-stack"></div>
-      </section>
+          <section class="rail-section quick-filters">
+            <h2 data-i18n="quickFiltersTitle">Filtros rápidos</h2>
+            <div class="filter-row">
+              <span data-i18n="activeOnly">Solo eventos activos</span>
+              <span class="switch-control" aria-hidden="true"></span>
+            </div>
+            <div class="filter-row">
+              <span data-i18n="showZbe">Mostrar ZBE</span>
+              <span class="switch-control is-muted" aria-hidden="true"></span>
+            </div>
+            <div class="alternative-toolbar" aria-label="Filtro de alternativas" data-i18n-attr="aria-label:alternativeToolbarLabel">
+              <span data-i18n="alternativeToolbarTitle">Alternativas</span>
+              <div id="poiFilters" class="poi-filters"></div>
+            </div>
+          </section>
 
-      <section id="sourcesPanel" class="view-panel info-panel" data-panel="sources" hidden></section>
-      <section id="methodologyPanel" class="view-panel info-panel" data-panel="methodology" hidden></section>
-      <section id="additionalInfoPanel" class="view-panel info-panel" data-panel="info" hidden></section>
+          <section class="rail-section source-note">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div>
+              <h2 data-i18n="sourceNoteTitle">Datos actualizados</h2>
+              <p data-i18n="sourceNoteText">Fuente: Portal de Datos Abiertos y Geoportal municipal. Derivados reproducibles en memoria técnica.</p>
+              <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">Ver código en GitHub</a>
+            </div>
+          </section>
+        </aside>
 
-      <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
-        <div class="map-toolbar">
-          <span data-i18n="map">Mapa</span>
-          <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
-        </div>
-        <p class="map-help" data-i18n="mapHelp">El mapa explica dónde cae el evento, qué zona puede verse afectada y dónde están las alternativas. Haz clic en círculos, líneas o zonas para ver el detalle.</p>
-        <div id="map" class="map-canvas"></div>
-        <div class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
-          <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
-          <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa cercana</span></span>
-          <span><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico</span></span>
-          <span><i class="legend-zone"></i><span data-i18n="legendImpact">Zona de impacto</span></span>
-        </div>
+        <section class="map-workspace" aria-label="Área principal" data-i18n-attr="aria-label:mainAreaLabel">
+          <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
+            <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
+            <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
+            <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodología</button>
+            <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
+          </nav>
+
+          <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
+            <div class="map-toolbar">
+              <span data-i18n="map">Mapa</span>
+              <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
+            </div>
+            <div id="map" class="map-canvas"></div>
+            <div class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
+              <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
+              <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa cercana</span></span>
+              <span><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico</span></span>
+              <span><i class="legend-zone"></i><span data-i18n="legendImpact">Zona de impacto</span></span>
+            </div>
+          </section>
+
+          <p class="map-help" data-i18n="mapHelp">El mapa explica dónde cae el evento, qué zona puede verse afectada y dónde están las alternativas. Haz clic en círculos, líneas o zonas para ver el detalle.</p>
+
+          <section id="events" class="event-list view-panel" data-panel="events" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+            <header class="section-heading">
+              <p class="eyebrow" data-i18n="eyebrow">Valencia ahora</p>
+              <h2 data-i18n="eventsNearbyTitle">Eventos cercanos</h2>
+              <p data-i18n="eventsGuideText">Cada tarjeta resume un evento real, su distancia y una alternativa accionable calculada fuera de la zona de impacto.</p>
+            </header>
+            <div id="eventList" class="event-stack"></div>
+          </section>
+
+          <section id="sourcesPanel" class="view-panel info-panel" data-panel="sources" hidden></section>
+          <section id="methodologyPanel" class="view-panel info-panel" data-panel="methodology" hidden></section>
+          <section id="additionalInfoPanel" class="view-panel info-panel" data-panel="info" hidden></section>
+        </section>
+
+        <aside class="detail-rail" aria-label="Detalle del evento seleccionado" data-i18n-attr="aria-label:detailRailLabel">
+          <section id="selectedEventPanel" class="selected-event-panel" aria-live="polite">
+            <p class="empty-state" data-i18n="selectEventHint">Selecciona un evento para ver ubicación, alternativas y acción recomendada.</p>
+          </section>
+        </aside>
       </section>
     </main>
 

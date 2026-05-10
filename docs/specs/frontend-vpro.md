@@ -5,13 +5,13 @@
 |---|---|
 | Interaccion | Push proactivo: al abrir la app ya se muestran eventos cercanos. |
 | Estilo visual | Ciudadano/cercano: inclusivo, calido, accesible y sobrio. |
-| Layout principal | Lista de eventos primero; mapa como exploracion compacta y expandible. |
+| Layout principal | Operativa en tres zonas: carril izquierdo de perfil/filtros, mapa central y panel derecho de accion. En movil, mapa primero y detalle como hoja inferior dentro del flujo. |
 | Tarjeta de accion | Equilibrada: titulo, distancia, un dato clave y accion principal. |
 
 La direccion visual formal queda definida en `docs/design/vpro-design-system.md` como **Civic Utility / Operativa Ciudadana**. Es obligatoria para futuras iteraciones de UI.
 
 ## Objetivo
-Construir la primera interfaz usable de V-PRO para mobile-first. La app debe permitir que una persona abra la pagina y entienda rapidamente que incidencias hay cerca, como le afectan segun su perfil y que alternativa inmediata puede tomar.
+Construir una interfaz usable de V-PRO para mobile-first con apariencia de herramienta civica operativa. La app debe permitir que una persona abra la pagina y entienda rapidamente que incidencias hay cerca, donde caen, como le afectan segun su perfil, que alternativa inmediata puede tomar y de que fuente procede cada dato.
 
 ## Flujo principal
 1. La app carga el perfil guardado en `localStorage`; si no existe, usa `PMR` para la demo.
@@ -20,17 +20,33 @@ Construir la primera interfaz usable de V-PRO para mobile-first. La app debe per
 4. Renderiza una lista de tarjetas ordenadas por severidad y cercania.
 5. La accion principal abre navegacion externa con el destino recomendado.
 6. Los botones de feedback llaman a `POST /api/v1/feedback` cuando el evento trae `mitigation_actions`; si no hay accion asociada, dejan feedback local no persistido como fallback.
-7. El mapa compacto muestra eventos y POIs; al tocarlo se expande a vista completa.
+7. El mapa central muestra eventos, POIs, trafico y zonas de impacto; al tocar `Expandir` pasa a vista completa.
 8. Las tabs `Fuentes`, `Metodologia` e `Info` explican trazabilidad, reglas de decision y estado operativo sin salir de la app.
 
 ## Pantalla inicial
-### Barra superior
-- Selector horizontal de perfil: `Generico`, `PMR`, `Bici`, `Transporte`.
-- El perfil activo se guarda en `localStorage`.
+### Cabecera civica
+- Marca `V-PRO / Valencia Proactiva`.
+- Subtitulo de servicio publico basado en datos abiertos.
+- Navegacion compacta a secciones operativas.
+- Estado de datos dinamico y selector CAS/VAL alineado a la derecha.
 
-### Encabezado contextual
-- Titulo: `Lo que esta pasando cerca`
-- Subtitulo dinamico: numero de eventos activos y hora relativa de actualizacion.
+### Carril izquierdo
+- Selector de perfil: `Generico`, `Comercial`, `PMR`, `Bici`, `Transporte`.
+- El perfil activo se guarda en `localStorage`.
+- Filtros rapidos y filtros de alternativa multimodal.
+- Nota de fuente con enlace al repositorio GitHub.
+
+### Mapa central
+- MapLibre como foco visual principal en escritorio y primera superficie tras la cabecera en movil.
+- Capas iniciales: eventos, alternativas, trafico y zonas de impacto.
+- Leyenda visible, controles sobrios y popups clicables por capa.
+
+### Panel derecho / hoja movil
+- Estado del evento seleccionado.
+- Ubicacion y zona afectada estimada.
+- Alternativa recomendada.
+- Accion administrativa o referencia municipal si aplica.
+- Ruta y feedback.
 
 ### Lista de eventos
 Cada tarjeta incluye:
@@ -43,11 +59,6 @@ Cada tarjeta incluye:
 - Feedback `util` / `no util`.
 
 Las tarjetas deben priorizar lectura operativa: badge de severidad compacto, distancia con numeros tabulares, sombra minima o nula, sin apariencia de card SaaS generica.
-
-### Mapa compacto
-- Altura compacta en mobile.
-- Expande a pantalla completa.
-- Capas iniciales: eventos y alternativas.
 
 ### Vistas informativas
 - `Fuentes`: lista las fuentes principales y distingue datos abiertos, fuentes oficiales complementarias y dato derivado.

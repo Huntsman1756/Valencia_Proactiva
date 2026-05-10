@@ -17,23 +17,23 @@ No se copian sistemas de marca como Apple, Linear, Vercel, Stripe o Notion.
 - **Identidad civica.** Usar lenguaje de servicio publico: datos, actualizacion, severidad, distancia, accesibilidad, fuente.
 - **Densidad controlada.** La interfaz debe ser escaneable; evitar espacios heroicos o marketing.
 - **Accion visible.** La ruta y el feedback deben estar claros, pero no competir con el dato clave.
-- **Mapa como apoyo.** La lista manda; el mapa confirma contexto y exploracion.
+- **Mapa como contexto operativo.** El mapa es la superficie principal para comprender donde ocurre algo; la lista y el panel de detalle convierten ese contexto en accion.
 
 ## Paleta
-Usar una paleta de neutros verdosos y acentos funcionales:
+Usar una paleta de neutros frios y acentos funcionales:
 
 | Token | Uso | Valor base |
 |---|---|---|
-| `--bg` | Fondo app | `#f4f7f5` |
-| `--surface` | Superficie principal | `#fffffb` |
-| `--surface-strong` | Bloque de dato clave | `#edf5f1` |
-| `--ink` | Texto principal | `#16211c` |
-| `--muted` | Texto secundario | `#5f6f67` |
-| `--line` | Bordes | `#d7e2dc` |
-| `--primary` | Accion positiva / comunidad | `#057a55` |
-| `--alert` | Severidad alta | `#b8322c` |
-| `--warn` | Severidad media | `#a96812` |
-| `--place` | Ubicacion / POI | `#3f5f9f` |
+| `--bg` | Fondo app | `#f4f6f8` |
+| `--surface` | Superficie principal | `#ffffff` |
+| `--paper` | Fondo de panel | `#fbfcfd` |
+| `--ink` | Texto principal | `#0b2038` |
+| `--muted` | Texto secundario | `#546579` |
+| `--line` | Bordes | `#d8e0e7` |
+| `--blue` | Accion principal / institucion | `#0d3b66` |
+| `--green` | Estado disponible / activo bajo | `#0b7a58` |
+| `--red` | Severidad alta | `#c73a3a` |
+| `--orange` | Severidad media / zona | `#b76512` |
 
 Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradientes.
 
@@ -45,8 +45,8 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 
 ## Layout
 - Mobile-first.
-- Lista de eventos como superficie principal.
-- En desktop, lista y mapa en dos columnas, con cabecera a ancho completo.
+- En desktop, tres zonas: perfil/filtros a la izquierda, mapa central y detalle de accion a la derecha.
+- En mobile, el mapa aparece primero tras la cabecera y el detalle queda como hoja inferior dentro del flujo.
 - El selector de idioma siempre queda separado de perfiles y alineado a la derecha.
 - Los componentes operativos tienen radio maximo `8px`; botones de herramienta y feedback pueden ser circulares si contienen simbolos.
 

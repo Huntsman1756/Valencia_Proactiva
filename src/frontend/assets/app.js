@@ -49,6 +49,7 @@ const state = {
   poiTypeFilter: localStorage.getItem("vpro_poi_type") || "ALL",
   map: null,
   sessionToken: getSessionToken(),
+  selectedCardIndex: 0,
 };
 
 const eventList = document.querySelector("#eventList");
@@ -60,6 +61,8 @@ const poiFilters = document.querySelector("#poiFilters");
 const sourcesPanel = document.querySelector("#sourcesPanel");
 const methodologyPanel = document.querySelector("#methodologyPanel");
 const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
+const detailRail = document.querySelector(".detail-rail");
+const selectedEventPanel = document.querySelector("#selectedEventPanel");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -104,6 +107,7 @@ function applyTranslations() {
   });
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   renderInfoPanels();
+  renderSelectedEvent(state.cards[state.selectedCardIndex]);
 }
 
 function setupProfiles() {
@@ -159,6 +163,7 @@ function setupViews() {
         panel.hidden = panel.dataset.panel !== state.activeView;
       });
       mapShell.hidden = state.activeView !== "events";
+      detailRail.hidden = state.activeView !== "events";
       if (state.activeView === "events") {
         setTimeout(() => state.map?.resize(), 120);
       }
@@ -187,7 +192,11 @@ function setupPoiFilters() {
 }
 
 function scheduleMapSetup() {
-  setTimeout(() => setupMap(), 12000);
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(() => setupMap(), { timeout: 4500 });
+    return;
+  }
+  setTimeout(() => setupMap(), 3000);
 }
 
 async function setupMap() {
@@ -334,14 +343,20 @@ function normalizeEvent(event) {
 
 function renderCards(cards) {
   eventList.innerHTML = "";
-  cards.forEach((card) => eventList.appendChild(createEventCard(card)));
+  cards.forEach((card, index) => eventList.appendChild(createEventCard(card, index)));
+  selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
 }
 
-function createEventCard(card) {
+function createEventCard(card, index) {
   const { event, alternative } = card;
   const article = document.createElement("article");
   article.className = "event-card";
   article.dataset.severity = String(event.severity);
+  article.dataset.cardIndex = String(index);
+  article.dataset.selected = String(index === state.selectedCardIndex);
+  article.tabIndex = 0;
+  article.setAttribute("role", "button");
+  article.setAttribute("aria-pressed", String(index === state.selectedCardIndex));
 
   const distance = alternative?.distance_meters ? `${Math.round(alternative.distance_meters)} m` : t("near");
   const places = alternative?.extra_data?.numplazas
@@ -370,7 +385,7 @@ function createEventCard(card) {
           <span>${labelForType(event.type)}</span>
           <span class="severity-badge">${t("severity")} ${event.severity}</span>
         </div>
-        <h2>${escapeHtml(event.title)}</h2>
+        <h3>${escapeHtml(event.title)}</h3>
       </div>
       <span class="event-distance">${distance}</span>
     </div>
@@ -392,6 +407,17 @@ function createEventCard(card) {
     </div>
   `;
 
+  article.addEventListener("click", (eventClick) => {
+    if (!eventClick.target.closest("button,a")) {
+      selectCard(index);
+    }
+  });
+  article.addEventListener("keydown", (keyboardEvent) => {
+    if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
+      keyboardEvent.preventDefault();
+      selectCard(index);
+    }
+  });
   article.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
   article.querySelectorAll(".feedback-button").forEach((button) => {
     button.addEventListener("click", () => submitFeedback(button, card));
@@ -400,8 +426,102 @@ function createEventCard(card) {
   return article;
 }
 
+function selectCard(index, options = {}) {
+  if (!state.cards.length) {
+    renderSelectedEvent(null);
+    return;
+  }
+  const nextIndex = Number.isFinite(index) ? index : 0;
+  state.selectedCardIndex = Math.max(0, Math.min(nextIndex, state.cards.length - 1));
+  document.querySelectorAll(".event-card").forEach((cardElement) => {
+    const selected = Number(cardElement.dataset.cardIndex) === state.selectedCardIndex;
+    cardElement.dataset.selected = String(selected);
+    cardElement.setAttribute("aria-pressed", String(selected));
+  });
+  const card = state.cards[state.selectedCardIndex];
+  renderSelectedEvent(card);
+  if (options.flyTo !== false && state.map && card?.event?.center) {
+    state.map.flyTo({ center: card.event.center, zoom: 14, essential: false });
+  }
+}
+
+function renderSelectedEvent(card) {
+  if (!selectedEventPanel) {
+    return;
+  }
+  if (!card) {
+    selectedEventPanel.innerHTML = `<p class="empty-state">${escapeHtml(t("selectEventHint"))}</p>`;
+    return;
+  }
+
+  const { event, alternative } = card;
+  const distance = alternative?.distance_meters ? `${Math.round(alternative.distance_meters)} m` : t("near");
+  const places = alternative?.extra_data?.numplazas
+    ? formatMessage("places", { count: alternative.extra_data.numplazas })
+    : t("dataAvailable");
+  const actionLabel = labelForAction(card.action) || t("noAdminAction");
+  const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
+    ? alternative.name
+    : labelForPoi(alternative?.poi_type);
+  const adminUrl = card.action?.payload?.url || card.action?.payload?.secondary_url || CONTEST_URL;
+  const severityClass = event.severity >= 4 ? " is-high" : "";
+
+  selectedEventPanel.innerHTML = `
+    <div class="detail-meta">
+      <span class="detail-status${severityClass}">${t("activeStatus")} · ${t("severity")} ${event.severity}</span>
+      <h2>${escapeHtml(event.title)}</h2>
+      <p>${escapeHtml(trimText(event.description, 160))}</p>
+    </div>
+    <dl class="detail-list">
+      <div>
+        <dt>${t("locationLabel")}</dt>
+        <dd>${escapeHtml(formatCoordinates(event.center))}</dd>
+      </div>
+      <div>
+        <dt>${t("affectedAreaLabel")}</dt>
+        <dd>${escapeHtml(formatMessage("affectedAreaValue", { meters: event.severity >= 4 ? 450 : 250 }))}</dd>
+      </div>
+      <div>
+        <dt>${t("sourceLabel")}</dt>
+        <dd>${escapeHtml(formatMessage("sourceLine", {
+          source: labelForSource(event.source),
+          updated: formatUpdated(event.updated_at || event.created_at),
+        }))}</dd>
+      </div>
+    </dl>
+    <section class="detail-block">
+      <h3>${t("recommendedAlternativeTitle")}</h3>
+      <p><strong>${escapeHtml(alternativeName || t("noAlternative"))}</strong></p>
+      <p>${alternative ? escapeHtml(`${distance} · ${places} · ${labelForPoi(alternative.poi_type)}`) : escapeHtml(t("noAlternative"))}</p>
+    </section>
+    <section class="detail-block">
+      <h3>${t("adminActionTitle")}</h3>
+      <p>${escapeHtml(actionLabel)}</p>
+      <a class="detail-link" href="${adminUrl}" target="_blank" rel="noopener">${t("openActionLink")}</a>
+    </section>
+    <section class="detail-block">
+      <h3>${t("feedbackQuestion")}</h3>
+      <div class="detail-actions">
+        <button type="button" class="route-button">${t("route")}</button>
+        <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
+          <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}">+</button>
+          <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}">-</button>
+        </div>
+      </div>
+    </section>
+  `;
+
+  selectedEventPanel.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
+  selectedEventPanel.querySelectorAll(".feedback-button").forEach((button) => {
+    button.addEventListener("click", () => submitFeedback(button, card));
+  });
+}
+
 function renderEmpty(message) {
   eventList.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
+  state.cards = [];
+  state.selectedCardIndex = 0;
+  renderSelectedEvent(null);
 }
 
 function renderInfoPanels() {
@@ -532,8 +652,9 @@ function updateMap(cards) {
     featureCollection(cards.map(({ alternative }) => alternativeFeature(alternative)).filter(Boolean)),
   );
 
-  if (cards[0]?.event?.center) {
-    state.map.flyTo({ center: cards[0].event.center, zoom: 13.4, essential: false });
+  const selectedCenter = cards[state.selectedCardIndex]?.event?.center || cards[0]?.event?.center;
+  if (selectedCenter) {
+    state.map.flyTo({ center: selectedCenter, zoom: 13.4, essential: false });
   }
 }
 
@@ -894,6 +1015,13 @@ function formatUpdated(value) {
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+}
+
+function formatCoordinates(center) {
+  if (!Array.isArray(center) || center.length !== 2) {
+    return t("unknownLocation");
+  }
+  return `${center[1].toFixed(5)}, ${center[0].toFixed(5)}`;
 }
 
 function languageFromNavigator() {
