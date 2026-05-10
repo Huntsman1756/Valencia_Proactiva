@@ -115,6 +115,18 @@
         "La memoria/narrativa incorpora riesgos de solapamiento si aplica.",
         "Se citan fuentes oficiales consultadas."
       ]
+    },
+    {
+      "id": "R-11",
+      "title": "Pulido frontend concurso, mapa y textos bilingues",
+      "status": "done",
+      "acceptance": [
+        "El mapa no se solapa con las pestanas en escritorio.",
+        "Las pestanas Fuentes, Metodologia e Info explican concurso, GitHub, datos abiertos, finalidad y limites.",
+        "El mapa incluye leyenda y popups clicables en capas principales.",
+        "Los textos ES/VAL corrigen acentos y etiquetas visibles.",
+        "Smoke frontend valida leyenda, capas y popup."
+      ]
     }
   ]
 }

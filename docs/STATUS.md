@@ -98,7 +98,7 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | CI | workflow `.github/workflows/ci.yml` existe; no corrido todavía (pendiente primer push) |
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
-| Frontend local | ✅ `http://localhost:8080` vía Nginx muestra 6 tarjetas reales + mapa con capas, CAS/VAL runtime, selector de idioma alineado a la derecha, dirección visual Civic Utility y feedback persistido; capturas en `docs/reports/frontend-mobile.png` y `docs/reports/frontend-desktop.png` |
+| Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, tabs Fuentes/Metodología/Info ampliadas y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
 | Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
 | Deploy | no provisto |
@@ -118,3 +118,4 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **T-25/T-112:** QA formal cerrado con cobertura 70,31%, 94 tests y rate-limit 429 real.
 - **Frontend demo:** smoke mobile/desktop verde y Lighthouse mobile 93/100/100; MapLibre se carga bajo demanda al expandir el mapa para mantener rendimiento inicial.
 - **T-36:** ganadores anteriores documentados en `docs/concurso/ganadores-anteriores.md`; V-PRO se diferencia como bucle operativo de accion, no como visor o prediccion monofuncional.
+- **T-116:** pulido frontend de concurso cerrado: mapa sin solape de pestañas (`overlapsTabs=false`), leyenda y popups de capas, enlace GitHub/AD.TR.15 y revisión ES/VAL de acentos principales.

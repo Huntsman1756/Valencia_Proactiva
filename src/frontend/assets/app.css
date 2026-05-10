@@ -166,6 +166,28 @@ h1 {
   font-size: 13px;
 }
 
+.project-note {
+  margin: 10px 0 0;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.project-note a,
+.source-row a,
+.info-links a {
+  color: var(--primary);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.project-note a:hover,
+.source-row a:hover,
+.info-links a:hover {
+  text-decoration: underline;
+}
+
 .view-tabs,
 .poi-filters {
   display: flex;
@@ -396,6 +418,7 @@ h1 {
 }
 
 .map-shell {
+  position: relative;
   margin-top: 12px;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -425,6 +448,89 @@ h1 {
 .map-canvas {
   height: 96px;
   background: #eaf1ed;
+}
+
+.map-legend {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2;
+  display: none;
+  gap: 5px;
+  max-width: min(240px, calc(100% - 20px));
+  padding: 8px 9px;
+  border: 1px solid rgba(22, 33, 28, 0.14);
+  border-radius: 7px;
+  background: rgba(255, 255, 251, 0.92);
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.15;
+  box-shadow: 0 6px 18px rgba(22, 33, 28, 0.08);
+}
+
+.map-shell.is-expanded .map-legend {
+  display: grid;
+}
+
+.map-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.legend-dot,
+.legend-line,
+.legend-zone {
+  flex: 0 0 auto;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fffffb;
+  border-radius: 999px;
+}
+
+.legend-event {
+  background: var(--primary);
+}
+
+.legend-alternative {
+  background: var(--place);
+}
+
+.legend-line {
+  width: 17px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.legend-zone {
+  width: 13px;
+  height: 10px;
+  border: 1px solid var(--warn);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--warn), transparent 76%);
+}
+
+.maplibregl-popup-content {
+  max-width: 220px;
+  padding: 10px 11px;
+  border-radius: 7px;
+  color: var(--ink);
+  font: 12px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.map-popup-title {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 13px;
+}
+
+.map-popup-meta {
+  color: var(--muted);
 }
 
 .map-shell.is-expanded {
@@ -491,10 +597,28 @@ h1 {
   color: var(--muted);
 }
 
+.source-row a {
+  width: fit-content;
+  font-size: 12px;
+}
+
 .method-list {
   margin: 0;
   padding-left: 20px;
   line-height: 1.45;
+}
+
+.info-copy {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.info-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 13px;
 }
 
 .info-metrics {
@@ -587,13 +711,17 @@ h1 {
 
   .map-shell {
     grid-column: 2;
-    grid-row: 2 / span 3;
+    grid-row: 4;
     align-self: start;
-    margin-top: 22px;
+    margin-top: 0;
   }
 
   .map-canvas {
     height: 520px;
+  }
+
+  .map-legend {
+    display: grid;
   }
 
   h1 {

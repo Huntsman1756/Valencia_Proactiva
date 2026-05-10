@@ -5,6 +5,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Pulido frontend concurso y mapa - 2026-05-10
+- Frontend: el mapa queda alineado bajo las pestañas en escritorio para evitar solapes visuales.
+- Frontend: añadida nota visible de candidatura AD.TR.15 y enlace al repositorio GitHub.
+- Frontend: las pestañas `Fuentes`, `Metodología` e `Info` explican datos abiertos, finalidad, trazabilidad, límites de staging y concurso.
+- Frontend: añadida leyenda de mapa y popups clicables en eventos, alternativas, zonas de impacto y tráfico.
+- i18n: revisión de acentos y etiquetas principales en castellano y valenciano.
+
 ### Added - Estabilidad local no-VPS - 2026-05-10
 - Cerrado T-25: cobertura backend formal con `pytest --cov=src/backend --cov-fail-under=70`, 94 tests y 70,31%.
 - Cerrado T-112: test real de rate-limit 429 en `/api/v1/feedback`.

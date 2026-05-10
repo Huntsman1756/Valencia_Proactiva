@@ -13,10 +13,27 @@ const POI_FILTERS = [
   "CARGADOR_VE",
 ];
 const SOURCE_CATALOG = [
-  { id: "open_data_core", datasetCount: 14, kindKey: "sourceKindOpenData" },
-  { id: "emt_valencia_estado_servicio", datasetCount: 1, kindKey: "sourceKindOfficialFeed" },
-  { id: "vpro_feedback", datasetCount: 1, kindKey: "sourceKindDerived" },
+  {
+    id: "open_data_core",
+    datasetCount: 14,
+    kindKey: "sourceKindOpenData",
+    url: "https://opendata.vlci.valencia.es/",
+  },
+  {
+    id: "emt_valencia_estado_servicio",
+    datasetCount: 1,
+    kindKey: "sourceKindOfficialFeed",
+    url: "https://www.emtvalencia.es/ciudadano/index.php?option=com_content&view=article&id=728&Itemid=120&lang=es",
+  },
+  {
+    id: "vpro_feedback",
+    datasetCount: 1,
+    kindKey: "sourceKindDerived",
+    url: "https://github.com/Huntsman1756/Valencia_Proactiva",
+  },
 ];
+const GITHUB_URL = "https://github.com/Huntsman1756/Valencia_Proactiva";
+const CONTEST_URL = "https://sede.valencia.es/sede/registro/procedimiento/AD.TR.15";
 const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css";
 const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
 
@@ -125,6 +142,7 @@ function setupLanguageSelector() {
         }));
         renderCards(state.cards);
         statusText.textContent = formatMessage("activeEvents", { count: state.cards.length });
+        updateMap(state.cards);
       }
     });
   });
@@ -406,6 +424,7 @@ function renderInfoPanels() {
             <span>${t(`sourceDescription_${source.id}`)}</span>
           </div>
           <small>${t(source.kindKey)} · ${formatMessage("datasetCount", { count: source.datasetCount })}</small>
+          <a href="${source.url}" target="_blank" rel="noopener">${t("openSourceLink")}</a>
         </article>
       `).join("")}
     </div>
@@ -422,7 +441,9 @@ function renderInfoPanels() {
       <li>${t("methodStep2")}</li>
       <li>${t("methodStep3")}</li>
       <li>${t("methodStep4")}</li>
+      <li>${t("methodStep5")}</li>
     </ol>
+    <p class="info-copy">${t("methodologyNote")}</p>
   `;
 
   additionalInfoPanel.innerHTML = `
@@ -431,10 +452,15 @@ function renderInfoPanels() {
       <h2>${t("infoTitle")}</h2>
       <p>${t("infoIntro")}</p>
     </div>
+    <p class="info-copy">${t("projectPurpose")}</p>
     <div class="info-metrics">
       <div><strong>663</strong><span>${t("metricEvents")}</span></div>
       <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
       <div><strong>20</strong><span>${t("metricNotices")}</span></div>
+    </div>
+    <div class="info-links">
+      <a href="${GITHUB_URL}" target="_blank" rel="noopener">${t("githubLink")}</a>
+      <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
     </div>
   `;
 }
@@ -523,6 +549,81 @@ function ensureMapLayers() {
       "circle-stroke-width": 2,
     },
   });
+  setupMapInteractions();
+}
+
+function setupMapInteractions() {
+  if (state.map.__vproInteractionsBound) {
+    return;
+  }
+  state.map.__vproInteractionsBound = true;
+
+  [
+    ["event-points", popupForEventPoint],
+    ["alternative-points", popupForAlternativePoint],
+    ["impact-zones-fill", popupForImpactZone],
+    ["traffic-realtime", popupForTrafficLine],
+  ].forEach(([layerId, popupBuilder]) => {
+    state.map.on("click", layerId, (event) => {
+      const feature = event.features?.[0];
+      if (!feature) {
+        return;
+      }
+      new maplibregl.Popup({ closeButton: true, closeOnClick: true })
+        .setLngLat(popupCoordinates(feature, event.lngLat))
+        .setHTML(popupBuilder(feature.properties || {}))
+        .addTo(state.map);
+    });
+    state.map.on("mouseenter", layerId, () => {
+      state.map.getCanvas().style.cursor = "pointer";
+    });
+    state.map.on("mouseleave", layerId, () => {
+      state.map.getCanvas().style.cursor = "";
+    });
+  });
+}
+
+function popupCoordinates(feature, lngLat) {
+  if (feature.geometry?.type === "Point") {
+    return feature.geometry.coordinates;
+  }
+  return lngLat;
+}
+
+function popupForEventPoint(properties) {
+  return popupHtml(properties.title || labelForType(properties.type), [
+    `${labelForType(properties.type)} · ${t("severity")} ${properties.severity}`,
+    t("popupEventHint"),
+  ]);
+}
+
+function popupForAlternativePoint(properties) {
+  const accessible = properties.accessible === true || properties.accessible === "true";
+  return popupHtml(properties.name || labelForPoi(properties.poi_type), [
+    labelForPoi(properties.poi_type),
+    accessible ? t("popupAccessible") : t("popupAlternativeHint"),
+  ]);
+}
+
+function popupForImpactZone(properties) {
+  return popupHtml(t("legendImpact"), [
+    `${labelForType(properties.event_type)} · ${t("severity")} ${properties.severity}`,
+    formatMessage("popupImpactRadius", { meters: Math.round(Number(properties.buffer_distance || 0)) }),
+  ]);
+}
+
+function popupForTrafficLine(properties) {
+  return popupHtml(t("legendTraffic"), [
+    `${labelForType(properties.type)} · ${t("severity")} ${properties.severity}`,
+    t("popupTrafficHint"),
+  ]);
+}
+
+function popupHtml(title, lines) {
+  return `
+    <strong class="map-popup-title">${escapeHtml(title || "")}</strong>
+    <span class="map-popup-meta">${lines.filter(Boolean).map(escapeHtml).join("<br>")}</span>
+  `;
 }
 
 function setGeoJsonSource(sourceId, data) {
@@ -560,6 +661,7 @@ function eventGeometryFeature(event) {
     properties: {
       id: event.id,
       type: event.type,
+      type_label: labelForType(event.type),
       severity: Number(event.severity || 1),
     },
   };
@@ -575,6 +677,7 @@ function eventPointFeature(event) {
     properties: {
       id: event.id,
       type: event.type,
+      type_label: labelForType(event.type),
       severity: Number(event.severity || 1),
       title: event.title,
     },
@@ -591,6 +694,7 @@ function alternativeFeature(alternative) {
     properties: {
       id: alternative.id,
       poi_type: alternative.poi_type,
+      name: alternative.name,
       accessible: Boolean(alternative.accessible),
     },
   };

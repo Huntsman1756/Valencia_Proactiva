@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f7faf8">
     <title>V-PRO</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23057a55'/%3E%3Cpath d='M9 8h4l3 12 3-12h4l-5 16h-4L9 8z' fill='%23fff'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="./assets/app.css">
   </head>
   <body>
@@ -32,6 +33,10 @@
         <p class="eyebrow" data-i18n="eyebrow">Valencia ahora</p>
         <h1 data-i18n="title">Lo que esta pasando cerca</h1>
         <p id="statusText" class="status-text" data-i18n="loading">Buscando acontecimientos activos...</p>
+        <p class="project-note">
+          <span data-i18n="projectNote">Demo para el concurso municipal de datos abiertos.</span>
+          <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">GitHub</a>
+        </p>
       </section>
 
       <nav class="view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
@@ -59,6 +64,12 @@
           <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
         </div>
         <div id="map" class="map-canvas"></div>
+        <div class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
+          <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
+          <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa cercana</span></span>
+          <span><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico</span></span>
+          <span><i class="legend-zone"></i><span data-i18n="legendImpact">Zona de impacto</span></span>
+        </div>
       </section>
     </main>
 

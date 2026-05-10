@@ -7,6 +7,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     viewport,
     deviceScaleFactor: isMobile ? 2 : 1,
     isMobile,
+    hasTouch: isMobile,
   });
   const messages = [];
 
@@ -19,7 +20,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   });
   await page.reload({ waitUntil: "networkidle" });
   await page.locator("[data-lang='val']").click();
-  await page.locator("h1").filter({ hasText: "El que esta passant prop" }).waitFor({ timeout: 5000 });
+  await page.locator("h1").filter({ hasText: "El que està passant prop" }).waitFor({ timeout: 5000 });
   await page.locator(".source-strip").first().waitFor({ timeout: 10000 });
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
@@ -28,10 +29,40 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-view='methodology']").click();
   await page.locator("#methodologyPanel").filter({ hasText: "PostGIS" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='info']").click();
-  await page.locator("#additionalInfoPanel").filter({ hasText: "13.710" }).waitFor({ timeout: 5000 });
+  await page.locator("#additionalInfoPanel").filter({ hasText: "AD.TR.15" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='events']").click();
   await page.locator("#toggleMap").click();
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
+  await page.waitForTimeout(500);
+  await page.waitForFunction(
+    () => (window.vproDebug?.map?.querySourceFeatures("event-points") || []).length > 0,
+    null,
+    { timeout: 5000 },
+  );
+  const eventPoint = await page.evaluate(() => {
+    const map = window.vproDebug?.map;
+    const canvas = document.querySelector("#map");
+    if (!map || !canvas) {
+      return null;
+    }
+    const rect = canvas.getBoundingClientRect();
+    for (let x = 8; x < rect.width; x += 8) {
+      for (let y = 8; y < rect.height; y += 8) {
+        if (map.queryRenderedFeatures([x, y], { layers: ["event-points"] }).length > 0) {
+          return { x: rect.left + x, y: rect.top + y };
+        }
+      }
+    }
+    return null;
+  });
+  if (eventPoint) {
+    if (isMobile) {
+      await page.touchscreen.tap(eventPoint.x, eventPoint.y);
+    } else {
+      await page.mouse.click(eventPoint.x, eventPoint.y);
+    }
+    await page.locator(".maplibregl-popup-content").first().waitFor({ timeout: 5000 });
+  }
   await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator("#toggleMap").click();
   await page.locator(".feedback-button[data-vote='1']").first().click();
@@ -57,6 +88,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       events: Boolean(window.vproDebug?.map?.getLayer("event-points")),
       alternatives: Boolean(window.vproDebug?.map?.getLayer("alternative-points")),
     },
+    legend: document.querySelector(".map-legend")?.textContent,
+    popupBound: Boolean(window.vproDebug?.map?.__vproInteractionsBound),
+    popupText: document.querySelector(".maplibregl-popup-content")?.textContent,
     feedbackText: document.querySelector("#toast")?.textContent,
   }));
 

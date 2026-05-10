@@ -54,3 +54,8 @@ R-09 frontend demo cerrado.
 - Cambio clave: MapLibre se carga bajo demanda al expandir mapa para no bloquear la primera interaccion.
 R-10/T-36 cerrado.
 - docs/concurso/ganadores-anteriores.md documenta 2025, 2024 y primera edicion; principal riesgo: no parecer visor/prediccion monofuncional de movilidad.
+2026-05-10 13:20 - R-11 pulido frontend concurso/mapa/textos cerrado.
+- Mapa recolocado para no solaparse con pestanas en escritorio; verificacion DevTools: overlapsTabs=false.
+- Tabs Fuentes/Metodologia/Info ampliadas con concurso AD.TR.15, GitHub, datos abiertos, finalidad, trazabilidad y limites de staging.
+- Leyenda de mapa añadida; capas event-points, alternative-points, impact-zones-fill y traffic-realtime tienen popup/cursor.
+- ES/VAL revisado con acentos en labels principales; smoke valida heading valenciano, leyenda y popup.

@@ -1034,3 +1034,6 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Frontend: MapLibre no debe cargarse en el HTML inicial; se carga bajo demanda en setupMap() al expandir el mapa y como fallback diferido. Esto mantiene Lighthouse mobile >90 sin perder verificacion de capas en smoke.
 - Lighthouse CLI en Windows puede devolver EPERM al limpiar el perfil temporal de Chrome aunque escriba docs/reports/lighthouse-mobile.json; validar el JSON y registrar scores en rontend-verification.json.
 - Para futuras iteraciones Ralph no-VPS: no tocar T-23/T-27/T-28 hasta cerrar demo, memoria final y release.
+- T-116 cerrado: el mapa se baja a la fila de la lista para no tapar pestanas; DevTools en 824x630 confirma `overlapsTabs=false`.
+- T-116 UX mapa: leyenda visible en escritorio/expandido y popups en `event-points`, `alternative-points`, `impact-zones-fill` y `traffic-realtime`. El smoke hace click real en una capa y verifica `.maplibregl-popup-content`.
+- T-116 contenido: Fuentes/Metodologia/Info explican AD.TR.15, GitHub, datos abiertos, finalidad, trazabilidad, limites de staging y feedback agregado. ES/VAL revisados con acentos en labels principales.

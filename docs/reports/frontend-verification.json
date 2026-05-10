@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-05-10",
-  "target": "http://localhost:8080",
+  "target": "http://localhost:3000",
   "smoke": {
     "command": "node tests/frontend/smoke.mjs",
     "status": "passed",
@@ -9,17 +9,20 @@
       "6 real event cards rendered",
       "CAS/VAL runtime switches html lang to val",
       "sources, methodology and info tabs render",
+      "AD.TR.15 and GitHub context is visible",
       "Valenbisi alternative filter persists",
       "MapLibre layers exist after map expansion",
+      "map legend renders and a map popup opens on click",
       "feedback toast confirms persisted vote"
     ]
   },
   "browser_devtools": {
     "status": "passed",
-    "url": "http://localhost:8080",
-    "screenshot": "docs/reports/browser-devtools-current.png",
+    "url": "http://localhost:3000",
+    "screenshot": "docs/reports/frontend-polish-current.png",
     "console_errors": 0,
-    "snapshot": "6 event cards, profile selector, language selector and map expand control visible"
+    "snapshot": "6 event cards, AD.TR.15 note, GitHub link, corrected tabs, map legend and expand control visible",
+    "layout_check": "824x630 viewport: overlapsTabs=false"
   },
   "lighthouse_mobile": {
     "command": "npx --yes lighthouse http://localhost:8080 --output=json --output-path=docs/reports/lighthouse-mobile.json --quiet --chrome-flags='--headless --no-sandbox --disable-gpu' --form-factor=mobile --screenEmulation.mobile=true --screenEmulation.width=390 --screenEmulation.height=844 --screenEmulation.deviceScaleFactor=2 --only-categories=performance,accessibility,best-practices",
