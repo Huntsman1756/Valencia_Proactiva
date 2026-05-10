@@ -131,14 +131,6 @@ a:hover {
   background: rgba(255, 230, 107, 0.94);
 }
 
-.has-info-panel .civic-header {
-  z-index: 120;
-}
-
-body.has-info-panel {
-  overflow: auto;
-}
-
 .brand {
   display: inline-flex;
   align-items: center;
@@ -929,35 +921,17 @@ body.has-info-panel {
 }
 
 .info-panel:not([hidden]) {
-  position: fixed;
-  top: 128px;
-  right: 10px;
-  bottom: 10px;
-  z-index: 70;
-  width: min(520px, calc(100vw - 20px));
-  overflow: auto;
+  display: grid;
+  width: 100%;
   padding: 18px;
   border: 1px solid var(--line-strong);
   border-radius: 10px;
-  box-shadow: 0 24px 70px rgba(11, 32, 56, 0.22);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
 }
 
 .panel-close {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  align-self: start;
-  justify-self: end;
-  min-height: 34px;
-  width: max-content;
-  padding: 0 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 7px;
-  background: var(--surface);
-  color: var(--ink);
-  font-size: 13px;
-  font-weight: 850;
-  line-height: 1;
+  display: none;
 }
 
 .section-heading {
@@ -1660,11 +1634,16 @@ body.has-info-panel {
   }
 
   .info-panel:not([hidden]) {
-    top: 92px;
-    right: 24px;
-    bottom: 24px;
+    position: absolute;
+    left: 336px;
+    right: 414px;
+    bottom: 18px;
+    z-index: 9;
+    max-height: min(58vh, 560px);
+    overflow: auto;
     border-radius: var(--float-radius);
     background: var(--surface-float);
+    box-shadow: var(--shadow-float);
   }
 
   .workspace {

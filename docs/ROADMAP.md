@@ -68,6 +68,7 @@
 - [x] Señales de veracidad del dato, skeleton de carga, microfeedback móvil y modo alerta preparado sin datos ficticios de emergencia.
 - [x] Exportación de snapshot periodístico por evento, con fuente, impacto, alternativa y HTML embebible.
 - [x] Comprobador conservador de ZBE por distintivo ambiental y explicación de alternativas por medio de transporte/perfil.
+- [x] `Fuentes`, `Metodología` e `Info` como pestañas centrales en lugar de drawer lateral.
 - [ ] Pase final WCAG/teclado/contraste.
 - [x] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
 

@@ -31,14 +31,14 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
   await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
-  await page.waitForFunction(() => document.activeElement?.matches("#sourcesPanel [data-close-panel]"), null, { timeout: 5000 });
   const sourcesPanelState = await page.evaluate(() => ({
     eventsHidden: document.querySelector("#events")?.hidden,
+    sourcesVisible: !document.querySelector("#sourcesPanel")?.hidden,
     backdropHidden: document.querySelector("#panelBackdrop")?.hidden,
     bodyOverflow: getComputedStyle(document.body).overflow,
   }));
-  if (sourcesPanelState.eventsHidden || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
-    throw new Error(`Sources drawer blocks events: ${JSON.stringify(sourcesPanelState)}`);
+  if (!sourcesPanelState.eventsHidden || !sourcesPanelState.sourcesVisible || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
+    throw new Error(`Sources tab state is broken: ${JSON.stringify(sourcesPanelState)}`);
   }
   await page.locator("[data-view='methodology']").click();
   await page.locator("#methodologyPanel").filter({ hasText: "Guia d'interacció i simbologia" }).waitFor({ timeout: 5000 });

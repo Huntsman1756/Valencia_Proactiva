@@ -256,12 +256,6 @@ function setupLanguageSelector() {
 }
 
 function setupViews() {
-  panelBackdrop?.addEventListener("click", closeInfoPanel);
-  document.addEventListener("click", (event) => {
-    if (event.target.closest("[data-close-panel]")) {
-      closeInfoPanel({ revealEvents: true });
-    }
-  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && state.activeView !== "events") {
       closeInfoPanel();
@@ -285,31 +279,36 @@ function setupViews() {
 }
 
 function openInfoPanel(view) {
+  if (eventsPanel) {
+    eventsPanel.hidden = true;
+  }
   document.querySelectorAll(".info-panel[data-panel]").forEach((panel) => {
     const active = panel.dataset.panel === view;
     panel.hidden = !active;
-    panel.setAttribute("role", active ? "region" : "");
-    panel.removeAttribute("aria-modal");
     if (active) {
-      setTimeout(() => panel.querySelector("[data-close-panel]")?.focus(), 80);
+      panel.setAttribute("role", "tabpanel");
+      panel.focus({ preventScroll: true });
+    } else {
+      panel.removeAttribute("role");
     }
   });
   if (panelBackdrop) {
     panelBackdrop.hidden = true;
   }
-  document.body.classList.add("has-info-panel");
 }
 
 function closeInfoPanel(options = {}) {
   state.activeView = "events";
+  if (eventsPanel) {
+    eventsPanel.hidden = false;
+  }
   document.querySelectorAll(".info-panel[data-panel]").forEach((panel) => {
     panel.hidden = true;
-    panel.removeAttribute("aria-modal");
+    panel.removeAttribute("role");
   });
   if (panelBackdrop) {
     panelBackdrop.hidden = true;
   }
-  document.body.classList.remove("has-info-panel");
   if (!options.keepEventsPressed) {
     document.querySelectorAll("[data-view]").forEach((item) => {
       item.setAttribute("aria-pressed", String(item.dataset.view === "events"));
@@ -934,7 +933,6 @@ function renderInfoPanels() {
   ).size;
 
   sourcesPanel.innerHTML = `
-    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("sourcesEyebrow")}</p>
       <h2>${t("sourcesTitle")}</h2>
@@ -966,7 +964,6 @@ function renderInfoPanels() {
   `;
 
   methodologyPanel.innerHTML = `
-    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("methodologyEyebrow")}</p>
       <h2>${t("methodologyTitle")}</h2>
@@ -998,7 +995,6 @@ function renderInfoPanels() {
   `;
 
   additionalInfoPanel.innerHTML = `
-    ${panelCloseButton()}
     <div class="panel-heading">
       <p class="eyebrow">${t("infoEyebrow")}</p>
       <h2>${t("infoTitle")}</h2>
@@ -1048,16 +1044,6 @@ function renderInfoPanels() {
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
     </div>
   `;
-  if (state.activeView !== "events") {
-    const activePanel = document.querySelector(`.info-panel[data-panel="${state.activeView}"]`);
-    if (activePanel && !activePanel.hidden) {
-      setTimeout(() => activePanel.querySelector("[data-close-panel]")?.focus({ preventScroll: true }), 0);
-    }
-  }
-}
-
-function panelCloseButton() {
-  return `<button type="button" class="panel-close" data-close-panel aria-label="${escapeHtml(t("closePanel"))}">${escapeHtml(t("closePanel"))}</button>`;
 }
 
 function updateMap(cards) {

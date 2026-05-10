@@ -5,6 +5,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Pestañas informativas - 2026-05-10
+- Frontend: `Fuentes`, `Metodología` e `Info` dejan de abrirse como drawer lateral y pasan a pestañas individuales dentro del área central, más visibles y fáciles de mantener.
+- Tests: el smoke valida que la pestaña activa oculte la lista de eventos y que volver a `Eventos` restaure el carril operativo.
+
 ### Added - ZBE y alternativas por medio - 2026-05-10
 - Frontend: nuevo comprobador conservador `Vehículo y ZBE` por distintivo ambiental, con enlace a la ordenanza municipal y aviso de no sustitución legal.
 - Frontend: el panel de detalle explica por qué se recomienda una alternativa según perfil/medio (`Valenbisi`, EMT, Metrovalencia, PMR o comercio).
@@ -30,7 +34,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: eventos y alternativas pasan a pins MapLibre propios (`E`/`A`) para destacar sobre los iconos del mapa base; se ocultan simbolos POI/transporte del mapa base que compiten visualmente.
 - Frontend: `Solo eventos activos` recarga datos y cambia el volumen visible; al desactivarlo se muestran mas eventos disponibles para exploracion.
 - Frontend: el mapa expandido recupera una bandeja inferior compacta de eventos visibles para que la lista no desaparezca del flujo operativo.
-- Frontend: corregido bug donde `Fuentes/Metodologia/Info` ocultaban o bloqueaban la seccion `Eventos`; los paneles pasan a drawer no modal, sin backdrop bloqueante y con foco inicial en `Cerrar`.
+- Frontend: corregido bug donde `Fuentes/Metodologia/Info` bloqueaban la navegación; posteriormente pasan a pestañas centrales sin overlay.
 - Frontend: `Eventos cercanos` incorpora boton `Contraer/Ver eventos`; en desktop se elimina el scroll vertical interno de la bandeja y se usa carril horizontal sin scrollbar visible.
 - Accesibilidad: perfiles y filtros dejan de depender de carruseles con scrollbar oculta; ahora envuelven en varias lineas para personas mayores y navegacion tactil.
 - Fix: el boton `Contraer/Ver eventos` ahora aplica el estado sobre `#events`, no sobre el contenedor interno; el carril desktop muestra scrollbar horizontal usable para recorrer todas las incidencias.
@@ -46,7 +50,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Docs: metodología y sistema de diseño explican que la severidad derivada es impacto operativo estimado, no prioridad oficial municipal.
 
 ### Changed - Claridad de producto y perfiles - 2026-05-10
-- Frontend: navegación de secciones integrada en el header; `Fuentes`, `Metodología` e `Info` se abren como drawer superpuesto para mantener el mapa como superficie principal.
+- Frontend: navegación de secciones integrada en el header; `Fuentes`, `Metodología` e `Info` se muestran como secciones del área principal.
 - Frontend: botones de navegación externa pasan a estilo outlined; el CTA administrativo mantiene peso visual sólido.
 - Frontend: eliminada la navegación superior duplicada; quedan las secciones operativas `Eventos`, `Fuentes`, `Metodología` e `Info`.
 - Frontend: marca pública visible consolidada como `VLC PROACTIVA`; se retiran restos visibles de `V-PRO` en la UI.

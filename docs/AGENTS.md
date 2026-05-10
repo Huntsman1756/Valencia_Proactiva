@@ -1078,10 +1078,15 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - No volver a usar siglas sin contexto en filtros: `VE` debe ser `Recarga vehículo eléctrico`; `EMT`/`FGV` deben indicar paradas/estaciones.
 - `Solo eventos activos` no debe ser solo un toggle visual: debe recargar o refiltrar de forma observable.
 - En mapa expandido debe existir una bandeja compacta de eventos visibles para no perder la lista de contexto.
-- Ajuste QA: `Fuentes/Metodología/Info` son drawers no modales. No deben ocultar `#events`, no deben activar backdrop bloqueante y deben mover el foco a `Cerrar`.
+- Ajuste QA actualizado: `Fuentes/Metodología/Info` son pestañas centrales, no drawers. Al abrir una de ellas se oculta `#events`; al volver a `Eventos` se restaura el carril operativo.
 - `Eventos cercanos` tiene control `Contraer/Ver eventos`; no volver a usar scroll vertical interno poco visible en la bandeja desktop.
 - Para accesibilidad tactil/personas mayores, perfiles y filtros deben envolver en varias lineas antes que esconderse en carruseles sin barra visible.
 - Bugfix posterior: el estado `is-collapsed` debe vivir en `#events` porque el CSS depende de `.event-list.is-collapsed`; el carril desktop de `#eventList` debe mantener `overflow-x: auto` y scrollbar visible.
+
+## Sesion 2026-05-10 - Pestañas informativas centrales
+- Frontend: `Fuentes`, `Metodología` e `Info` dejan de ser drawers laterales y pasan a pestañas individuales en el área central, alineadas con la navegación superior.
+- Regla nueva: las pestañas informativas pueden ocultar `#events` mientras están activas; `Eventos` debe restaurar la lista y el toggle `Contraer/Ver eventos`.
+- No reintroducir botones `Cerrar` ni foco forzado a un drawer para estas secciones.
 
 ## Sesion 2026-05-10 - Confianza del dato y vision post-MVP
 - Frontend: cada evento debe mostrar sello de veracidad y el panel de detalle debe explicar impacto temporal previsto. Si la fuente fuera ciudadana, etiquetar como pendiente de validacion oficial.
