@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Confianza del dato y resiliencia - 2026-05-10
+- Frontend: cada evento muestra un sello de veracidad (`Verificado por...`) y el panel de detalle añade impacto temporal previsto.
+- Frontend: añadido skeleton de carga, microfeedback háptico en móviles compatibles y modo `Alerta` de alto contraste como estado preparado, sin pintar capas ficticias de emergencia.
+- Docs: `MEMORIA.md`, `ROADMAP.md` y `TODO.md` incorporan la evolución post-MVP: VLC-Voice, predicción urbana, crowdsourcing verificado, backoffice municipal y Web Push con consentimiento.
+
 ### Changed - Claridad de mapa y contenidos - 2026-05-10
 - Frontend: las secciones `Eventos`, `Fuentes`, `Metodologia` e `Info` pasan a navegacion incrustada tipo texto, sin aspecto de cajas/pills independientes.
 - Frontend: las zonas de impacto del mapa se limitan a los eventos visibles y se pintan como contexto estimado, con relleno suave y trazo discontinuo para no sugerir una calle cortada concreta.

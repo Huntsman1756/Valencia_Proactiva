@@ -101,6 +101,7 @@
 | T-116 | Pulido frontend concurso: evitar solape mapa/pestañas, ampliar Fuentes/Metodología/Info, añadir GitHub/AD.TR.15, leyenda y popups de mapa, revisar acentos ES/VAL. | ✅ **Completado 2026-05-10** — smoke mobile/desktop valida capas, leyenda y popup; DevTools confirma `overlapsTabs=false`. | 2026-05-10 |
 | T-117 | Reorganización explicativa de producto: cabecera con propuesta de valor, guía de uso, mapa sin lateral en anchos intermedios, pestañas con fuentes/metodología/info más completas, limitaciones y FAQ. | ✅ **Completado 2026-05-10** — smoke valida `layout.overlapsTabs=false`, guía de producto, ayuda de mapa, leyenda y popup. | 2026-05-10 |
 | T-123 | Claridad de mapa y contenidos: integrar nav sin cajas, evitar red de tráfico normal, limitar zonas de impacto a eventos visibles, ampliar leyenda y romper el patrón 3x3 en Fuentes/Metodología/Info. | ✅ **Completado 2026-05-10** — nav incrustada, tráfico solo con incidencia relevante, zonas visibles por evento mostrado, leyenda mayor, pins propios `E`/`A`, filtros sin siglas opacas, `Vista resumida` operativo, drawers no modales y paneles informativos con separadores/acordeones. | 2026-05-10 |
+| T-129 | Señales de confianza y resiliencia frontend: sello de veracidad por evento, impacto temporal, skeleton de carga, microfeedback móvil y modo alerta preparado sin capas ficticias de emergencia. | ✅ **Completado 2026-05-10** — UI marca datos verificados, documenta duración prevista, vibra en interacciones compatibles y activa un modo alerta de alto contraste que avisa de que faltan fuentes oficiales de emergencia. | 2026-05-10 |
 
 ---
 
@@ -118,6 +119,11 @@
 | T-41 | Autenticación ciudadana (Cl@ve / OAuth). | Solo si se añade experiencia personalizada. |
 | T-42 | Notificaciones push web. | Requiere consentimiento GDPR explícito. |
 | T-43 | Panel administrativo para el Ayuntamiento. | Gestionar plantillas de acción sin deploy. |
+| T-124 | VLC-Voice: consulta conversacional sobre movilidad y trámites. | Debe consultar el motor de reglas y fuentes oficiales; no generar respuestas sin trazabilidad. |
+| T-125 | Modelo predictivo de saturación urbana para Fallas, maratones y grandes eventos. | Separar predicción estadística de aviso oficial y mostrar incertidumbre. |
+| T-126 | Crowdsourcing verificado de incidencias. | Promover a evento solo con umbral, moderación y validación municipal. |
+| T-127 | Backoffice municipal con índice de estrés urbano. | Vista para personal técnico, no para ciudadanía general. |
+| T-128 | Web Push por zona habitual. | Consentimiento explícito, minimización de datos y baja sencilla. |
 | T-44 | Integración con datos en tiempo real (tráfico, EMT live). | Reconsiderar Celery/Redis si llega. |
 | T-45 | Métricas de uso / dashboard analítico. | Sin trackers externos: logs + cron de agregación. |
 

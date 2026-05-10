@@ -65,6 +65,7 @@
 - [x] Runtime bilingüe CAS/VAL.
 - [x] Tabs `Eventos`, `Fuentes`, `Metodología`, `Info`.
 - [x] Lighthouse mobile ≥90 Performance y Accessibility.
+- [x] Señales de veracidad del dato, skeleton de carga, microfeedback móvil y modo alerta preparado sin datos ficticios de emergencia.
 - [ ] Pase final WCAG/teclado/contraste.
 - [x] Golden Path demo estabilizado para vídeo con `ocupacio-via-publica` actual y perfil Comercial; no usar Fallas histórico fuera de temporada.
 
@@ -76,6 +77,14 @@
 - [ ] `T-24`: validar Nginx/security headers en dominio público.
 - [ ] `T-27`: cron/systemd en producción.
 - [ ] `T-28`: deploy manual documentado.
+
+## Evolución y escalabilidad post-MVP
+
+- [ ] `T-124`: VLC-Voice, consulta conversacional sobre movilidad y trámites, siempre apoyada en motor de reglas y fuentes trazables.
+- [ ] `T-125`: modelo predictivo de saturación urbana para Fallas, maratones y grandes eventos, separando predicción estadística de aviso oficial.
+- [ ] `T-126`: crowdsourcing verificado de incidencias, con umbral, moderación y validación municipal antes de promover a evento.
+- [ ] `T-127`: backoffice municipal con índice de estrés urbano y concentración de impactos por barrio.
+- [ ] `T-128`: Web Push por zona habitual, con consentimiento explícito y minimización de datos.
 
 ## Definition of Done Global
 

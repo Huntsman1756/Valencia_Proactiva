@@ -50,6 +50,7 @@ const state = {
   language: localStorage.getItem("vpro_language") || languageFromNavigator(),
   messages: {},
   theme: localStorage.getItem("vpro_theme") || "light",
+  alertMode: localStorage.getItem("vpro_alert_mode") === "true",
   events: [],
   cards: [],
   visibleCards: [],
@@ -83,6 +84,7 @@ const selectedEventPanel = document.querySelector("#selectedEventPanel");
 const profileImpact = document.querySelector("#profileImpact");
 const panelBackdrop = document.querySelector("#panelBackdrop");
 const themeToggle = document.querySelector("#themeToggle");
+const alertModeToggle = document.querySelector("#alertModeToggle");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -90,6 +92,7 @@ async function init() {
   await loadMessages();
   applyTranslations();
   setupThemeToggle();
+  setupAlertModeToggle();
   setupProfiles();
   setupLanguageSelector();
   setupViews();
@@ -131,6 +134,7 @@ function applyTranslations() {
   updateEventPanelToggleText();
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   updateThemeButton();
+  updateAlertModeButton();
   renderInfoPanels();
   renderSelectedEvent(state.visibleCards[state.selectedCardIndex]);
 }
@@ -156,6 +160,30 @@ function updateThemeButton() {
   const dark = state.theme === "dark";
   themeToggle.setAttribute("aria-pressed", String(dark));
   themeToggle.querySelector("span").textContent = dark ? t("themeLightShort") : t("themeDarkShort");
+}
+
+function setupAlertModeToggle() {
+  applyAlertMode();
+  alertModeToggle?.addEventListener("click", () => {
+    state.alertMode = !state.alertMode;
+    localStorage.setItem("vpro_alert_mode", String(state.alertMode));
+    applyAlertMode();
+    showToast(state.alertMode ? t("alertModeToast") : t("alertModeOffToast"));
+    vibrate(12);
+  });
+}
+
+function applyAlertMode() {
+  document.documentElement.dataset.alert = state.alertMode ? "prepared" : "off";
+  updateAlertModeButton();
+}
+
+function updateAlertModeButton() {
+  if (!alertModeToggle) {
+    return;
+  }
+  alertModeToggle.setAttribute("aria-pressed", String(state.alertMode));
+  alertModeToggle.querySelector("span").textContent = t("alertModeShort");
 }
 
 function setupProfiles() {
@@ -442,7 +470,7 @@ function setupMapToggle() {
 
 async function loadDashboard() {
   const requestId = ++state.dashboardRequestId;
-  eventList.innerHTML = "";
+  renderLoadingSkeleton();
   statusText.textContent = formatMessage("activeProfileLoading", { profile: profileLabel(state.profile) });
 
   try {
@@ -550,6 +578,20 @@ function renderCards(cards) {
   selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
 }
 
+function renderLoadingSkeleton() {
+  if (!eventList) {
+    return;
+  }
+  eventList.innerHTML = Array.from({ length: 3 }, () => `
+    <article class="skeleton-card" aria-label="${escapeHtml(t("loadingSkeletonLabel"))}">
+      <span></span>
+      <strong></strong>
+      <p></p>
+      <i></i>
+    </article>
+  `).join("");
+}
+
 function renderMapEventTray(cards) {
   if (!mapEventTray) {
     return;
@@ -611,6 +653,7 @@ function createEventCard(card, index) {
     source: labelForSource(event.source),
     updated: formatUpdated(event.updated_at || event.created_at),
   });
+  const veracityText = veracityLabel(event);
   const alternativeSource = alternative
     ? formatMessage("alternativeSourceLine", { source: labelForSource(alternative.source) })
     : "";
@@ -618,6 +661,7 @@ function createEventCard(card, index) {
   article.innerHTML = `
     <div class="source-strip">
       <span>${escapeHtml(sourceText)}</span>
+      <span class="veracity-badge">${escapeHtml(veracityText)}</span>
       <span>${escapeHtml(event.source_id || "")}</span>
     </div>
     <div class="event-header">
@@ -647,12 +691,14 @@ function createEventCard(card, index) {
 
   article.addEventListener("click", (eventClick) => {
     if (!eventClick.target.closest("button,a")) {
+      vibrate(8);
       selectCard(index);
     }
   });
   article.addEventListener("keydown", (keyboardEvent) => {
     if (keyboardEvent.key === "Enter" || keyboardEvent.key === " ") {
       keyboardEvent.preventDefault();
+      vibrate(8);
       selectCard(index);
     }
   });
@@ -708,12 +754,15 @@ function renderSelectedEvent(card) {
     : "";
   const impact = impactInfo(event);
   const severityClass = event.severity >= 4 ? " is-high" : "";
+  const veracityText = veracityLabel(event);
+  const temporalText = temporalImpactText(event);
 
   selectedEventPanel.innerHTML = `
     <div class="detail-meta">
       <span class="detail-status${severityClass}">${t("activeStatus")} - ${escapeHtml(impact.label)}</span>
       <h2>${escapeHtml(event.title)}</h2>
       <p>${escapeHtml(trimText(event.description, 160))}</p>
+      <span class="veracity-badge detail-veracity">${escapeHtml(veracityText)}</span>
     </div>
     <dl class="detail-list">
       <div>
@@ -723,6 +772,10 @@ function renderSelectedEvent(card) {
       <div>
         <dt>${t("affectedAreaLabel")}</dt>
         <dd>${escapeHtml(formatMessage("affectedAreaValue", { meters: impact.meters }))}</dd>
+      </div>
+      <div>
+        <dt>${t("temporalImpactTitle")}</dt>
+        <dd>${escapeHtml(temporalText)}</dd>
       </div>
       <div>
         <dt>${t("sourceLabel")}</dt>
@@ -910,6 +963,12 @@ function renderInfoPanels() {
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
     </div>
   `;
+  if (state.activeView !== "events") {
+    const activePanel = document.querySelector(`.info-panel[data-panel="${state.activeView}"]`);
+    if (activePanel && !activePanel.hidden) {
+      setTimeout(() => activePanel.querySelector("[data-close-panel]")?.focus({ preventScroll: true }), 0);
+    }
+  }
 }
 
 function panelCloseButton() {
@@ -1238,6 +1297,7 @@ function openRoute(alternative, event) {
 }
 
 async function submitFeedback(button, card) {
+  vibrate([8, 28, 8]);
   button.closest(".feedback-group").querySelectorAll(".feedback-button").forEach((item) => {
     item.dataset.selected = "false";
   });
@@ -1320,6 +1380,22 @@ function eventMarkerClass(event) {
 
 function labelForSource(source) {
   return state.messages.sources?.[source] || state.messages.sources?.DEFAULT || source || "";
+}
+
+function veracityLabel(event) {
+  const source = labelForSource(event?.source);
+  const updated = formatUpdated(event?.updated_at || event?.created_at);
+  if (event?.source === "vpro_feedback" || String(event?.source || "").includes("feedback")) {
+    return t("dataCitizenPending");
+  }
+  return formatMessage("dataVerified", { source, updated });
+}
+
+function temporalImpactText(event) {
+  if (event?.end_time) {
+    return formatMessage("temporalImpactUntil", { date: formatUpdated(event.end_time) });
+  }
+  return t("temporalImpactUnknown");
 }
 
 function labelForAction(action) {
@@ -1418,6 +1494,12 @@ function showToast(message) {
   showToast.timeoutId = setTimeout(() => {
     toast.hidden = true;
   }, 2400);
+}
+
+function vibrate(pattern = 8) {
+  if ("vibrate" in navigator) {
+    navigator.vibrate(pattern);
+  }
 }
 
 function t(key) {

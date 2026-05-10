@@ -17,11 +17,14 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.goto(FRONTEND_URL, { waitUntil: "networkidle", timeout: 30000 });
   await page.evaluate(() => {
     localStorage.setItem("vpro_session_token", crypto.randomUUID().replaceAll("-", ""));
+    localStorage.setItem("vpro_alert_mode", "false");
   });
   await page.reload({ waitUntil: "networkidle" });
   await page.locator("[data-lang='val']").click();
   await page.locator("h1").filter({ hasText: "El que està passant prop" }).waitFor({ timeout: 5000 });
   await page.locator(".source-strip").first().waitFor({ timeout: 10000 });
+  await page.locator("#alertModeToggle").click();
+  await page.locator("#toast").filter({ hasText: "Mode alerta preparat" }).waitFor({ timeout: 5000 });
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
@@ -114,6 +117,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     profileImpact: document.querySelector("#profileImpact")?.textContent,
     routeText: document.querySelector(".route-button")?.textContent,
     routeDisclaimer: document.querySelector(".route-note")?.textContent,
+    veracityText: document.querySelector(".veracity-badge")?.textContent,
+    temporalImpact: document.querySelector(".detail-list")?.textContent,
+    alertMode: document.documentElement.dataset.alert,
     eventsPanelHidden: document.querySelector("#events")?.hidden,
     visibleEventCards: Array.from(document.querySelectorAll(".event-card")).filter((card) => {
       const rect = card.getBoundingClientRect();
@@ -163,6 +169,12 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (!data.routeDisclaimer?.includes("Google")) {
     throw new Error("Route disclaimer missing Google Maps limitation");
+  }
+  if (data.alertMode !== "prepared" || !data.veracityText?.includes("Verificat per")) {
+    throw new Error(`Missing alert/veracity signals: ${JSON.stringify({ alertMode: data.alertMode, veracityText: data.veracityText })}`);
+  }
+  if (!data.temporalImpact?.includes("Impacte previst")) {
+    throw new Error("Temporal impact detail is missing");
   }
   if (data.eventsPanelHidden || data.visibleEventCards < 1) {
     throw new Error("Events panel disappeared after switching informational tabs");

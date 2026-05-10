@@ -1082,3 +1082,9 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - `Eventos cercanos` tiene control `Contraer/Ver eventos`; no volver a usar scroll vertical interno poco visible en la bandeja desktop.
 - Para accesibilidad tactil/personas mayores, perfiles y filtros deben envolver en varias lineas antes que esconderse en carruseles sin barra visible.
 - Bugfix posterior: el estado `is-collapsed` debe vivir en `#events` porque el CSS depende de `.event-list.is-collapsed`; el carril desktop de `#eventList` debe mantener `overflow-x: auto` y scrollbar visible.
+
+## Sesion 2026-05-10 - Confianza del dato y vision post-MVP
+- Frontend: cada evento debe mostrar sello de veracidad y el panel de detalle debe explicar impacto temporal previsto. Si la fuente fuera ciudadana, etiquetar como pendiente de validacion oficial.
+- `Modo Alerta` queda como estado preparado de alto contraste; no debe pintar refugios, evacuacion, imbornales ni recursos criticos hasta tener fuentes oficiales verificadas.
+- UX: skeletons de carga y microfeedback haptico estan permitidos si no bloquean accesibilidad ni pruebas headless.
+- Docs: la vision de futuro se documenta como roadmap post-MVP (VLC-Voice, prediccion, crowdsourcing verificado, backoffice y Web Push), no como funcionalidad actual de la demo.

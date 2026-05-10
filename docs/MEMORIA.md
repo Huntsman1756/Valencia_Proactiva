@@ -170,6 +170,17 @@ Proyecto liderado por personas desarrolladoras con experiencia en plataformas ge
 - Talleres de divulgación abiertos para mostrar cómo reutilizar la API V-PRO.
 - Incorporación progresiva de datasets adicionales del portal (contaminación, ruido, cámaras de tráfico).
 
+### 10.1 Evolución y escalabilidad
+
+VLC PROACTIVA se plantea como una capa de inteligencia urbana, no como una web aislada. El MVP ya demuestra el ciclo evento -> impacto -> acción -> feedback, y las siguientes líneas permiten escalarlo sin perder rigor ni trazabilidad:
+
+- **Modo Alerta / resiliencia.** La interfaz queda preparada para un modo de alto contraste orientado a emergencias, pero no mostrará refugios, evacuación, imbornales ni recursos críticos hasta disponer de fuentes oficiales verificadas y metodología documentada.
+- **VLC-Voice.** Evolución conversacional para consultas como "¿puedo descargar mercancía mañana en la calle Colón a las 9?", siempre consultando el motor de reglas y fuentes oficiales, no sustituyéndolas.
+- **Modelado predictivo.** Uso histórico de Fallas, maratones y grandes eventos para anticipar saturación urbana y ventanas de impacto, diferenciando predicción de aviso oficial.
+- **Crowdsourcing verificado.** El feedback ciudadano actuará como sensor social: varias señales coincidentes podrán generar incidencias pendientes de validación municipal y métricas agregadas CC-BY 4.0.
+- **Backoffice municipal.** Panel para personal técnico con índice de estrés urbano, concentración de impactos por barrio y recomendaciones sobre dónde evitar nuevas actuaciones simultáneas.
+- **Notificaciones proactivas.** Web Push para zonas habituales de una persona o comercio, siempre con consentimiento explícito y sin almacenar ubicaciones personales innecesarias.
+
 ## 11. Cumplimiento formal
 - Redactado en castellano. UI pública prevista bilingüe castellano/valenciano desde el arranque.
 - Uso de lenguaje inclusivo y no sexista en toda la documentación y la UI.
