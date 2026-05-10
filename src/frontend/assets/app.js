@@ -43,10 +43,13 @@ const state = {
   messages: {},
   events: [],
   cards: [],
+  visibleCards: [],
   impactZones: [],
   trafficEvents: [],
   activeView: "events",
   poiTypeFilter: localStorage.getItem("vpro_poi_type") || "ALL",
+  activeOnly: localStorage.getItem("vpro_active_only") !== "false",
+  showZbe: localStorage.getItem("vpro_show_zbe") !== "false",
   map: null,
   sessionToken: getSessionToken(),
   selectedCardIndex: 0,
@@ -72,6 +75,7 @@ async function init() {
   setupProfiles();
   setupLanguageSelector();
   setupViews();
+  setupQuickFilters();
   setupPoiFilters();
   setupMapToggle();
   await loadDashboard();
@@ -100,14 +104,14 @@ function applyTranslations() {
     });
   });
   document.querySelectorAll("[data-profile]").forEach((button) => {
-    button.textContent = profileLabel(button.dataset.profile);
+    renderProfileButton(button);
   });
   document.querySelectorAll("[data-poi-filter]").forEach((button) => {
     button.textContent = labelForPoiFilter(button.dataset.poiFilter);
   });
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   renderInfoPanels();
-  renderSelectedEvent(state.cards[state.selectedCardIndex]);
+  renderSelectedEvent(state.visibleCards[state.selectedCardIndex]);
 }
 
 function setupProfiles() {
@@ -123,6 +127,17 @@ function setupProfiles() {
       loadDashboard();
     });
   });
+}
+
+function renderProfileButton(button) {
+  const profile = button.dataset.profile;
+  button.innerHTML = `
+    <span class="profile-icon" aria-hidden="true">${profileIcon(profile)}</span>
+    <span class="profile-copy">
+      <strong>${escapeHtml(profileLabel(profile))}</strong>
+      <span>${escapeHtml(profileDescription(profile))}</span>
+    </span>
+  `;
 }
 
 function setupLanguageSelector() {
@@ -144,9 +159,10 @@ function setupLanguageSelector() {
           event: normalizeEvent(card.event),
           action: selectActionForProfile(card.event.mitigation_actions || [], state.profile),
         }));
-        renderCards(state.cards);
-        statusText.textContent = formatMessage("activeEvents", { count: state.cards.length });
-        updateMap(state.cards);
+        const visibleCards = filteredCards();
+        renderCards(visibleCards);
+        statusText.textContent = formatMessage("activeEvents", { count: visibleCards.length });
+        updateMap(visibleCards);
       }
     });
   });
@@ -167,6 +183,23 @@ function setupViews() {
       if (state.activeView === "events") {
         setTimeout(() => state.map?.resize(), 120);
       }
+    });
+  });
+}
+
+function setupQuickFilters() {
+  document.querySelectorAll("[data-quick-filter]").forEach((button) => {
+    const key = button.dataset.quickFilter;
+    button.setAttribute("aria-checked", String(Boolean(state[key])));
+    button.addEventListener("click", () => {
+      state[key] = !state[key];
+      localStorage.setItem(key === "activeOnly" ? "vpro_active_only" : "vpro_show_zbe", String(state[key]));
+      button.setAttribute("aria-checked", String(state[key]));
+      if (key === "showZbe") {
+        applyLayerVisibility();
+      }
+      renderCards(filteredCards());
+      updateMap(filteredCards());
     });
   });
 }
@@ -220,7 +253,7 @@ async function setupMap() {
 
   window.vproDebug = { map: state.map, state };
   state.map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-  state.map.on("load", () => updateMap(state.cards));
+  state.map.on("load", () => updateMap(filteredCards()));
   state.map.on("error", (event) => {
     const message = event?.error?.message;
     if (message) {
@@ -289,10 +322,10 @@ async function loadDashboard() {
 
     const cards = await Promise.all(state.events.map(buildCardModel));
     state.cards = cards.sort((a, b) => b.event.severity - a.event.severity);
-    renderCards(state.cards);
+    renderCards(filteredCards());
     renderInfoPanels();
-    updateMap(state.cards);
-    statusText.textContent = formatMessage("activeEvents", { count: state.cards.length });
+    updateMap(filteredCards());
+    statusText.textContent = formatMessage("activeEvents", { count: filteredCards().length });
   } catch (error) {
     renderEmpty(t("apiError"));
     statusText.textContent = t("apiUnavailable");
@@ -342,9 +375,27 @@ function normalizeEvent(event) {
 }
 
 function renderCards(cards) {
+  state.visibleCards = cards;
   eventList.innerHTML = "";
+  if (cards.length === 0) {
+    renderSelectedEvent(null);
+    eventList.innerHTML = `<div class="empty-state">${escapeHtml(t("emptyEvents"))}</div>`;
+    return;
+  }
   cards.forEach((card, index) => eventList.appendChild(createEventCard(card, index)));
   selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
+}
+
+function filteredCards() {
+  return state.cards.filter((card) => {
+    if (!state.showZbe && card.event.type === "ZBE") {
+      return false;
+    }
+    if (state.activeOnly && card.event.status && card.event.status !== "active") {
+      return false;
+    }
+    return true;
+  });
 }
 
 function createEventCard(card, index) {
@@ -427,18 +478,18 @@ function createEventCard(card, index) {
 }
 
 function selectCard(index, options = {}) {
-  if (!state.cards.length) {
+  if (!state.visibleCards.length) {
     renderSelectedEvent(null);
     return;
   }
   const nextIndex = Number.isFinite(index) ? index : 0;
-  state.selectedCardIndex = Math.max(0, Math.min(nextIndex, state.cards.length - 1));
+  state.selectedCardIndex = Math.max(0, Math.min(nextIndex, state.visibleCards.length - 1));
   document.querySelectorAll(".event-card").forEach((cardElement) => {
     const selected = Number(cardElement.dataset.cardIndex) === state.selectedCardIndex;
     cardElement.dataset.selected = String(selected);
     cardElement.setAttribute("aria-pressed", String(selected));
   });
-  const card = state.cards[state.selectedCardIndex];
+  const card = state.visibleCards[state.selectedCardIndex];
   renderSelectedEvent(card);
   if (options.flyTo !== false && state.map && card?.event?.center) {
     state.map.flyTo({ center: card.event.center, zoom: 14, essential: false });
@@ -463,7 +514,10 @@ function renderSelectedEvent(card) {
   const alternativeName = alternative?.name && alternative.name !== "Sin titulo"
     ? alternative.name
     : labelForPoi(alternative?.poi_type);
-  const adminUrl = card.action?.payload?.url || card.action?.payload?.secondary_url || CONTEST_URL;
+  const adminUrl = citizenActionUrl(card.action);
+  const adminLink = adminUrl
+    ? `<a class="detail-link" href="${adminUrl}" target="_blank" rel="noopener">${t("openActionLink")}</a>`
+    : "";
   const severityClass = event.severity >= 4 ? " is-high" : "";
 
   selectedEventPanel.innerHTML = `
@@ -497,7 +551,7 @@ function renderSelectedEvent(card) {
     <section class="detail-block">
       <h3>${t("adminActionTitle")}</h3>
       <p>${escapeHtml(actionLabel)}</p>
-      <a class="detail-link" href="${adminUrl}" target="_blank" rel="noopener">${t("openActionLink")}</a>
+      ${adminLink}
     </section>
     <section class="detail-block">
       <h3>${t("feedbackQuestion")}</h3>
@@ -520,6 +574,7 @@ function renderSelectedEvent(card) {
 function renderEmpty(message) {
   eventList.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
   state.cards = [];
+  state.visibleCards = [];
   state.selectedCardIndex = 0;
   renderSelectedEvent(null);
 }
@@ -651,6 +706,7 @@ function updateMap(cards) {
     "alternative-points",
     featureCollection(cards.map(({ alternative }) => alternativeFeature(alternative)).filter(Boolean)),
   );
+  applyLayerVisibility();
 
   const selectedCenter = cards[state.selectedCardIndex]?.event?.center || cards[0]?.event?.center;
   if (selectedCenter) {
@@ -802,6 +858,20 @@ function setGeoJsonSource(sourceId, data) {
   }
 }
 
+function applyLayerVisibility() {
+  if (!state.map) {
+    return;
+  }
+  [
+    "impact-zones-fill",
+    "impact-zones-line",
+  ].forEach((layerId) => {
+    if (state.map.getLayer(layerId)) {
+      state.map.setLayoutProperty(layerId, "visibility", state.showZbe ? "visible" : "none");
+    }
+  });
+}
+
 function featureCollection(features) {
   return { type: "FeatureCollection", features };
 }
@@ -946,6 +1016,28 @@ function labelForAction(action) {
 
 function profileLabel(profile) {
   return state.messages.profiles?.[profile] || profile;
+}
+
+function profileDescription(profile) {
+  return state.messages.profileDescriptions?.[profile] || "";
+}
+
+function profileIcon(profile) {
+  return {
+    GENERIC: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>',
+    COMMERCIAL: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 10h12l-1 10H7L6 10Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/><path d="M8 14h8"/></svg>',
+    PMR: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="5" r="2"/><path d="M10 8v5h4l3 5"/><path d="M8.5 11a5 5 0 1 0 5 6"/></svg>',
+    CYCLIST: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M8 17l4-7 3 7M12 10h4M11 7h3"/><circle cx="15" cy="5" r="1.5"/></svg>',
+    PUBLIC_TRANSPORT: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="13" rx="2"/><path d="M8 8h8M8 12h8M9 20h.01M15 20h.01"/><path d="M9 17l-2 3M15 17l2 3"/></svg>',
+  }[profile] || '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>';
+}
+
+function citizenActionUrl(action) {
+  const rawUrl = action?.payload?.url || action?.payload?.secondary_url;
+  if (!rawUrl || rawUrl === CONTEST_URL) {
+    return null;
+  }
+  return rawUrl;
 }
 
 function selectActionForProfile(actions, profile) {

@@ -57,14 +57,14 @@
 
           <section class="rail-section quick-filters">
             <h2 data-i18n="quickFiltersTitle">Filtros rápidos</h2>
-            <div class="filter-row">
+            <button type="button" class="filter-row" data-quick-filter="activeOnly" role="switch" aria-checked="true">
               <span data-i18n="activeOnly">Solo eventos activos</span>
               <span class="switch-control" aria-hidden="true"></span>
-            </div>
-            <div class="filter-row">
+            </button>
+            <button type="button" class="filter-row" data-quick-filter="showZbe" role="switch" aria-checked="true">
               <span data-i18n="showZbe">Mostrar ZBE</span>
-              <span class="switch-control is-muted" aria-hidden="true"></span>
-            </div>
+              <span class="switch-control" aria-hidden="true"></span>
+            </button>
             <div class="alternative-toolbar" aria-label="Filtro de alternativas" data-i18n-attr="aria-label:alternativeToolbarLabel">
               <span data-i18n="alternativeToolbarTitle">Alternativas</span>
               <div id="poiFilters" class="poi-filters"></div>

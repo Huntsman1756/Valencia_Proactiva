@@ -8,6 +8,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 ### Changed - Rediseño civic utility map-first - 2026-05-10
 - Frontend: reemplazada la estructura anterior por cabecera civica, carril izquierdo de perfil/filtros, mapa central MapLibre y panel derecho de detalle/accion.
 - Frontend: añadido perfil `Comercial` al selector CAS/VAL runtime, manteniendo perfiles `Generico`, `PMR`, `Bici` y `Transporte`.
+- Frontend: los perfiles pasan a filas con icono SVG inline, nombre y descripcion operativa como en la maqueta de referencia.
+- Frontend: los filtros rapidos `Solo eventos activos` y `Mostrar ZBE` pasan a switches funcionales con persistencia local.
+- Frontend: las alternativas del carril izquierdo envuelven en varias lineas para que `EMT`, `FGV`, `Metro`, `Bici`, `Carril bici` y `VE` no queden ocultas.
+- Frontend: el panel de accion administrativa deja de enlazar al concurso; solo muestra boton si la accion trae URL ciudadana/municipal real.
 - Frontend: el panel de detalle muestra estado, ubicacion, area afectada, alternativa recomendada, accion administrativa, ruta y feedback.
 - Frontend: en movil el mapa queda primero y el detalle funciona como hoja inferior en flujo, sin interceptar clicks de tarjetas.
 - Docs: actualizados `docs/specs/frontend-vpro.md` y `docs/design/vpro-design-system.md` para fijar el patron map-first operativo.

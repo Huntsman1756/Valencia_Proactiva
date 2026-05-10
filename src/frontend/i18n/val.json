@@ -152,6 +152,13 @@
     "CYCLIST": "Bici",
     "PUBLIC_TRANSPORT": "Transport"
   },
+  "profileDescriptions": {
+    "GENERIC": "Rapidesa i simplicitat",
+    "COMMERCIAL": "Ajudes i duració d'obres",
+    "PMR": "Rutes i aparcaments accessibles",
+    "CYCLIST": "Bici pública i carrils",
+    "PUBLIC_TRANSPORT": "Parades i estacions pròximes"
+  },
   "eventTypes": {
     "OCUPACION": "Ocupació de via pública",
     "TRAFICO": "Trànsit",

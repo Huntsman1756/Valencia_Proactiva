@@ -1042,5 +1042,6 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 ## Sesion 2026-05-10 - Rediseño Civic Utility map-first
 - R-13 cerrado: `src/frontend/index.html`, `app.css` y `app.js` pasan a cabecera civica, carril izquierdo de perfiles/filtros, mapa central MapLibre y panel derecho de detalle/accion.
 - Se añade el perfil runtime `COMMERCIAL` al selector bilingüe, alineado con el backend y plantillas de acciones.
+- Ajuste posterior: perfiles con iconos SVG inline y descripcion; switches rapidos funcionales; alternativas envueltas para no ocultar filtros; la accion administrativa no debe enlazar al concurso si no hay URL ciudadana real en el payload.
 - Regla de UI: el detalle movil debe estar en flujo, no como overlay fijo, para no interceptar clicks de tarjetas ni feedback.
 - Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, `node tests/frontend/smoke.mjs` con capturas mobile/desktop regeneradas.
