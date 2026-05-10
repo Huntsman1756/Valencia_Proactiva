@@ -1,0 +1,80 @@
+# Valencia Proactiva (V-PRO)
+
+> Motor de inteligencia urbana proactiva basado en datos abiertos del Ayuntamiento de València.
+> Proyecto candidato a la **categoría de Datos Abiertos** de los *Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026* (convocatoria **AD.TR.15**).
+
+## 🎯 Idea
+Transformar el Portal de Datos Abiertos de Valencia de una herramienta **pasiva** (consultar datos) a una plataforma **proactiva** (la ciudad avisa y sugiere qué hacer). Cada interrupción urbana (obra, evento, corte de tráfico) desencadena un bucle:
+
+**Evento → Zona de impacto → Acción sugerida**
+
+La ciudadanía y los comercios reciben alternativas (rutas, aparcamientos, trámites) antes de experimentar el problema.
+
+## 🧱 Stack (definitivo — 2026-05-09)
+| Capa | Herramienta | Notas |
+|---|---|---|
+| Backend HTTP | Python 3.11 + FastAPI + SQLAlchemy 2 + GeoAlchemy2 | Ver [`docs/DECISIONS.md#adr-001`](./docs/DECISIONS.md) |
+| Base de datos | PostgreSQL 15 + PostGIS | Imprescindible para las operaciones geoespaciales |
+| Scheduler | Cron (host) | Sin Celery ni Redis. Ver [`docs/DECISIONS.md#adr-002`](./docs/DECISIONS.md) |
+| Frontend | HTML + CSS + JS **vanilla** + MapLibre GL JS | Sin Next.js/Tailwind/Framer. Ver [`docs/DECISIONS.md#adr-003`](./docs/DECISIONS.md) |
+| Tiles | OpenFreeMap | Abierto y gratuito |
+| Reverse proxy | Nginx | Security headers + estático + proxy `/api` |
+| Tunnel | Cloudflare Tunnel | Único ingress, sin puertos abiertos en el VPS |
+| Red interna | Tailscale | Acceso administrativo |
+| VPS | Hetzner CX22 | Ubuntu 24.04 · ~4 €/mes |
+
+## 🗂️ Documentación del repositorio
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md) — stack, estructura canónica y modelo de datos.
+- [`CONTEXT.md`](./CONTEXT.md) — visión, stakeholders y reglas del proyecto.
+- [`ROADMAP.md`](./ROADMAP.md) — plan por fases con estado actual.
+- [`NEXT_STEPS.md`](./NEXT_STEPS.md) — plan operativo fase a fase para el siguiente agente.
+- [`MEMORIA.md`](./MEMORIA.md) — borrador de la Memoria Resumen (Anexo II) del concurso.
+- [`DATA_SOURCES.md`](./DATA_SOURCES.md) — catálogo y trazabilidad de los datasets utilizados.
+- [`METHODOLOGY.md`](./METHODOLOGY.md) — metodología de ingesta, normalización y análisis.
+- [`docs/STATUS.md`](./docs/STATUS.md) — salud actual del proyecto.
+- [`docs/DECISIONS.md`](./docs/DECISIONS.md) — Architecture Decision Records.
+- [`docs/AGENTS.md`](./docs/AGENTS.md) — registro de trabajo por sesión.
+- [`docs/TODO.md`](./docs/TODO.md) — backlog priorizado.
+- [`docs/reports/phase-1-audit.html`](./docs/reports/phase-1-audit.html) — auditoría técnica con grafo de dependencias.
+- [`CHANGELOG.md`](./CHANGELOG.md), [`CONTRIBUTING.md`](./CONTRIBUTING.md), [`LICENSE`](./LICENSE).
+
+## 🚀 Arranque rápido (desarrollo)
+> Nota: las rutas a continuación asumen el layout actual. Tras la reorganización canónica planificada en [`NEXT_STEPS.md § Fase A.2`](./NEXT_STEPS.md), las rutas cambian (compose en `infra/`, Dockerfile en `config/`, código en `src/backend/`).
+
+```bash
+cp backend/.env.example backend/.env
+docker compose up -d --build
+curl http://localhost:8000/health
+# Swagger: http://localhost:8000/docs
+```
+Puertos host: Postgres/PostGIS `5434`, API `8000`.
+
+Ingesta manual (tras los fixes de Fase A):
+```bash
+docker compose exec api python -m src.scripts.run_ingest
+```
+
+## 🔓 Compromiso con los datos abiertos
+1. Código publicado con licencia MIT.
+2. Datos **derivados** (zonas de impacto, acciones de mitigación) publicados en GeoJSON/CSV bajo **CC-BY 4.0**, con atribución al Portal de Datos Abiertos de València.
+3. Metodología documentada en [`METHODOLOGY.md`](./METHODOLOGY.md).
+4. Trazabilidad completa en [`DATA_SOURCES.md`](./DATA_SOURCES.md).
+5. Reproducible con un único `docker compose up`.
+
+## 👥 Participación
+Proyecto abierto a colaboración entre desarrolladores, periodistas y entidades del municipio. Las contribuciones se aceptan mediante *pull request* siguiendo [`CONTRIBUTING.md`](./CONTRIBUTING.md) y respetando los principios de transparencia, lenguaje inclusivo y no sexista, y redacción en castellano o valenciano de los materiales públicos.
+
+## 📜 Marco del concurso
+- Convocatoria: **AD.TR.15** Premios para proyectos de datos abiertos y periodismo de datos 2026.
+- Categoría: **Datos Abiertos**.
+- Dotación: 5.000 € (1er premio), 3.000 € (2º), 2.000 € (3º).
+- Servicio gestor: Sociedad de la Información, Transparencia y Simplificación de Procedimientos (Ayuntamiento de València).
+- Ámbito: municipio de València.
+
+## 🛠️ ¿Primera vez en este repo?
+Lee en este orden:
+1. [`docs/RULES-FOR-AGENTS.md`](./docs/RULES-FOR-AGENTS.md) — **lectura obligatoria antes de tocar nada**. Reglas derivadas de errores reales.
+2. [`docs/STATUS.md`](./docs/STATUS.md) — dónde está el proyecto hoy.
+3. [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) — qué hemos decidido y por qué.
+4. [`docs/DECISIONS.md`](./docs/DECISIONS.md) — ADRs firmados (no se reabren sin ADR nuevo).
+5. [`docs/NEXT_STEPS.md`](./docs/NEXT_STEPS.md) — qué hacer a continuación, fase a fase.

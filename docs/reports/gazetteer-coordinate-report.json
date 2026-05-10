@@ -1,0 +1,351 @@
+{
+  "source": {
+    "name": "Ejes lineales de las calles",
+    "url": "https://geoportal.valencia.es/apps/OpenData/UrbanismoEInfraestructuras/EJES_CALLE.json",
+    "license": "CC BY 4.0",
+    "feature_count": 12982
+  },
+  "gazetteer": {
+    "name": "valencia_promotable_locations",
+    "version": "2026-05-10",
+    "location_count": 20
+  },
+  "summary": {
+    "ok": 9,
+    "review": 0,
+    "justified": 11,
+    "missing_match": 0
+  },
+  "checks": [
+    {
+      "id": "av-del-reino",
+      "label": "Av. del Reino",
+      "matched": true,
+      "matched_alias": "avinguda regne de valencia",
+      "matched_features": 52,
+      "current_coordinates": [
+        -0.3659,
+        39.4649
+      ],
+      "derived_coordinates": [
+        -0.367017,
+        39.463553
+      ],
+      "distance_meters": 177.84,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "plaza-ayuntamiento",
+      "label": "Plaza del Ayuntamiento",
+      "matched": true,
+      "matched_alias": "ajuntament",
+      "matched_features": 12,
+      "current_coordinates": [
+        -0.3765,
+        39.4699
+      ],
+      "derived_coordinates": [
+        -0.376465,
+        39.470379
+      ],
+      "distance_meters": 53.35,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "estacio-nord",
+      "label": "Estación del Norte",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3772,
+        39.4666
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear transport_hub location; keep curated point"
+    },
+    {
+      "id": "porta-mar",
+      "label": "Porta de la Mar",
+      "matched": true,
+      "matched_alias": "plaza porta de la mar",
+      "matched_features": 6,
+      "current_coordinates": [
+        -0.3702,
+        39.4736
+      ],
+      "derived_coordinates": [
+        -0.368459,
+        39.47209
+      ],
+      "distance_meters": 224.77,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "plaza-tetuan",
+      "label": "Plaza de Tetuán",
+      "matched": true,
+      "matched_alias": "placa tetuan",
+      "matched_features": 6,
+      "current_coordinates": [
+        -0.3691,
+        39.4752
+      ],
+      "derived_coordinates": [
+        -0.369898,
+        39.474664
+      ],
+      "distance_meters": 90.79,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "plaza-virgen",
+      "label": "Plaza de la Virgen",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3751,
+        39.4766
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear landmark location; keep curated point"
+    },
+    {
+      "id": "plaza-reina",
+      "label": "Plaza de la Reina",
+      "matched": true,
+      "matched_alias": "placa reina",
+      "matched_features": 10,
+      "current_coordinates": [
+        -0.3757,
+        39.4745
+      ],
+      "derived_coordinates": [
+        -0.375451,
+        39.47442
+      ],
+      "distance_meters": 23.15,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "mercado-central",
+      "label": "Mercado Central",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3783,
+        39.4745
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear facility location; keep curated point"
+    },
+    {
+      "id": "lonja-seda",
+      "label": "Lonja de la Seda",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3787,
+        39.4744
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear landmark location; keep curated point"
+    },
+    {
+      "id": "calle-colon",
+      "label": "Calle Colón",
+      "matched": true,
+      "matched_alias": "carrer colon",
+      "matched_features": 8,
+      "current_coordinates": [
+        -0.3709,
+        39.4691
+      ],
+      "derived_coordinates": [
+        -0.371754,
+        39.469385
+      ],
+      "distance_meters": 79.86,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "gran-via-marques-turia",
+      "label": "Gran Vía Marqués del Turia",
+      "matched": true,
+      "matched_alias": "gran via marques de turia",
+      "matched_features": 67,
+      "current_coordinates": [
+        -0.3675,
+        39.4662
+      ],
+      "derived_coordinates": [
+        -0.369168,
+        39.466854
+      ],
+      "distance_meters": 160.59,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "avenida-blasco-ibanez",
+      "label": "Av. Blasco Ibáñez",
+      "matched": true,
+      "matched_alias": "av blasco ibanez",
+      "matched_features": 102,
+      "current_coordinates": [
+        -0.3515,
+        39.4758
+      ],
+      "derived_coordinates": [
+        -0.351086,
+        39.474934
+      ],
+      "distance_meters": 102.64,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "avenida-aragon",
+      "label": "Av. Aragón",
+      "matched": true,
+      "matched_alias": "arago",
+      "matched_features": 32,
+      "current_coordinates": [
+        -0.3583,
+        39.4718
+      ],
+      "derived_coordinates": [
+        -0.36246,
+        39.467886
+      ],
+      "distance_meters": 562.96,
+      "status": "justified",
+      "note": "long_axis_curated_point; matched municipal street axis but keeps curated operational point"
+    },
+    {
+      "id": "avenida-puerto",
+      "label": "Av. del Puerto",
+      "matched": true,
+      "matched_alias": "avinguda port",
+      "matched_features": 48,
+      "current_coordinates": [
+        -0.3464,
+        39.4646
+      ],
+      "derived_coordinates": [
+        -0.34667,
+        39.464151
+      ],
+      "distance_meters": 55.04,
+      "status": "ok",
+      "note": "matched municipal street-axis centroid"
+    },
+    {
+      "id": "marina-valencia",
+      "label": "Marina de València",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3237,
+        39.4628
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear facility location; keep curated point"
+    },
+    {
+      "id": "paseo-maritimo",
+      "label": "Paseo Marítimo",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3251,
+        39.4742
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear landmark location; keep curated point"
+    },
+    {
+      "id": "campanar",
+      "label": "Campanar",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3973,
+        39.4873
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear neighborhood location; keep curated point"
+    },
+    {
+      "id": "sant-isidre",
+      "label": "Sant Isidre",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.4078,
+        39.4552
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear neighborhood location; keep curated point"
+    },
+    {
+      "id": "malva-rosa",
+      "label": "La Malva-rosa",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.3262,
+        39.4827
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear neighborhood location; keep curated point"
+    },
+    {
+      "id": "palau-congressos",
+      "label": "Palau de Congressos",
+      "matched": false,
+      "matched_alias": null,
+      "matched_features": 0,
+      "current_coordinates": [
+        -0.4057,
+        39.4955
+      ],
+      "derived_coordinates": null,
+      "distance_meters": null,
+      "status": "justified",
+      "note": "non-linear facility location; keep curated point"
+    }
+  ]
+}

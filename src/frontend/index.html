@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7faf8">
+    <title>V-PRO</title>
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css">
+    <link rel="stylesheet" href="./assets/app.css">
+  </head>
+  <body>
+    <main class="app-shell" aria-live="polite">
+      <header class="topbar">
+        <div class="topbar-main">
+          <div class="brand" aria-label="V-PRO">
+            <span class="brand-mark">V</span>
+            <span>V-PRO</span>
+          </div>
+          <nav class="profile-selector" aria-label="Perfil de movilidad" data-i18n-attr="aria-label:profileSelectorLabel">
+            <button type="button" data-profile="GENERIC">Generico</button>
+            <button type="button" data-profile="PMR">PMR</button>
+            <button type="button" data-profile="CYCLIST">Bici</button>
+            <button type="button" data-profile="PUBLIC_TRANSPORT">Transporte</button>
+          </nav>
+        </div>
+        <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
+          <button type="button" data-lang="es">CAS</button>
+          <button type="button" data-lang="val">VAL</button>
+        </div>
+      </header>
+
+      <section class="context-panel">
+        <p class="eyebrow" data-i18n="eyebrow">Valencia ahora</p>
+        <h1 data-i18n="title">Lo que esta pasando cerca</h1>
+        <p id="statusText" class="status-text" data-i18n="loading">Buscando acontecimientos activos...</p>
+      </section>
+
+      <section class="event-list" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+        <div id="eventList" class="event-stack"></div>
+      </section>
+
+      <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
+        <div class="map-toolbar">
+          <span data-i18n="map">Mapa</span>
+          <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
+        </div>
+        <div id="map" class="map-canvas"></div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <noscript>V-PRO necesita JavaScript para mostrar eventos urbanos y alternativas cercanas.</noscript>
+    <script src="https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js"></script>
+    <script src="./assets/app.js" defer></script>
+  </body>
+</html>

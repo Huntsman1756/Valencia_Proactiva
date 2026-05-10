@@ -1,0 +1,26 @@
+{
+  "id": "ocupacion-severa",
+  "when": {
+    "event_type": "OCUPACION",
+    "severity_gte": 3
+  },
+  "actions": [
+    {
+      "action_type": "ROUTE_CHANGE",
+      "title": "Ruta alternativa recomendada",
+      "description": "Evita la zona afectada y revisa el mapa antes de salir.",
+      "priority": 80,
+      "profiles": ["GENERIC", "COMMERCIAL", "CYCLIST", "PUBLIC_TRANSPORT"]
+    },
+    {
+      "action_type": "PARKING_SUGGESTION",
+      "title": "Aparcamiento PMR cercano fuera de la afeccion",
+      "description": "Busca una plaza PMR accesible fuera de la zona de impacto.",
+      "priority": 95,
+      "profiles": ["PMR"],
+      "payload": {
+        "poi_type": "APARCAMIENTO_PMR"
+      }
+    }
+  ]
+}

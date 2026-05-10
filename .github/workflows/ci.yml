@@ -1,0 +1,24 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: postgis/postgis:15-master
+        env:
+          POSTGRES_USER: vpro
+          POSTGRES_PASSWORD: ci_secret
+          POSTGRES_DB: vpro_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U vpro" --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r config/requirements.txt ruff mypy pip-audit pytest pytest-cov
+      - run: ruff check src tests
+      - run: mypy src
+      - run: pytest tests -q --cov=src/backend
+      - run: pip-audit -r config/requirements.txt --strict

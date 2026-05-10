@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<!--
+  V-PRO · Phase 1 Repository Audit
+  Self-contained. No external dependencies.
+  Share: send this file directly, or host statically (Cloudflare Pages / R2).
+  Source of truth: docs/STATUS.md (pending creation).
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V-PRO · Phase 1 Audit · 2026-05-09</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --surface-2: #f4f4f2;
+    --border: #e5e5e3;
+    --text: #1a1a1a;
+    --text-dim: #606060;
+    --accent: #2563eb;
+    --green: #16a34a;
+    --yellow: #ca8a04;
+    --red: #dc2626;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 15px; line-height: 1.55; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, pre { font-family: var(--mono); font-size: 0.92em; background: var(--surface-2); padding: 1px 5px; border-radius: 3px; }
+  pre { padding: 10px 14px; overflow-x: auto; border: 1px solid var(--border); }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 18px; background: var(--surface); font-size: 0.94em; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--surface-2); font-weight: 600; font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-dim); }
+  tbody tr:hover { background: var(--surface-2); }
+  h1, h2, h3, h4 { font-weight: 600; line-height: 1.25; margin: 0 0 10px; }
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.5em; margin-top: 0; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 1.15em; margin-top: 24px; }
+  p { margin: 0 0 12px; }
+
+  /* Layout */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  aside.sidebar { background: var(--surface); border-right: 1px solid var(--border); position: sticky; top: 0; height: 100vh; padding: 20px 16px; overflow-y: auto; }
+  aside.sidebar .brand { font-weight: 700; font-size: 1.05em; margin-bottom: 4px; }
+  aside.sidebar .meta { font-size: 0.8em; color: var(--text-dim); margin-bottom: 20px; }
+  aside.sidebar nav a { display: block; padding: 7px 10px; margin: 2px 0; border-radius: 5px; color: var(--text); font-size: 0.92em; }
+  aside.sidebar nav a:hover { background: var(--surface-2); text-decoration: none; }
+  aside.sidebar nav a.active { background: var(--accent); color: #fff; }
+  main { padding: 36px 48px 80px; max-width: 1200px; }
+  section { margin-bottom: 54px; scroll-margin-top: 20px; }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 10px; font-size: 0.78em; font-weight: 600; letter-spacing: 0.02em; }
+  .badge-red    { background: #fee2e2; color: #991b1b; }
+  .badge-yellow { background: #fef3c7; color: #854d0e; }
+  .badge-green  { background: #dcfce7; color: #166534; }
+  .badge-gray   { background: #e5e5e3; color: #404040; }
+  .badge-blue   { background: #dbeafe; color: #1e40af; }
+
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-red    { background: var(--red); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green  { background: var(--green); }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 14px 0 24px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .card .label { font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 6px; }
+  .card .value { font-size: 1.25em; font-weight: 600; }
+  .card .sub { font-size: 0.85em; color: var(--text-dim); margin-top: 4px; }
+
+  /* Callouts */
+  .callout { padding: 14px 18px; border-left: 4px solid; border-radius: 0 6px 6px 0; margin: 14px 0; background: var(--surface); }
+  .callout-red    { border-color: var(--red);    background: #fef2f2; }
+  .callout-yellow { border-color: var(--yellow); background: #fefce8; }
+  .callout-blue   { border-color: var(--accent); background: #eff6ff; }
+
+  /* Task table controls */
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .controls select, .controls input { padding: 6px 10px; border: 1px solid var(--border); border-radius: 5px; font-size: 0.9em; background: #fff; }
+  .btn { padding: 6px 12px; background: var(--accent); color: #fff; border: 0; border-radius: 5px; cursor: pointer; font-size: 0.88em; }
+  .btn:hover { filter: brightness(1.05); }
+  .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable::after { content: " ⇅"; color: var(--text-dim); font-size: 0.8em; }
+
+  /* Structure diff */
+  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .diff-grid pre { height: 100%; margin: 0; }
+
+  /* SVG */
+  svg.diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; display: block; max-width: 100%; }
+
+  @media (max-width: 860px) {
+    .app { grid-template-columns: 1fr; }
+    aside.sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+    main { padding: 24px 20px; }
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">V-PRO · Phase 1</div>
+    <div class="meta">Repository Audit<br>2026-05-09</div>
+    <nav>
+      <a href="#status">📋 Repository Status</a>
+      <a href="#classification">🚦 Area Classification</a>
+      <a href="#security">🔒 Security Audit</a>
+      <a href="#hygiene">🧹 Hygiene</a>
+      <a href="#structure">🗂️ Structure Diff</a>
+      <a href="#stack">📦 Stack Audit</a>
+      <a href="#docs">📄 Documentation</a>
+      <a href="#tasks">📌 Proposed Tasks</a>
+      <a href="#plan">🗺️ Execution Plan</a>
+      <a href="#decision">⏸ Awaiting Decision</a>
+    </nav>
+  </aside>
+  <main>
+    <header>
+      <h1>V-PRO · Phase 1 Repository Audit</h1>
+      <p style="color: var(--text-dim); margin-bottom: 6px;">
+        <span class="badge badge-red">🔴 Critical · blocking stack drift detected</span>
+        &nbsp;·&nbsp;
+        Generated 2026-05-09 · Owner: Tech Lead (this session)
+      </p>
+      <p style="color: var(--text-dim); font-size: 0.9em;">Self-contained HTML report. No external dependencies. Safe to share.</p>
+    </header>
+
+
+    <!-- ================= STATUS ================= -->
+    <section id="status">
+      <h2>📋 Repository Status</h2>
+      <p>
+        <strong>V-PRO (Valencia Proactiva)</strong> es un proyecto candidato a la convocatoria
+        <em>AD.TR.15 — Premios para proyectos de datos abiertos y periodismo de datos</em> del Ayuntamiento
+        de València 2026, categoría <strong>Datos Abiertos</strong>. Su objetivo es transformar el portal
+        municipal de datos abiertos en una plataforma proactiva que no solo muestra información
+        (obras, eventos, movilidad) sino que la traduce en acciones concretas para la ciudadanía
+        y los comercios afectados.
+      </p>
+
+      <div class="cards">
+        <div class="card"><div class="label">Estado global</div><div class="value" style="color: var(--red);">🔴 Critical</div><div class="sub">Stack drift 100% + bugs bloqueantes + estructura no canónica</div></div>
+        <div class="card"><div class="label">Fase de producto</div><div class="value">Fase 1 · 60%</div><div class="sub">Scaffolding listo, ingesta bugueada</div></div>
+        <div class="card"><div class="label">Entregables concurso</div><div class="value">Fase 0 · 50%</div><div class="sub">Docs y licencias ✅ · memoria oficial y demo pendientes</div></div>
+        <div class="card"><div class="label">Líneas de código (aprox)</div><div class="value">~1.5k</div><div class="sub">Backend Python · frontend 0</div></div>
+        <div class="card"><div class="label">Tests</div><div class="value">2 archivos</div><div class="sub">Solo schemas y normalizer · sin CI</div></div>
+        <div class="card"><div class="label">Deploy</div><div class="value">Dev only</div><div class="sub">Docker Compose local · sin prod</div></div>
+      </div>
+
+      <div class="callout callout-red">
+        <strong>🛑 Hallazgo crítico #1 — Stack drift total.</strong><br>
+        El canonical stack declarado en esta sesión (Vanilla PHP + SQLite + Vanilla JS + Cron)
+        no coincide con el stack real del proyecto (Python + FastAPI + SQLAlchemy + GeoAlchemy2 +
+        PostgreSQL/PostGIS + Celery + Redis + Docker Compose, frontend previsto en Next.js +
+        Tailwind + MapLibre). El 100% del backend existente queda fuera del stack canónico.
+        Requiere decisión explícita antes de ejecutar la Fase 4. Ver <a href="#decision">§ Awaiting Decision</a>.
+      </div>
+
+      <div class="callout callout-red">
+        <strong>🛑 Hallazgo crítico #2 — 4 bugs bloqueantes en Fase 1 del producto.</strong><br>
+        (1) Columna <code>metadata</code> vs <code>extra_data</code> desincronizada entre modelo, ingestor y query espacial.
+        (2) Import inválido <code>from shapely import geojson</code> en Shapely 2.x.
+        (3) Task Celery declarada <code>async def</code> (no soportado en Celery 5 sin wrapper).
+        (4) Sin creación automática de tablas (no hay <code>Base.metadata.create_all</code> ni Alembic).
+        Con estos bugs la ingesta no persiste datos. Detalle en <a href="#tasks">§ Proposed Tasks</a>.
+      </div>
+
+      <div class="callout callout-red">
+        <strong>🛑 Hallazgo crítico #3 — Credenciales por defecto en Docker Compose.</strong><br>
+        <code>docker-compose.yml</code> contiene <code>POSTGRES_PASSWORD: [credential redacted]</code> hardcodeado
+        y <code>backend/.env</code> replica la misma credencial. Aunque el archivo <code>.env</code> está
+        en <code>.gitignore</code>, la misma contraseña aparece literal en el compose versionado.
+        Rotar antes de cualquier deploy y mover a secrets server-side.
+      </div>
+    </section>
+
+
+    <!-- ================= CLASSIFICATION ================= -->
+    <section id="classification">
+      <h2>🚦 Area-by-area Classification</h2>
+      <table>
+        <thead><tr><th>Área</th><th>Estado</th><th>Justificación (1 línea)</th></tr></thead>
+        <tbody>
+          <tr><td>Stack compliance</td><td><span class="badge badge-red">🔴 Critical</span></td><td>100% del backend fuera del canonical stack; requiere decisión.</td></tr>
+          <tr><td>Estructura de repo</td><td><span class="badge badge-red">🔴 Critical</span></td><td>Sin <code>src/</code>, <code>tests/</code> top-level, <code>docs/</code>, <code>infra/</code>, <code>.github/</code>, <code>CHANGELOG.md</code>.</td></tr>
+          <tr><td>Seguridad</td><td><span class="badge badge-red">🔴 Critical</span></td><td>Password por defecto en compose; sin rate-limit; sin security headers; sin auth (aceptable MVP pero no documentado).</td></tr>
+          <tr><td>Documentación</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td>Existen MDs ricos en raíz pero faltan <code>docs/STATUS</code>, <code>docs/AGENTS</code>, <code>docs/DECISIONS</code>, <code>docs/TODO</code>.</td></tr>
+          <tr><td>Code quality</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td>4 bugs bloqueantes identificados; ausencia de linting/typing enforced.</td></tr>
+          <tr><td>Tests</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td>Solo 2 archivos (schemas, normalizer). Sin cobertura de API ni ingestor end-to-end.</td></tr>
+          <tr><td>CI/CD</td><td><span class="badge badge-red">🔴 Critical</span></td><td>Inexistente. No hay workflows en <code>.github/</code>.</td></tr>
+          <tr><td>Infra (prod)</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td>Docker Compose solo dev. Sin Nginx, Tailscale, Cloudflare Tunnel, unattended-upgrades.</td></tr>
+          <tr><td>Hygiene (.gitignore, artefactos)</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td><code>__pycache__</code> presente en working tree (debería estar ignorado y limpio); no CHANGELOG.</td></tr>
+          <tr><td>Entregables concurso AD.TR.15</td><td><span class="badge badge-yellow">🟡 Attention</span></td><td>Docs base, licencia y memoria (borrador) listas; falta Anexo II oficial, demo pública, vídeo.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ================= SECURITY ================= -->
+    <section id="security">
+      <h2>🔒 Security Audit Results</h2>
+      <p>Checklist aplicada al estado actual del repo. <strong>Cada 🔴 fail es P1 automático.</strong></p>
+      <table>
+        <thead><tr><th>#</th><th>Check</th><th>Estado</th><th>Hallazgo · remediación</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>.env</code> en <code>.gitignore</code> y no commiteado</td><td><span class="badge badge-yellow">⚠️ Warning</span></td><td><code>.gitignore</code> cubre <code>.env</code>, pero <code>backend/.env</code> existe en el working tree con credenciales reales — verificar <code>git log -- backend/.env</code> y, si estuvo trackeado alguna vez, rotar + <code>git filter-repo</code>.</td></tr>
+          <tr><td>2</td><td>No secretos en código fuente o historial</td><td><span class="badge badge-red">🔴 Fail</span></td><td><code>docker-compose.yml</code> contiene <code>POSTGRES_PASSWORD: [credential redacted]</code> literal (línea ~10). Mover a variable de entorno desde <code>.env</code> y rotar antes de exponer el servicio.</td></tr>
+          <tr><td>3</td><td><code>.env.example</code> con placeholders documentados</td><td><span class="badge badge-green">✅ Pass</span></td><td><code>backend/.env.example</code> presente con placeholders razonables.</td></tr>
+          <tr><td>4</td><td>Todos los endpoints autentican antes de trabajar</td><td><span class="badge badge-yellow">⚠️ Warning</span></td><td>El MVP no tiene auth de usuarios (aceptable para un portal proactivo público) pero CRUD de eventos (<code>POST/PUT/DELETE /api/v1/events</code>) está abierto — debe cerrarse tras una API key de admin o moverse a un endpoint interno no expuesto públicamente.</td></tr>
+          <tr><td>5</td><td>Rate limiting en auth/API/webhooks</td><td><span class="badge badge-red">🔴 Fail</span></td><td>No existe rate limiter. Añadir <code>slowapi</code> o middleware propio; Cloudflare Rate Limiting Rules en el Tunnel como segunda capa.</td></tr>
+          <tr><td>6</td><td>Verificación de firma de webhooks Stripe</td><td><span class="badge badge-gray">N/A</span></td><td>No hay integración Stripe todavía. Marcar para cuando se añada.</td></tr>
+          <tr><td>7</td><td>Sin lógica de negocio ni autorización en frontend</td><td><span class="badge badge-gray">N/A</span></td><td>Frontend aún no existe. Cuando se cree (Fase 3), enforced desde el inicio.</td></tr>
+          <tr><td>8</td><td>Queries SQL con prepared/parameterized statements</td><td><span class="badge badge-green">✅ Pass</span></td><td>Uso correcto de SQLAlchemy ORM y <code>text(...)</code> con binding parámetros en <code>spatial.py</code>.</td></tr>
+          <tr><td>9</td><td>Uploads validan tipo server-side y renombran con UUID</td><td><span class="badge badge-gray">N/A</span></td><td>Sin endpoints de upload actualmente.</td></tr>
+          <tr><td>10</td><td>No hay archivos sensibles en buckets públicos</td><td><span class="badge badge-gray">N/A</span></td><td>Sin storage integrado todavía.</td></tr>
+          <tr><td>11</td><td>Nginx con security headers</td><td><span class="badge badge-red">🔴 Fail</span></td><td>No hay Nginx config en el repo. Añadir en <code>infra/nginx/</code> con CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.</td></tr>
+          <tr><td>12</td><td><code>server_tokens off</code> en Nginx</td><td><span class="badge badge-red">🔴 Fail</span></td><td>Dependiente de T-infra-nginx.</td></tr>
+          <tr><td>13</td><td>SSH sin password (solo key auth)</td><td><span class="badge badge-gray">N/A</span></td><td>Sin VPS provisionado todavía. P1 en el momento del primer deploy.</td></tr>
+          <tr><td>14</td><td>Sin puertos innecesarios abiertos</td><td><span class="badge badge-yellow">⚠️ Warning</span></td><td>Compose de dev expone 5434 (Postgres), 6380 (Redis), 8000 (API) al host. Solo para desarrollo local; en prod todo debe ir por Cloudflare Tunnel.</td></tr>
+          <tr><td>15</td><td>xAI API key server-side y AI endpoints con auth</td><td><span class="badge badge-gray">N/A</span></td><td>Sin integración AI planificada en el MVP. Si se añade, rate-limit + auth desde el inicio.</td></tr>
+          <tr><td>16</td><td>Sin CVEs high/critical en dependencias</td><td><span class="badge badge-yellow">⚠️ Warning</span></td><td>No se ha ejecutado <code>pip-audit</code>. Añadir workflow GitHub Actions con <code>pip-audit</code> + <code>npm audit</code> (cuando exista frontend).</td></tr>
+          <tr><td>17</td><td>Sin dependencias sin usar</td><td><span class="badge badge-yellow">⚠️ Warning</span></td><td>Revisar <code>geopandas</code> — en el código actual solo se usa Shapely; GeoPandas añade ~100 MB de imagen docker sin aporte claro. Candidato a retirar.</td></tr>
+          <tr><td>18</td><td><code>unattended-upgrades</code> activo</td><td><span class="badge badge-gray">N/A</span></td><td>Sin VPS provisionado. Tarea de infra al desplegar.</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Resumen:</strong>
+        <span class="badge badge-red">🔴 3 fails</span>
+        <span class="badge badge-yellow">⚠️ 6 warnings</span>
+        <span class="badge badge-green">✅ 2 passes</span>
+        <span class="badge badge-gray">N/A 7</span>
+      </p>
+    </section>
+
+
+    <!-- ================= HYGIENE ================= -->
+    <section id="hygiene">
+      <h2>🧹 Hygiene Violations</h2>
+      <table>
+        <thead><tr><th>Violación</th><th>Severidad</th><th>Esfuerzo estimado</th></tr></thead>
+        <tbody>
+          <tr><td><code>__pycache__/</code> presente en el working tree bajo <code>backend/app/</code></td><td><span class="badge badge-yellow">Low</span></td><td>1 min · <code>git clean -fdx backend/app/**/__pycache__</code> + confirmar <code>.gitignore</code> ya lo cubre</td></tr>
+          <tr><td>Sin <code>CHANGELOG.md</code> en raíz</td><td><span class="badge badge-yellow">Low</span></td><td>5 min · plantilla Keep a Changelog</td></tr>
+          <tr><td>Archivos de contexto en raíz que podrían moverse (<code>AD.TR.15_*.md</code>, <code>AcuerdoJGL_*.md</code>, <code>acuerdo_JGL.md</code>)</td><td><span class="badge badge-yellow">Low</span></td><td>5 min · mover a <code>docs/concurso/</code></td></tr>
+          <tr><td>Sin estructura <code>docs/</code> · <code>src/</code> · <code>tests/</code> · <code>infra/</code> · <code>.github/</code></td><td><span class="badge badge-red">High</span></td><td>30-45 min · commit atómico de reorganización</td></tr>
+          <tr><td>Sin CI (<code>.github/workflows/</code>)</td><td><span class="badge badge-red">High</span></td><td>45 min · workflow con ruff, mypy, pytest, pip-audit</td></tr>
+          <tr><td>Sin pre-commit hooks (linting, secrets scan)</td><td><span class="badge badge-yellow">Medium</span></td><td>20 min · <code>pre-commit</code> con ruff, detect-secrets, trailing-whitespace</td></tr>
+          <tr><td><code>normalizer.py</code>: import roto <code>from shapely import geojson</code></td><td><span class="badge badge-red">High</span></td><td>2 min · sustituir por <code>shapely.geometry.shape</code></td></tr>
+          <tr><td>Inconsistencia <code>metadata</code> vs <code>extra_data</code> entre modelo, ingestor, spatial API y normalizer</td><td><span class="badge badge-red">High</span></td><td>15 min · unificar nombre en todos los sitios</td></tr>
+          <tr><td>Task Celery <code>async def</code> no soportada en Celery 5</td><td><span class="badge badge-red">High</span></td><td>10 min · envolver con <code>asyncio.run</code></td></tr>
+          <tr><td>Sin creación automática de tablas (no <code>create_all</code>, no Alembic)</td><td><span class="badge badge-red">High</span></td><td>15 min MVP (<code>create_all</code>) · 1-2 h versión Alembic</td></tr>
+          <tr><td>Nomenclatura de módulos redundante (<code>models/models.py</code>, <code>schemas/schemas.py</code>)</td><td><span class="badge badge-yellow">Low</span></td><td>10 min opcional</td></tr>
+          <tr><td>Commits no verificados como Conventional Commits (requiere leer <code>git log</code>)</td><td><span class="badge badge-yellow">Medium</span></td><td>Enforcement futuro vía <code>commitlint</code> + husky/pre-commit</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ================= STRUCTURE ================= -->
+    <section id="structure">
+      <h2>🗂️ Structure Diff (propuesto)</h2>
+      <p>
+        Propuesta condicionada a la decisión sobre stack (ver <a href="#decision">§ Awaiting Decision</a>).
+        Asume <strong>Camino B</strong> (conservar Python/PostGIS con ADR justificativo). Si se elige
+        Camino A, la carpeta <code>src/backend/</code> se reconstruye completa.
+      </p>
+      <p><strong>Regla:</strong> ningún archivo se mueve ni se borra hasta aprobación del diff.</p>
+
+      <div class="diff-grid">
+        <div>
+          <h3>Antes (actual)</h3>
+<pre>/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── ingestion/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── tasks/
+│   │   ├── celery.py
+│   │   └── main.py
+│   ├── tests/
+│   ├── .env
+│   ├── .env.example
+│   ├── Dockerfile
+│   ├── README.md
+│   └── requirements.txt
+├── AD.TR.15_*.md
+├── AcuerdoJGL_*.md
+├── acuerdo_JGL.md
+├── ARCHITECTURE.md
+├── CONTEXT.md
+├── DATA_SOURCES.md
+├── LICENSE
+├── MEMORIA.md
+├── METHODOLOGY.md
+├── NEXT_STEPS.md
+├── README.md
+├── ROADMAP.md
+├── docker-compose.yml
+├── init.sql
+├── .env
+├── .gitignore
+└── docs/reports/phase-1-audit.html  (nuevo)</pre>
+        </div>
+        <div>
+          <h3>Después (propuesto)</h3>
+<pre>/
+├── src/
+│   ├── backend/              (ex-backend/app/)
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── engine/           (nuevo · action templates)
+│   │   ├── ingestion/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── tasks/
+│   │   ├── celery.py
+│   │   └── main.py
+│   ├── frontend/             (nuevo · Fase 3)
+│   └── scripts/              (nuevo · export, seed)
+├── tests/
+│   ├── backend/              (ex-backend/tests/)
+│   └── frontend/             (futuro)
+├── config/
+│   ├── .env.example
+│   └── Dockerfile.backend
+├── db/
+│   └── init.sql              (ex-/init.sql)
+├── docs/
+│   ├── STATUS.md + .html
+│   ├── AGENTS.md + .html
+│   ├── DECISIONS.md + .html
+│   ├── TODO.md + .html
+│   ├── reports/
+│   │   └── phase-1-audit.html
+│   ├── specs/
+│   ├── concurso/             (ex-AD.TR.15_*, AcuerdoJGL_*)
+│   ├── ARCHITECTURE.md
+│   ├── CONTEXT.md
+│   ├── DATA_SOURCES.md
+│   ├── MEMORIA.md
+│   ├── METHODOLOGY.md
+│   ├── NEXT_STEPS.md
+│   └── ROADMAP.md
+├── infra/
+│   ├── docker-compose.yml    (dev)
+│   ├── docker-compose.prod.yml
+│   ├── nginx/                (prod config)
+│   └── cloudflare/           (tunnel config)
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── security-audit.yml
+├── .gitignore
+├── CHANGELOG.md              (nuevo)
+├── CONTRIBUTING.md           (nuevo)
+├── LICENSE
+└── README.md</pre>
+        </div>
+      </div>
+
+      <h3>Operaciones</h3>
+      <table>
+        <thead><tr><th>Op</th><th>Origen</th><th>Destino / motivo</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>backend/app/</code></td><td><code>src/backend/</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>backend/tests/</code></td><td><code>tests/backend/</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>backend/Dockerfile</code></td><td><code>config/Dockerfile.backend</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>backend/.env.example</code></td><td><code>config/.env.example</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>init.sql</code></td><td><code>db/init.sql</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>docker-compose.yml</code></td><td><code>infra/docker-compose.yml</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>ARCHITECTURE.md</code>, <code>CONTEXT.md</code>, <code>DATA_SOURCES.md</code>, <code>MEMORIA.md</code>, <code>METHODOLOGY.md</code>, <code>NEXT_STEPS.md</code>, <code>ROADMAP.md</code></td><td><code>docs/</code></td></tr>
+          <tr><td><span class="badge badge-blue">MOVE</span></td><td><code>AD.TR.15_*.md</code>, <code>AcuerdoJGL_*.md</code>, <code>acuerdo_JGL.md</code></td><td><code>docs/concurso/</code> · material institucional del concurso</td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>docs/STATUS.md</code> + <code>.html</code></td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>docs/AGENTS.md</code> + <code>.html</code></td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>docs/DECISIONS.md</code> + <code>.html</code> · ADR-001 (stack drift)</td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>docs/TODO.md</code> + <code>.html</code></td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>CHANGELOG.md</code>, <code>CONTRIBUTING.md</code></td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>.github/workflows/ci.yml</code>, <code>security-audit.yml</code></td></tr>
+          <tr><td><span class="badge badge-green">CREATE</span></td><td>—</td><td><code>infra/nginx/</code>, <code>infra/cloudflare/</code></td></tr>
+          <tr><td><span class="badge badge-red">DELETE</span></td><td><code>backend/app/**/__pycache__/</code></td><td>Artefactos de build · ya en <code>.gitignore</code></td></tr>
+          <tr><td><span class="badge badge-red">DELETE</span></td><td><code>backend/.env</code></td><td>Credencial en claro · ya cubierto por <code>.gitignore</code> pero presente en working tree · confirmar con usuario antes</td></tr>
+        </tbody>
+      </table>
+      <p class="callout callout-yellow"><strong>⚠️ Confirmación necesaria:</strong> ¿Borrar <code>backend/.env</code> del working tree? (no se pierde nada, está cubierto por <code>.env.example</code>, pero suele contener la credencial de dev del usuario).</p>
+    </section>
+
+
+    <!-- ================= STACK ================= -->
+    <section id="stack">
+      <h2>📦 Stack Audit</h2>
+      <p>
+        Comparación entre el canonical stack declarado en esta sesión y el stack real presente en el repo.
+        <strong>Ningún elemento fuera del canonical se mantiene sin ADR justificativo en <code>docs/DECISIONS.md</code>.</strong>
+      </p>
+      <table>
+        <thead><tr><th>Layer</th><th>Canonical</th><th>Actual V-PRO</th><th>¿En canonical?</th><th>Disposición propuesta</th></tr></thead>
+        <tbody>
+          <tr><td>Backend runtime</td><td>Vanilla PHP</td><td>Python 3.11 · FastAPI · SQLAlchemy · GeoAlchemy2</td><td><span class="badge badge-red">NO</span></td><td>Decisión usuario · <strong>A</strong>: reescritura PHP · <strong>B</strong>: ADR-001 excepción (recomendado)</td></tr>
+          <tr><td>Base de datos</td><td>SQLite</td><td>PostgreSQL 15 + PostGIS</td><td><span class="badge badge-red">NO</span></td><td>Justificación: PostGIS (ST_DWithin, ST_Buffer, ST_Transform) es núcleo funcional; SpatiaLite viable pero con limitaciones operativas documentadas · B recomendado</td></tr>
+          <tr><td>Scheduler / jobs</td><td>Cron</td><td>Celery + Redis</td><td><span class="badge badge-red">NO</span></td><td>Para ingestas diarias/semanales del portal ODS, <strong>Cron + script Python es suficiente</strong>. <strong>Retirar Celery y Redis</strong>, simplifica infra y reduce superficie. Ahorro inmediato.</td></tr>
+          <tr><td>Frontend</td><td>Vanilla JS + CSS</td><td>Previsto: Next.js 14 + Tailwind + Framer Motion + MapLibre</td><td><span class="badge badge-yellow">Parcial</span></td><td>MapLibre sí (funcional no replicable). Tailwind/Framer → <strong>retirar</strong>. Next.js → evaluar si SSR es necesario; si no, vanilla JS + MapLibre + HTML estático servido por Nginx es viable y alineado al stack.</td></tr>
+          <tr><td>Mapa / tiles</td><td>OpenFreeMap</td><td>OpenFreeMap (previsto)</td><td><span class="badge badge-green">SÍ</span></td><td>Mantener.</td></tr>
+          <tr><td>Containerización</td><td>No explícito · Nginx en host</td><td>Docker Compose</td><td><span class="badge badge-yellow">Parcial</span></td><td>Docker en dev es aceptable. En prod, mantener contenedor único para el backend + Nginx + SQLite bind-mount.</td></tr>
+          <tr><td>Reverse proxy</td><td>Nginx</td><td>No existe</td><td><span class="badge badge-red">NO</span></td><td>Añadir en <code>infra/nginx/</code>.</td></tr>
+          <tr><td>Exposición</td><td>Cloudflare Tunnel</td><td>No existe</td><td><span class="badge badge-red">NO</span></td><td>Añadir en Fase deploy.</td></tr>
+          <tr><td>VPS</td><td>Hetzner</td><td>Planificado Hetzner</td><td><span class="badge badge-green">SÍ</span></td><td>Alineado.</td></tr>
+          <tr><td>Secrets / red interna</td><td>Tailscale</td><td>No existe</td><td><span class="badge badge-red">NO</span></td><td>Añadir en Fase deploy.</td></tr>
+          <tr><td>Auto-updates</td><td>unattended-upgrades</td><td>No aplicado</td><td><span class="badge badge-red">NO</span></td><td>Tarea de provisionado inicial del VPS.</td></tr>
+          <tr><td>Storage blobs</td><td>Cloudflare R2</td><td>N/A</td><td><span class="badge badge-green">SÍ</span></td><td>Sin uso actual.</td></tr>
+          <tr><td>AI</td><td>xAI</td><td>N/A</td><td><span class="badge badge-green">SÍ</span></td><td>Sin uso actual.</td></tr>
+          <tr><td>Payments</td><td>Stripe</td><td>N/A</td><td><span class="badge badge-green">SÍ</span></td><td>Sin uso actual.</td></tr>
+          <tr><td>Linters</td><td>No explícito</td><td>No configurado</td><td><span class="badge badge-yellow">Parcial</span></td><td>Añadir <code>ruff</code> + <code>mypy</code> (Python · stack lean) · <code>phpstan</code> si se migra a PHP.</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-blue">
+        <strong>Sub-decisiones técnicas dentro del Camino B (si se aprueba):</strong>
+        <ul>
+          <li><strong>Retirar Celery + Redis</strong> y pasar la ingesta a un script Python invocado por Cron. Simplifica la infra, alinea con el canonical stack, reduce RAM del VPS.</li>
+          <li><strong>Retirar GeoPandas</strong>: el código actual no lo usa, solo necesita Shapely + pyproj.</li>
+          <li><strong>Frontend vanilla en lugar de Next.js</strong>: HTML + JS + MapLibre estáticos servidos por Nginx; evalúa la necesidad real de SSR antes de introducir Next.</li>
+          <li><strong>Mantener PostGIS</strong> (justificación en ADR-001): ST_DWithin con reproyección a EPSG:3857, ST_Buffer reproyectado a EPSG:32630 para distancias reales en metros — SpatiaLite no cubre con la misma fiabilidad operativa.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= DOCS ================= -->
+    <section id="docs">
+      <h2>📄 Documentation State</h2>
+      <table>
+        <thead><tr><th>Documento</th><th>¿Existe?</th><th>Última actualización</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr><td><code>README.md</code> (raíz)</td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span></td></tr>
+          <tr><td><code>LICENSE</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span></td></tr>
+          <tr><td><code>CONTEXT.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span> · mover a <code>docs/</code></td></tr>
+          <tr><td><code>ARCHITECTURE.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span> · mover a <code>docs/</code></td></tr>
+          <tr><td><code>ROADMAP.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span> · mover a <code>docs/</code></td></tr>
+          <tr><td><code>NEXT_STEPS.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span> · mover a <code>docs/</code></td></tr>
+          <tr><td><code>MEMORIA.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-yellow">borrador</span> · falta formato oficial Anexo II</td></tr>
+          <tr><td><code>DATA_SOURCES.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-yellow">pending verify</span> · verificar slugs reales de datasets</td></tr>
+          <tr><td><code>METHODOLOGY.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-green">current</span></td></tr>
+          <tr><td><code>docs/STATUS.md</code> + <code>.html</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span> · requerido</td></tr>
+          <tr><td><code>docs/AGENTS.md</code> + <code>.html</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span> · requerido</td></tr>
+          <tr><td><code>docs/DECISIONS.md</code> + <code>.html</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span> · ADR-001 (stack) pendiente</td></tr>
+          <tr><td><code>docs/TODO.md</code> + <code>.html</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span></td></tr>
+          <tr><td><code>CHANGELOG.md</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span></td></tr>
+          <tr><td><code>CONTRIBUTING.md</code></td><td>❌</td><td>—</td><td><span class="badge badge-red">missing</span> · referenciado en MEMORIA</td></tr>
+          <tr><td><code>backend/README.md</code></td><td>✅</td><td>2026-05-09</td><td><span class="badge badge-yellow">stale</span> · se duplica con README raíz · consolidar</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ================= TASKS ================= -->
+    <section id="tasks">
+      <h2>📌 Proposed Tasks</h2>
+      <p>
+        Prioridad según matriz impacto/esfuerzo. Toda 🔴 de seguridad es P1 automática.
+        Filtrable por agente y prioridad.
+      </p>
+      <div class="controls">
+        <label>Prioridad
+          <select id="filter-priority">
+            <option value="all">Todas</option>
+            <option value="P1">Solo P1</option>
+            <option value="P2">Solo P2</option>
+            <option value="P3">Solo P3</option>
+          </select>
+        </label>
+        <label>Agente
+          <select id="filter-agent">
+            <option value="all">Todos</option>
+            <option value="Tech Lead">Tech Lead</option>
+            <option value="Backend">Backend</option>
+            <option value="Frontend">Frontend</option>
+            <option value="DevOps/Infra">DevOps/Infra</option>
+            <option value="QA">QA</option>
+            <option value="Dev">Dev (support)</option>
+          </select>
+        </label>
+        <input id="filter-text" type="search" placeholder="Buscar texto..." />
+        <button class="btn btn-ghost" id="btn-copy-prompt" type="button">Copy task list as prompt</button>
+      </div>
+      <table id="tasks-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-key="id">ID</th>
+            <th class="sortable" data-key="priority">Prioridad</th>
+            <th>Descripción</th>
+            <th class="sortable" data-key="agent">Agente</th>
+            <th>Depende de</th>
+            <th>Criterio de aceptación</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- P1 – seguridad y bloqueantes -->
+          <tr data-priority="P1" data-agent="Tech Lead"><td>T-01</td><td><span class="badge badge-red">P1</span></td><td>Decidir stack (Camino A vs B) y registrar ADR-001 en <code>docs/DECISIONS.md</code>.</td><td>Tech Lead</td><td>—</td><td>ADR-001 mergeado con justificación, consecuencias y firmas.</td></tr>
+          <tr data-priority="P1" data-agent="DevOps/Infra"><td>T-02</td><td><span class="badge badge-red">P1</span></td><td>Rotar <code>POSTGRES_PASSWORD</code>. Sustituir valor literal en <code>docker-compose.yml</code> por referencia a <code>.env</code>. Verificar con <code>git log</code> si alguna credencial estuvo trackeada y, en su caso, reescribir historia.</td><td>DevOps/Infra</td><td>—</td><td><code>grep -r "[credential redacted]"</code> no devuelve coincidencias. Nueva password solo en <code>.env</code> no commiteado.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-03</td><td><span class="badge badge-red">P1</span></td><td>Fix bug <code>metadata</code> → <code>extra_data</code> en <code>ingestor.py</code>, <code>normalizer.py</code>, <code>api/spatial.py</code>.</td><td>Backend</td><td>T-01</td><td>Ingesta e2e inserta una fila en <code>urban_events</code> sin traceback.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-04</td><td><span class="badge badge-red">P1</span></td><td>Fix import Shapely en <code>normalizer.validate_geometry</code> (<code>shapely.geometry.shape</code>).</td><td>Backend</td><td>T-01</td><td><code>pytest -q</code> verde; nueva test con geometría válida/ inválida.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-05</td><td><span class="badge badge-red">P1</span></td><td>Convertir task Celery <code>ingest</code> a función síncrona con <code>asyncio.run</code> (o migrar a script Cron si se aprueba retirada de Celery).</td><td>Backend</td><td>T-01</td><td><code>celery call app.tasks.ingest</code> devuelve dict con contadores; sin <code>RuntimeError: coroutine was never awaited</code>.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-06</td><td><span class="badge badge-red">P1</span></td><td>Crear tablas al arranque: unificar <code>Base</code> en <code>core/database.py</code> y llamar <code>Base.metadata.create_all</code> en <code>lifespan</code> (opcional: introducir Alembic si se confirma migración a producción).</td><td>Backend</td><td>T-03, T-04</td><td>Tras <code>docker compose up -d</code> desde cero, <code>\dt</code> muestra <code>urban_events</code>, <code>impact_zones</code>, <code>mitigation_actions</code>.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-07</td><td><span class="badge badge-red">P1</span></td><td>Corregir buffer de <code>ImpactZone</code>: aplicar <code>buffer()</code> sobre centroide reproyectado a EPSG:32630, no sobre geometría WGS84.</td><td>Backend</td><td>T-06</td><td>Test que compruebe que el diámetro del buffer (m) coincide con <code>severity * 100</code> ± 5%.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-08</td><td><span class="badge badge-red">P1</span></td><td>Cerrar endpoints de escritura (<code>POST/PUT/DELETE /api/v1/events</code>) detrás de API key de admin vía header <code>X-Admin-Token</code>; la clave vive solo en <code>.env</code>.</td><td>Backend</td><td>T-02</td><td>Sin token → 401. Con token inválido → 401. Con token válido → 201.</td></tr>
+          <tr data-priority="P1" data-agent="Backend"><td>T-09</td><td><span class="badge badge-red">P1</span></td><td>Añadir rate limiting (<code>slowapi</code> o middleware propio) a todos los endpoints; defaults: 60 req/min por IP en lectura, 10 req/min en escritura.</td><td>Backend</td><td>T-08</td><td>Superar el límite → 429. Logs registran IP y endpoint.</td></tr>
+          <tr data-priority="P1" data-agent="DevOps/Infra"><td>T-10</td><td><span class="badge badge-red">P1</span></td><td>Estructura de repo canónica: mover a <code>src/</code>, <code>tests/</code>, <code>docs/</code>, <code>infra/</code>, <code>config/</code>, <code>db/</code>. Commit atómico separado de cambios funcionales.</td><td>DevOps/Infra</td><td>T-01</td><td><code>git diff --stat</code> muestra solo renames y creación de dirs; CI verde tras el rename.</td></tr>
+          <tr data-priority="P1" data-agent="Dev"><td>T-11</td><td><span class="badge badge-red">P1</span></td><td>Crear <code>docs/STATUS.md</code>+<code>.html</code>, <code>docs/AGENTS.md</code>+<code>.html</code>, <code>docs/DECISIONS.md</code>+<code>.html</code>, <code>docs/TODO.md</code>+<code>.html</code>, <code>CHANGELOG.md</code>, <code>CONTRIBUTING.md</code>.</td><td>Dev</td><td>T-01, T-10</td><td>Los 6 archivos existen, están enlazados en README, versión HTML generada.</td></tr>
+          <tr data-priority="P1" data-agent="DevOps/Infra"><td>T-12</td><td><span class="badge badge-red">P1</span></td><td>Workflow GitHub Actions <code>ci.yml</code>: ruff + mypy + pytest + pip-audit en cada push/PR.</td><td>DevOps/Infra</td><td>T-10</td><td>Primer run verde en <code>main</code>.</td></tr>
+
+          <!-- P2 – valor alto, esfuerzo alto -->
+          <tr data-priority="P2" data-agent="Backend"><td>T-20</td><td><span class="badge badge-yellow">P2</span></td><td>Action Template Engine: módulo <code>src/backend/engine/action_templates.py</code> + reglas YAML en <code>src/backend/engine/templates/</code>. Mínimo 4 reglas (OBRA alta, OBRA comercio, EVENTO severo, CLIMA severo).</td><td>Backend</td><td>T-06</td><td>Tras ingestar un OBRA severity≥3, existen ≥2 <code>MitigationAction</code> asociadas; test unitario por regla.</td></tr>
+          <tr data-priority="P2" data-agent="Backend"><td>T-21</td><td><span class="badge badge-yellow">P2</span></td><td>Alternative Finder: ingestar aparcamientos públicos + paradas EMT; tabla <code>points_of_interest</code>; endpoint <code>GET /api/v1/spatial/alternatives</code> devuelve POI cercanos fuera de la zona de impacto.</td><td>Backend</td><td>T-20</td><td>Test e2e: dada una obra y un POI a 200 m fuera de la zona, el endpoint lo devuelve.</td></tr>
+          <tr data-priority="P2" data-agent="Frontend"><td>T-22</td><td><span class="badge badge-yellow">P2</span></td><td>Frontend vanilla (HTML + JS + MapLibre) servido por Nginx · mapa con capas impact-zones + events · ActionCard bottom-sheet · bilingüe cas/val.</td><td>Frontend</td><td>T-09, T-20</td><td>Lighthouse mobile ≥90 en Perf y Accesibilidad; prueba manual del "Golden Path".</td></tr>
+          <tr data-priority="P2" data-agent="DevOps/Infra"><td>T-23</td><td><span class="badge badge-yellow">P2</span></td><td>Provisionar VPS Hetzner + Nginx + Cloudflare Tunnel + Tailscale + unattended-upgrades. Script idempotente en <code>infra/provision.sh</code>.</td><td>DevOps/Infra</td><td>T-10</td><td>Segundo run del script no produce cambios; <code>ss -tlnp</code> muestra solo 22 (SSH key-only) y servicios internos.</td></tr>
+          <tr data-priority="P2" data-agent="DevOps/Infra"><td>T-24</td><td><span class="badge badge-yellow">P2</span></td><td>Configurar Nginx con security headers (CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) y <code>server_tokens off</code>.</td><td>DevOps/Infra</td><td>T-23</td><td><code>curl -I</code> muestra los headers; <code>securityheaders.com</code> A o superior.</td></tr>
+          <tr data-priority="P2" data-agent="QA"><td>T-25</td><td><span class="badge badge-yellow">P2</span></td><td>Cobertura de tests backend: ingestor end-to-end con <code>testcontainers-postgres</code>; API e2e con <code>httpx.AsyncClient</code>. Objetivo 70% líneas.</td><td>QA</td><td>T-06, T-07</td><td><code>pytest --cov</code> ≥70%.</td></tr>
+          <tr data-priority="P2" data-agent="Backend"><td>T-26</td><td><span class="badge badge-yellow">P2</span></td><td>Script de exportación de datos derivados (<code>scripts/export_derived_data.py</code>) → GeoJSON + CSV con cabecera CC-BY 4.0.</td><td>Backend</td><td>T-20</td><td>Run genera <code>exports/impact_zones.geojson</code> y <code>exports/mitigation_actions.csv</code> válidos.</td></tr>
+
+          <!-- P3 – valor bajo, esfuerzo bajo -->
+          <tr data-priority="P3" data-agent="Dev"><td>T-30</td><td><span class="badge badge-gray">P3</span></td><td>Renombrar <code>models/models.py</code> → <code>models/__init__.py</code> y lo mismo con <code>schemas/</code> (eliminar duplicación nominal).</td><td>Dev</td><td>T-10</td><td>Imports siguen funcionando; tests verdes.</td></tr>
+          <tr data-priority="P3" data-agent="Dev"><td>T-31</td><td><span class="badge badge-gray">P3</span></td><td>Mover material del concurso (AD.TR.15_*.md, AcuerdoJGL_*.md) a <code>docs/concurso/</code>.</td><td>Dev</td><td>T-10</td><td>Raíz sin archivos institucionales.</td></tr>
+          <tr data-priority="P3" data-agent="Dev"><td>T-32</td><td><span class="badge badge-gray">P3</span></td><td>Retirar <code>geopandas</code> de <code>requirements.txt</code> (no se usa).</td><td>Dev</td><td>T-06</td><td>Imagen docker ~100 MB más pequeña; tests verdes.</td></tr>
+          <tr data-priority="P3" data-agent="DevOps/Infra"><td>T-33</td><td><span class="badge badge-gray">P3</span></td><td>Pre-commit hooks: ruff, detect-secrets, trailing-whitespace, end-of-file-fixer.</td><td>DevOps/Infra</td><td>T-12</td><td><code>pre-commit run --all-files</code> verde.</td></tr>
+          <tr data-priority="P3" data-agent="Dev"><td>T-34</td><td><span class="badge badge-gray">P3</span></td><td><code>scripts/verify_datasets.py</code>: golpea los endpoints ODS y confirma slugs reales; actualiza <code>DATA_SOURCES.md</code>.</td><td>Dev</td><td>T-03</td><td>Script termina con exit 0 y muestra conteo por dataset.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+
+    <!-- ================= PLAN SVG ================= -->
+    <section id="plan">
+      <h2>🗺️ Execution Plan — Dependency Graph</h2>
+      <p>
+        Nodos por tarea. Color por agente. Los nodos sin flechas entrantes son arrancables en paralelo
+        tras aprobación de T-01 (decisión de stack). El <em>critical path</em> es
+        T-01 → T-10 → T-11 → T-06 → T-07 → T-20 → T-22.
+      </p>
+      <svg class="diagram" viewBox="0 0 1040 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafo de dependencias de tareas">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#606060"/>
+          </marker>
+          <style>
+            .n { fill: #fff; stroke-width: 1.5; }
+            .tl  { stroke: #7c3aed; }   /* Tech Lead   · violeta */
+            .be  { stroke: #2563eb; }   /* Backend     · azul    */
+            .fe  { stroke: #0891b2; }   /* Frontend    · cian    */
+            .do  { stroke: #ca8a04; }   /* DevOps      · ámbar   */
+            .qa  { stroke: #16a34a; }   /* QA          · verde   */
+            .dv  { stroke: #6b7280; }   /* Dev support · gris    */
+            .lbl { font: 600 11px -apple-system, sans-serif; fill: #1a1a1a; text-anchor: middle; }
+            .sub { font: 400 9.5px -apple-system, sans-serif; fill: #606060; text-anchor: middle; }
+            .edge { stroke: #9ca3af; stroke-width: 1.2; fill: none; marker-end: url(#arrow); }
+            .edge-crit { stroke: #dc2626; stroke-width: 1.8; }
+            .legend { font: 500 11px -apple-system, sans-serif; fill: #1a1a1a; }
+          </style>
+        </defs>
+
+        <!-- LEGEND -->
+        <g transform="translate(20,18)">
+          <rect x="0" y="0" width="1000" height="30" fill="#f4f4f2" stroke="#e5e5e3"/>
+          <g transform="translate(14,20)">
+            <circle cx="0" cy="-5" r="6" class="n tl"/><text x="12" y="-1" class="legend">Tech Lead</text>
+            <circle cx="120" cy="-5" r="6" class="n be"/><text x="132" y="-1" class="legend">Backend</text>
+            <circle cx="230" cy="-5" r="6" class="n fe"/><text x="242" y="-1" class="legend">Frontend</text>
+            <circle cx="340" cy="-5" r="6" class="n do"/><text x="352" y="-1" class="legend">DevOps/Infra</text>
+            <circle cx="470" cy="-5" r="6" class="n qa"/><text x="482" y="-1" class="legend">QA</text>
+            <circle cx="520" cy="-5" r="6" class="n dv"/><text x="532" y="-1" class="legend">Dev (support)</text>
+            <line x1="660" y1="-5" x2="690" y2="-5" class="edge edge-crit"/><text x="698" y="-1" class="legend">Critical path</text>
+            <line x1="830" y1="-5" x2="860" y2="-5" class="edge"/><text x="868" y="-1" class="legend">Dependencia</text>
+          </g>
+        </g>
+
+        <!-- NODES -->
+        <!-- T-01 (pivote) -->
+        <g transform="translate(520,90)">
+          <circle r="30" class="n tl"/>
+          <text class="lbl" y="-3">T-01</text>
+          <text class="sub" y="10">stack ADR</text>
+        </g>
+
+        <!-- Column security (P1 sec) -->
+        <g transform="translate(140,200)">
+          <circle r="26" class="n do"/>
+          <text class="lbl" y="-2">T-02</text><text class="sub" y="10">rotate secret</text>
+        </g>
+        <g transform="translate(300,200)">
+          <circle r="26" class="n do"/>
+          <text class="lbl" y="-2">T-10</text><text class="sub" y="10">estructura</text>
+        </g>
+        <g transform="translate(460,200)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-03</text><text class="sub" y="10">extra_data</text>
+        </g>
+        <g transform="translate(600,200)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-04</text><text class="sub" y="10">shapely fix</text>
+        </g>
+        <g transform="translate(740,200)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-05</text><text class="sub" y="10">celery sync</text>
+        </g>
+        <g transform="translate(900,200)">
+          <circle r="26" class="n do"/>
+          <text class="lbl" y="-2">T-12</text><text class="sub" y="10">CI</text>
+        </g>
+
+        <!-- Middle row -->
+        <g transform="translate(300,310)">
+          <circle r="26" class="n dv"/>
+          <text class="lbl" y="-2">T-11</text><text class="sub" y="10">docs req.</text>
+        </g>
+        <g transform="translate(530,310)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-06</text><text class="sub" y="10">create tables</text>
+        </g>
+        <g transform="translate(700,310)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-07</text><text class="sub" y="10">buffer fix</text>
+        </g>
+        <g transform="translate(870,310)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-08</text><text class="sub" y="10">admin token</text>
+        </g>
+
+        <!-- Third row -->
+        <g transform="translate(700,420)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-09</text><text class="sub" y="10">rate limit</text>
+        </g>
+        <g transform="translate(530,420)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-20</text><text class="sub" y="10">action engine</text>
+        </g>
+        <g transform="translate(360,420)">
+          <circle r="26" class="n qa"/>
+          <text class="lbl" y="-2">T-25</text><text class="sub" y="10">coverage</text>
+        </g>
+        <g transform="translate(870,420)">
+          <circle r="26" class="n do"/>
+          <text class="lbl" y="-2">T-23</text><text class="sub" y="10">VPS</text>
+        </g>
+
+        <!-- Fourth row -->
+        <g transform="translate(530,530)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-21</text><text class="sub" y="10">POI finder</text>
+        </g>
+        <g transform="translate(700,530)">
+          <circle r="26" class="n fe"/>
+          <text class="lbl" y="-2">T-22</text><text class="sub" y="10">frontend</text>
+        </g>
+        <g transform="translate(870,530)">
+          <circle r="26" class="n do"/>
+          <text class="lbl" y="-2">T-24</text><text class="sub" y="10">nginx headers</text>
+        </g>
+        <g transform="translate(360,530)">
+          <circle r="26" class="n be"/>
+          <text class="lbl" y="-2">T-26</text><text class="sub" y="10">exports CC-BY</text>
+        </g>
+
+        <!-- EDGES (todas desde T-01 para P1; luego dependencias internas) -->
+        <!-- Crítica -->
+        <path class="edge edge-crit" d="M 520 122 V 180"/>   <!-- T-01 -> T-10 (vertical via intermediate) -->
+        <path class="edge edge-crit" d="M 520 122 L 300 180"/> <!-- T-01 -> T-10 -->
+        <path class="edge edge-crit" d="M 300 226 L 300 290"/> <!-- T-10 -> T-11 -->
+        <path class="edge edge-crit" d="M 460 222 L 520 290"/> <!-- T-03 -> T-06 -->
+        <path class="edge edge-crit" d="M 530 336 L 695 290"/> <!-- T-06 -> T-07 -->
+        <path class="edge edge-crit" d="M 700 336 L 540 400"/> <!-- T-07 -> T-20 (via T-06/T-07) -->
+        <path class="edge edge-crit" d="M 530 446 L 695 510"/> <!-- T-20 -> T-22 -->
+
+        <!-- Otras dependencias de T-01 -->
+        <path class="edge" d="M 520 122 L 140 180"/> <!-- T-01 -> T-02 -->
+        <path class="edge" d="M 520 122 L 460 180"/> <!-- T-01 -> T-03 -->
+        <path class="edge" d="M 520 122 L 600 180"/> <!-- T-01 -> T-04 -->
+        <path class="edge" d="M 520 122 L 740 180"/> <!-- T-01 -> T-05 -->
+        <!-- T-10 -> T-12 -->
+        <path class="edge" d="M 326 200 L 876 200"/>
+        <!-- T-02 -> T-08 -->
+        <path class="edge" d="M 160 220 L 850 300"/>
+        <!-- T-04 -> T-06 -->
+        <path class="edge" d="M 605 225 L 540 285"/>
+        <!-- T-08 -> T-09 -->
+        <path class="edge" d="M 870 336 L 720 400"/>
+        <!-- T-06 -> T-25 -->
+        <path class="edge" d="M 520 336 L 380 400"/>
+        <!-- T-20 -> T-21 -->
+        <path class="edge" d="M 530 446 L 530 505"/>
+        <!-- T-20 -> T-26 -->
+        <path class="edge" d="M 510 440 L 380 505"/>
+        <!-- T-23 -> T-24 -->
+        <path class="edge" d="M 870 446 L 870 505"/>
+        <!-- T-09 -> T-22 -->
+        <path class="edge" d="M 700 446 L 700 505"/>
+      </svg>
+    </section>
+
+
+    <!-- ================= DECISION ================= -->
+    <section id="decision">
+      <h2>⏸ Awaiting Decision</h2>
+      <div class="callout callout-red">
+        <p><strong>No se ejecuta ninguna tarea (Fase 4) hasta que confirmes la decisión sobre T-01.</strong></p>
+      </div>
+
+      <p>
+        El canonical stack declarado en esta sesión (Vanilla PHP + SQLite + Vanilla JS + Cron) no coincide
+        con el stack real del proyecto (Python + PostGIS + FastAPI + Celery). Esto no se puede resolver por
+        inferencia. Hacen falta tus órdenes explícitas.
+      </p>
+
+      <table>
+        <thead><tr><th>Opción</th><th>Qué implica</th><th>Coste / riesgo</th><th>Recomendación</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Camino A</strong><br>Migrar al canonical stack</td>
+            <td>Descartar FastAPI/Celery/SQLAlchemy/Postgres/Redis. Reescribir el backend en PHP vanilla con SQLite + SpatiaLite. Scheduler = Cron. Frontend vanilla.</td>
+            <td>⏱ +2-3 semanas de reescritura. ⚠️ SpatiaLite tiene paridad parcial con PostGIS; ST_DWithin y ST_Transform son soportados pero con menos extensiones y peor tooling. 🔴 Tiempo que pierdes frente al plazo del concurso (1 mes desde publicación en BOP).</td>
+            <td>Solo si el uso del canonical stack es un principio organizacional inviolable.</td>
+          </tr>
+          <tr>
+            <td><strong>Camino B</strong><br>Excepción documentada</td>
+            <td>Mantener Python + PostGIS + FastAPI. <strong>Retirar Celery + Redis</strong> (pasar ingesta a Cron + script) y <strong>retirar frameworks no esenciales</strong> (GeoPandas, Tailwind, Framer Motion; Next.js solo si es imprescindible). Documentar en ADR-001.</td>
+            <td>⏱ 0 días de reescritura · 1-2 días para simplificar hacia lean. ✅ Mantiene el plazo del concurso. ⚠️ Rompe el canonical en 2 ejes (backend runtime, DB engine) pero con justificación funcional defendible.</td>
+            <td><strong>Recomendado.</strong> PostGIS es núcleo funcional del proyecto; reemplazarlo no aporta valor al ciudadano final, solo al cumplimiento interno. FastAPI + SQLAlchemy son standards maduros y low-cost en Hetzner.</td>
+          </tr>
+          <tr>
+            <td><strong>Camino C</strong><br>Híbrido</td>
+            <td>Reescribir API de consulta en PHP vanilla contra PostgreSQL/PostGIS. Mantener el pipeline de ingesta en Python + Cron (es un batch, no necesita ser PHP). Sin Celery.</td>
+            <td>⏱ 4-6 días. Complejidad extra: dos runtimes conviviendo.</td>
+            <td>Compromiso razonable si el veto se aplica solo al runtime de servicio HTTP.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Preguntas concretas para desbloquear Fase 4</h3>
+      <ol>
+        <li><strong>¿Camino A, B o C?</strong> Si B o C, confirmo ADR-001 y arranco la lista P1 de tareas.</li>
+        <li><strong>¿Se puede borrar <code>backend/.env</code> del working tree tras confirmar la rotación del password?</strong> (No se pierde nada porque <code>.env.example</code> cubre el template, pero suele contener tu credencial local de dev.)</li>
+        <li><strong>¿El proyecto se presenta en solitario o como agrupación?</strong> Condiciona el Anexo III y la documentación fiscal.</li>
+        <li><strong>¿Hay restricción presupuestaria sobre el VPS Hetzner inicial?</strong> El plan asume ~$4/mes (canonical); puedo dimensionar RAM en función de si mantenemos Postgres o migramos a SQLite.</li>
+      </ol>
+
+      <p style="margin-top: 28px;">
+        <button class="btn" id="btn-copy-decision">Copy as prompt for next session</button>
+      </p>
+
+      <details style="margin-top: 18px;">
+        <summary>Estructura propuesta de ADR-001 (si se aprueba Camino B)</summary>
+<pre># ADR-001 — Desviación del canonical stack: Python + PostGIS para V-PRO
+
+**Status:** Accepted
+**Date:** 2026-05-09
+**Deciders:** Tech Lead + Product Owner
+
+## Context
+El proyecto V-PRO responde a la convocatoria AD.TR.15 (Ayuntamiento de València,
+premio Datos Abiertos 2026). Su núcleo funcional es geoespacial: calcular zonas
+de impacto urbano con buffers métricos, emparejar ubicaciones ciudadanas con
+eventos activos mediante ST_DWithin, y reproyectar geometrías entre CRS.
+
+El canonical stack declarado en el equipo es: Vanilla PHP + SQLite + Vanilla JS + Cron.
+
+## Options considered
+1. Migrar al canonical stack (SQLite + SpatiaLite + PHP).
+2. Excepción documentada: mantener Python + PostGIS, retirar piezas accesorias.
+3. Híbrido: API HTTP en PHP, pipeline batch en Python.
+
+## Decision
+Se adopta la opción 2:
+- Backend HTTP: Python 3.11 + FastAPI + SQLAlchemy.
+- DB: PostgreSQL 15 + PostGIS.
+- Scheduler: **Cron** (Celery + Redis eliminados).
+- Frontend: HTML + Vanilla JS + MapLibre (Next.js/Tailwind/Framer descartados).
+- Infra restante (Nginx, Cloudflare Tunnel, Tailscale, Hetzner, unattended-upgrades, R2): canonical.
+
+## Consequences
++ Velocidad: mantenemos el plazo de 1 mes del concurso.
++ Capacidad: PostGIS cubre todas las operaciones espaciales del diseño.
++ Superficie: eliminamos Celery, Redis, Tailwind, Framer, GeoPandas.
+- Desviación del canonical en dos ejes (runtime backend, DB engine) — se revisa al cierre del MVP.
+- Mayor coste de mantenimiento si el equipo es mayormente PHP.
+
+## Revisitación
+Se reevalúa esta decisión al cierre de Fase 3 (entrega del frontend).</pre>
+      </details>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  // ---- Active nav highlight on scroll ----
+  var links = document.querySelectorAll('aside.sidebar nav a');
+  var sections = Array.from(links).map(function(a){ return document.querySelector(a.getAttribute('href')); });
+  function onScroll() {
+    var y = window.scrollY + 80;
+    var activeIdx = 0;
+    sections.forEach(function(s, i){ if (s && s.offsetTop <= y) activeIdx = i; });
+    links.forEach(function(a, i){ a.classList.toggle('active', i === activeIdx); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ---- Task table filter ----
+  var tbody = document.querySelector('#tasks-table tbody');
+  if (tbody) {
+    var rows = Array.from(tbody.querySelectorAll('tr'));
+    var fp = document.getElementById('filter-priority');
+    var fa = document.getElementById('filter-agent');
+    var ft = document.getElementById('filter-text');
+    function apply() {
+      var p = fp.value, a = fa.value, t = (ft.value || '').toLowerCase();
+      rows.forEach(function(r) {
+        var matchP = (p === 'all' || r.dataset.priority === p);
+        var matchA = (a === 'all' || r.dataset.agent === a);
+        var matchT = (!t || r.textContent.toLowerCase().indexOf(t) !== -1);
+        r.style.display = (matchP && matchA && matchT) ? '' : 'none';
+      });
+    }
+    [fp, fa, ft].forEach(function(el){ el.addEventListener('input', apply); });
+
+    // ---- Sortable columns ----
+    var thead = document.querySelector('#tasks-table thead');
+    thead.addEventListener('click', function(e) {
+      var th = e.target.closest('th.sortable');
+      if (!th) return;
+      var key = th.dataset.key;
+      var idx = Array.from(th.parentNode.children).indexOf(th);
+      var asc = th.dataset.asc !== '1';
+      thead.querySelectorAll('th').forEach(function(h){ h.dataset.asc = ''; });
+      th.dataset.asc = asc ? '1' : '0';
+      rows.sort(function(ra, rb) {
+        var va = ra.children[idx].textContent.trim();
+        var vb = rb.children[idx].textContent.trim();
+        return asc ? va.localeCompare(vb, 'es', { numeric: true }) : vb.localeCompare(va, 'es', { numeric: true });
+      });
+      rows.forEach(function(r){ tbody.appendChild(r); });
+    });
+  }
+
+  // ---- Copy task list as prompt ----
+  var btn = document.getElementById('btn-copy-prompt');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      var rows = Array.from(document.querySelectorAll('#tasks-table tbody tr')).filter(function(r){ return r.style.display !== 'none'; });
+      var lines = ['# V-PRO · Task list (exportado del Phase 1 audit)'];
+      rows.forEach(function(r) {
+        var cells = r.children;
+        lines.push('- [' + cells[0].textContent.trim() + '] (' + cells[1].textContent.trim() + ') '
+          + cells[2].textContent.trim() + ' — agente: ' + cells[3].textContent.trim()
+          + ' · depende de: ' + cells[4].textContent.trim()
+          + ' · aceptación: ' + cells[5].textContent.trim());
+      });
+      navigator.clipboard.writeText(lines.join('\n')).then(function(){
+        btn.textContent = '✓ Copiado';
+        setTimeout(function(){ btn.textContent = 'Copy task list as prompt'; }, 2000);
+      });
+    });
+  }
+
+  var btnD = document.getElementById('btn-copy-decision');
+  if (btnD) {
+    btnD.addEventListener('click', function() {
+      var text = [
+        'Contexto: eres el Tech Lead de V-PRO. Repositorio auditado el 2026-05-09.',
+        'Detectado conflicto entre canonical stack (PHP+SQLite+Vanilla JS+Cron) y stack actual (Python+PostGIS+FastAPI+Celery).',
+        'Decisión pendiente: Camino A (migrar a canonical), B (excepción documentada ADR-001, recomendado), C (híbrido).',
+        'Preguntas abiertas:',
+        '1. ¿A, B o C?',
+        '2. ¿Borrar backend/.env del working tree tras rotar password?',
+        '3. ¿Solicitud en solitario o agrupación (Anexo III)?',
+        '4. ¿Presupuesto del VPS?',
+        'Ver docs/reports/phase-1-audit.html para el detalle completo.'
+      ].join('\n');
+      navigator.clipboard.writeText(text).then(function(){
+        btnD.textContent = '✓ Copiado';
+        setTimeout(function(){ btnD.textContent = 'Copy as prompt for next session'; }, 2000);
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+{
+  "appName": "V-PRO",
+  "lang": "val",
+  "eyebrow": "Valencia ara",
+  "title": "El que esta passant prop",
+  "loading": "Buscant esdeveniments actius...",
+  "profileSelectorLabel": "Perfil de mobilitat",
+  "languageSelectorLabel": "Idioma",
+  "eventListLabel": "Esdeveniments actius",
+  "mapLabel": "Mapa d'esdeveniments i alternatives",
+  "map": "Mapa",
+  "expand": "Ampliar",
+  "close": "Tancar",
+  "activeProfileLoading": "Perfil {profile} actiu. Carregant dades...",
+  "activeEvents": "{count} esdeveniments actius en la teua zona · Actualitzat ara",
+  "emptyEvents": "No hi ha esdeveniments actius en la zona ara mateix.",
+  "apiError": "No s'ha pogut connectar amb l'API local. Arranca el backend i torna a carregar.",
+  "apiUnavailable": "API no disponible",
+  "defaultDescription": "Incidencia activa amb afeccio en la via publica",
+  "near": "Prop",
+  "dataAvailable": "Dada disponible",
+  "places": "{count} places",
+  "severity": "Severitat",
+  "noAlternative": "Sense alternativa propera en el radi actual",
+  "route": "Ruta",
+  "feedbackGroupLabel": "Feedback",
+  "useful": "Util",
+  "notUseful": "No util",
+  "feedbackLocal": "Feedback anotat en esta sessio",
+  "feedbackSaved": "Feedback registrat",
+  "feedbackError": "No s'ha pogut registrar el feedback",
+  "profiles": {
+    "GENERIC": "Generic",
+    "PMR": "PMR",
+    "CYCLIST": "Bici",
+    "PUBLIC_TRANSPORT": "Transport"
+  },
+  "eventTypes": {
+    "OCUPACION": "Ocupacio via publica",
+    "TRAFICO": "Transit",
+    "ZBE": "Zona de baixes emissions",
+    "EVENTO_FALLAS": "Falles",
+    "APARCAMIENTO": "Aparcament",
+    "DEFAULT": "Esdeveniment"
+  },
+  "poiTypes": {
+    "APARCAMIENTO_PMR": "Aparcament PMR",
+    "DEFAULT": "Alternativa propera"
+  },
+  "actionTemplates": {
+    "bici-ocupacion": "Desviament ciclista recomanat",
+    "comercio-ocupacion": "Revisa el tramit municipal per afeccio",
+    "ocupacion-generica": "Consulta l'afeccio abans de desplacar-te",
+    "ocupacion-severa": "Ruta alternativa recomanada",
+    "trafico-retencion": "Evita este tram"
+  }
+}

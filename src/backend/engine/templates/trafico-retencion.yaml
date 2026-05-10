@@ -1,0 +1,23 @@
+{
+  "id": "trafico-retencion",
+  "when": {
+    "event_type": "TRAFICO",
+    "severity_gte": 3
+  },
+  "actions": [
+    {
+      "action_type": "ROUTE_CHANGE",
+      "title": "Evita este tramo",
+      "description": "Hay retencion relevante. Usa una ruta alternativa.",
+      "priority": 70,
+      "profiles": ["GENERIC", "COMMERCIAL"]
+    },
+    {
+      "action_type": "INFORMATION",
+      "title": "Valora transporte publico",
+      "description": "El trafico puede alargar el trayecto en superficie.",
+      "priority": 55,
+      "profiles": ["PUBLIC_TRANSPORT"]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "appName": "V-PRO",
+  "lang": "es",
+  "eyebrow": "Valencia ahora",
+  "title": "Lo que esta pasando cerca",
+  "loading": "Buscando acontecimientos activos...",
+  "profileSelectorLabel": "Perfil de movilidad",
+  "languageSelectorLabel": "Idioma",
+  "eventListLabel": "Acontecimientos activos",
+  "mapLabel": "Mapa de eventos y alternativas",
+  "map": "Mapa",
+  "expand": "Expandir",
+  "close": "Cerrar",
+  "activeProfileLoading": "Perfil {profile} activo. Cargando datos...",
+  "activeEvents": "{count} acontecimientos activos en tu zona · Actualizado ahora",
+  "emptyEvents": "No hay acontecimientos activos en la zona ahora mismo.",
+  "apiError": "No se pudo conectar con la API local. Arranca el backend y vuelve a cargar.",
+  "apiUnavailable": "API no disponible",
+  "defaultDescription": "Incidencia activa con afeccion en la via publica",
+  "near": "Cerca",
+  "dataAvailable": "Dato disponible",
+  "places": "{count} plazas",
+  "severity": "Severidad",
+  "noAlternative": "Sin alternativa cercana en el radio actual",
+  "route": "Ruta",
+  "feedbackGroupLabel": "Feedback",
+  "useful": "Util",
+  "notUseful": "No util",
+  "feedbackLocal": "Feedback anotado en esta sesion",
+  "feedbackSaved": "Feedback registrado",
+  "feedbackError": "No se pudo registrar el feedback",
+  "profiles": {
+    "GENERIC": "Generico",
+    "PMR": "PMR",
+    "CYCLIST": "Bici",
+    "PUBLIC_TRANSPORT": "Transporte"
+  },
+  "eventTypes": {
+    "OCUPACION": "Ocupacion via publica",
+    "TRAFICO": "Trafico",
+    "ZBE": "Zona de bajas emisiones",
+    "EVENTO_FALLAS": "Fallas",
+    "APARCAMIENTO": "Aparcamiento",
+    "DEFAULT": "Acontecimiento"
+  },
+  "poiTypes": {
+    "APARCAMIENTO_PMR": "Aparcamiento PMR",
+    "DEFAULT": "Alternativa cercana"
+  },
+  "actionTemplates": {
+    "bici-ocupacion": "Desvio ciclista recomendado",
+    "comercio-ocupacion": "Revisa tramite municipal por afeccion",
+    "ocupacion-generica": "Consulta la afeccion antes de desplazarte",
+    "ocupacion-severa": "Ruta alternativa recomendada",
+    "trafico-retencion": "Evita este tramo"
+  }
+}
