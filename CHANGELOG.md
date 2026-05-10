@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - ZBE y alternativas por medio - 2026-05-10
+- Frontend: nuevo comprobador conservador `Vehículo y ZBE` por distintivo ambiental, con enlace a la ordenanza municipal y aviso de no sustitución legal.
+- Frontend: el panel de detalle explica por qué se recomienda una alternativa según perfil/medio (`Valenbisi`, EMT, Metrovalencia, PMR o comercio).
+- Frontend: los botones de feedback pasan de símbolos `+/-` a texto visible `Útil/No útil` manteniendo la persistencia en `/api/v1/feedback`.
+
 ### Added - Ecosistema y replicabilidad - 2026-05-10
 - Frontend: el panel de detalle permite `Exportar snapshot`, copiando un payload JSON CC-BY 4.0 con fuente, impacto, alternativa y HTML embebible para medios locales.
 - Docs: `README.md` incorpora un kit de replicabilidad para adaptar VLC PROACTIVA a otros municipios con CKAN o ArcGIS REST.

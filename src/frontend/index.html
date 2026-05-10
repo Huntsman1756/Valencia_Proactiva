@@ -78,6 +78,21 @@
             </div>
           </section>
 
+          <section class="rail-section zbe-checker" aria-label="ComprobaciÃ³n ZBE" data-i18n-attr="aria-label:zbeCheckerLabel">
+            <h2 data-i18n="zbeCheckerTitle">VehÃ­culo y ZBE</h2>
+            <label for="vehicleBadge" data-i18n="vehicleBadgeLabel">Distintivo ambiental</label>
+            <select id="vehicleBadge">
+              <option value="UNKNOWN" data-i18n="vehicleBadge_UNKNOWN">No lo sÃ©</option>
+              <option value="NONE" data-i18n="vehicleBadge_NONE">Sin etiqueta</option>
+              <option value="B" data-i18n="vehicleBadge_B">Etiqueta B</option>
+              <option value="C" data-i18n="vehicleBadge_C">Etiqueta C</option>
+              <option value="ECO" data-i18n="vehicleBadge_ECO">ECO</option>
+              <option value="ZERO" data-i18n="vehicleBadge_ZERO">Cero emisiones</option>
+            </select>
+            <p id="zbeVehicleResult" class="zbe-result"></p>
+            <a href="https://sede.valencia.es/sede/ordenanzas/detalle/MzM2MDE.AvPAlt3D.AvOvTok%25C2%25A0" target="_blank" rel="noopener" data-i18n="zbeSourceLink">Ver ordenanza ZBE</a>
+          </section>
+
           <section class="rail-section source-note">
             <span class="status-dot" aria-hidden="true"></span>
             <div>

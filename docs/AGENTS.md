@@ -1094,3 +1094,8 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Producto: perspectiva de genero/seguridad y rutas iluminadas quedan condicionadas a fuente oficial de alumbrado publico y metodologia; no activar sin datos verificados.
 - Producto: pasaporte de resiliencia comercial queda como evolucion post-MVP con validacion administrativa; no otorgar sellos reales desde la demo.
 - Docs: README debe explicar replicabilidad por ciudad (fuentes, plantillas YAML, marca/despliegue) y MEMORIA debe mantener bajo coste operativo + privacidad por diseno.
+
+## Sesion 2026-05-10 - ZBE y alternativas modales
+- Frontend: el selector `Vehiculo y ZBE` debe ser conservador; no afirmar permiso legal, solo orientar por distintivo ambiental y enlazar a ordenanza.
+- Alternativas: el detalle debe explicar el criterio segun perfil/medio (bus EMT, Metrovalencia, Valenbisi, PMR, comercio) para que no parezca que todos los perfiles reciben lo mismo.
+- Feedback: evitar botones solo simbolicos; usar texto visible `Util/No util` o equivalente bilingue.

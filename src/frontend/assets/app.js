@@ -44,6 +44,7 @@ const CONTEST_URL = "https://sede.valencia.es/sede/registro/procedimiento/AD.TR.
 const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css";
 const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
 const INITIAL_PROFILE = localStorage.getItem("vpro_profile") || "PMR";
+const INITIAL_VEHICLE_BADGE = localStorage.getItem("vpro_vehicle_badge") || "UNKNOWN";
 
 const state = {
   profile: INITIAL_PROFILE,
@@ -51,6 +52,7 @@ const state = {
   messages: {},
   theme: localStorage.getItem("vpro_theme") || "light",
   alertMode: localStorage.getItem("vpro_alert_mode") === "true",
+  vehicleBadge: INITIAL_VEHICLE_BADGE,
   events: [],
   cards: [],
   visibleCards: [],
@@ -85,6 +87,8 @@ const profileImpact = document.querySelector("#profileImpact");
 const panelBackdrop = document.querySelector("#panelBackdrop");
 const themeToggle = document.querySelector("#themeToggle");
 const alertModeToggle = document.querySelector("#alertModeToggle");
+const vehicleBadge = document.querySelector("#vehicleBadge");
+const zbeVehicleResult = document.querySelector("#zbeVehicleResult");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -98,6 +102,7 @@ async function init() {
   setupViews();
   setupEventPanelToggle();
   setupQuickFilters();
+  setupZbeChecker();
   setupPoiFilters();
   setupMapToggle();
   await loadDashboard();
@@ -131,10 +136,14 @@ function applyTranslations() {
   document.querySelectorAll("[data-poi-filter]").forEach((button) => {
     button.textContent = labelForPoiFilter(button.dataset.poiFilter);
   });
+  document.querySelectorAll("#vehicleBadge [data-i18n]").forEach((option) => {
+    option.textContent = t(option.dataset.i18n);
+  });
   updateEventPanelToggleText();
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   updateThemeButton();
   updateAlertModeButton();
+  updateZbeChecker();
   renderInfoPanels();
   renderSelectedEvent(state.visibleCards[state.selectedCardIndex]);
 }
@@ -387,6 +396,29 @@ function updateProfileImpact() {
   }
   const key = `profileImpact_${state.profile}`;
   profileImpact.textContent = t(key);
+}
+
+function setupZbeChecker() {
+  if (!vehicleBadge) {
+    return;
+  }
+  vehicleBadge.value = state.vehicleBadge;
+  vehicleBadge.addEventListener("change", () => {
+    state.vehicleBadge = vehicleBadge.value;
+    localStorage.setItem("vpro_vehicle_badge", state.vehicleBadge);
+    updateZbeChecker();
+  });
+  updateZbeChecker();
+}
+
+function updateZbeChecker() {
+  if (!vehicleBadge || !zbeVehicleResult) {
+    return;
+  }
+  vehicleBadge.value = state.vehicleBadge;
+  const level = zbeStatusLevel(state.vehicleBadge);
+  zbeVehicleResult.dataset.level = level;
+  zbeVehicleResult.textContent = zbeStatusText(state.vehicleBadge);
 }
 
 function scheduleMapSetup() {
@@ -787,6 +819,7 @@ function renderSelectedEvent(card) {
     </dl>
     <section class="detail-block">
       <h3>${t("recommendedAlternativeTitle")}</h3>
+      <p class="mode-guidance">${escapeHtml(profileAlternativeGuidance(card))}</p>
       <p><strong>${escapeHtml(alternativeName || t("noAlternative"))}</strong></p>
       <p>${alternative ? escapeHtml(`${distance} · ${places} · ${labelForPoi(alternative.poi_type)}`) : escapeHtml(t("noAlternative"))}</p>
       <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
@@ -802,8 +835,8 @@ function renderSelectedEvent(card) {
         <button type="button" class="route-button">${t("route")}</button>
         <button type="button" class="snapshot-button">${t("exportSnapshot")}</button>
         <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
-          <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}">+</button>
-          <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}">-</button>
+          <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}"><span aria-hidden="true">+</span><span>${t("useful")}</span></button>
+          <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}"><span aria-hidden="true">-</span><span>${t("notUseful")}</span></button>
         </div>
       </div>
     </section>
@@ -838,6 +871,52 @@ function impactInfo(event) {
     meters,
     label: formatMessage("impactBadge", { level, meters }),
   };
+}
+
+function profileAlternativeGuidance(card) {
+  const poiType = card?.alternative?.poi_type;
+  if (state.profile === "PUBLIC_TRANSPORT") {
+    if (poiType === "PARADA_EMT") {
+      return t("alternativeGuidanceBus");
+    }
+    if (poiType === "ESTACION_FGV" || poiType === "BOCA_FGV") {
+      return t("alternativeGuidanceMetro");
+    }
+    return t("alternativeGuidancePublicTransport");
+  }
+  if (state.profile === "CYCLIST") {
+    return poiType === "VALENBISI" ? t("alternativeGuidanceValenbisi") : t("alternativeGuidanceBike");
+  }
+  if (state.profile === "PMR") {
+    return t("alternativeGuidancePmr");
+  }
+  if (state.profile === "COMMERCIAL") {
+    return t("alternativeGuidanceCommercial");
+  }
+  return t("alternativeGuidanceGeneric");
+}
+
+function zbeStatusLevel(badge) {
+  if (badge === "NONE") {
+    return "restricted";
+  }
+  if (badge === "UNKNOWN" || badge === "B") {
+    return "review";
+  }
+  return "allowed";
+}
+
+function zbeStatusText(badge) {
+  if (badge === "NONE") {
+    return t("zbeStatusRestricted");
+  }
+  if (badge === "B") {
+    return t("zbeStatusReviewB");
+  }
+  if (badge === "UNKNOWN") {
+    return t("zbeStatusUnknown");
+  }
+  return t("zbeStatusAllowed");
 }
 
 function renderEmpty(message) {

@@ -23,6 +23,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-lang='val']").click();
   await page.locator("h1").filter({ hasText: "El que està passant prop" }).waitFor({ timeout: 5000 });
   await page.locator(".source-strip").first().waitFor({ timeout: 10000 });
+  await page.locator("#vehicleBadge").selectOption("NONE");
+  await page.locator("#zbeVehicleResult").filter({ hasText: "Restricció probable" }).waitFor({ timeout: 5000 });
   await page.locator("#alertModeToggle").click();
   await page.locator("#toast").filter({ hasText: "Mode alerta preparat" }).waitFor({ timeout: 5000 });
   await page.locator("[data-poi-filter='VALENBISI']").click();
@@ -117,11 +119,13 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     sourceStrip: document.querySelector(".source-strip")?.textContent,
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
     profileImpact: document.querySelector("#profileImpact")?.textContent,
+    zbeResult: document.querySelector("#zbeVehicleResult")?.textContent,
     routeText: document.querySelector(".route-button")?.textContent,
     snapshotText: document.querySelector(".snapshot-button")?.textContent,
     routeDisclaimer: document.querySelector(".route-note")?.textContent,
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
+    modeGuidance: document.querySelector(".mode-guidance")?.textContent,
     alertMode: document.documentElement.dataset.alert,
     eventsPanelHidden: document.querySelector("#events")?.hidden,
     visibleEventCards: Array.from(document.querySelectorAll(".event-card")).filter((card) => {
@@ -175,6 +179,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (!data.snapshotText?.includes("snapshot")) {
     throw new Error("Journalism snapshot action is missing");
+  }
+  if (!data.zbeResult?.includes("Restricció probable") || !data.modeGuidance?.includes("places PMR")) {
+    throw new Error(`Missing ZBE or modal guidance: ${JSON.stringify({ zbeResult: data.zbeResult, modeGuidance: data.modeGuidance })}`);
   }
   if (data.alertMode !== "prepared" || !data.veracityText?.includes("Verificat per")) {
     throw new Error(`Missing alert/veracity signals: ${JSON.stringify({ alertMode: data.alertMode, veracityText: data.veracityText })}`);
