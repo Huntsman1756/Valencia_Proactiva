@@ -140,7 +140,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       return {
         scrollWidth: stack?.scrollWidth || 0,
         clientWidth: stack?.clientWidth || 0,
+        scrollHeight: stack?.scrollHeight || 0,
+        clientHeight: stack?.clientHeight || 0,
         overflowX: stack ? getComputedStyle(stack).overflowX : "",
+        overflowY: stack ? getComputedStyle(stack).overflowY : "",
       };
     })(),
     activePoiFilter: localStorage.getItem("vpro_poi_type"),
@@ -195,8 +198,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   if (data.eventsPanelHidden || data.visibleEventCards < 1) {
     throw new Error("Events panel disappeared after switching informational tabs");
   }
-  if (name === "desktop" && data.eventStackScroll.scrollWidth <= data.eventStackScroll.clientWidth) {
-    throw new Error(`Expected horizontal event rail on desktop: ${JSON.stringify(data.eventStackScroll)}`);
+  if (name === "desktop" && data.eventStackScroll.scrollHeight <= data.eventStackScroll.clientHeight) {
+    throw new Error(`Expected scrollable operational event feed on desktop: ${JSON.stringify(data.eventStackScroll)}`);
   }
 
   await page.close();

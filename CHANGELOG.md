@@ -5,6 +5,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Civic operations UI polish - 2026-05-10
+- Frontend: el mapa gana presencia como superficie principal; los paneles flotantes reducen bordes duros y el carril izquierdo deja de ensuciar la vista con scrollbar visible en escritorio.
+- Frontend: el feed inferior de eventos pasa de carrusel de tarjetas a lista operativa compacta con scroll vertical, pensada para revisar más incidencias de un vistazo.
+- Frontend: el panel derecho refuerza la jerarquía de ficha municipal y los marcadores del mapa usan símbolos más visibles para eventos y alternativas.
+- Tests: el smoke frontend valida el nuevo feed operativo vertical en escritorio.
+
 ### Changed - Sincronización de documentación canónica - 2026-05-10
 - Docs: `MEMORIA.md`, `METHODOLOGY.md`, `ARCHITECTURE.md`, `frontend-vpro.md`, `NEXT_STEPS.md` y `DECISIONS.md` quedan alineados con la interfaz actual: pestañas `Fuentes/Metodología/Info` a página completa, endpoints explícitos (`events`, `impact-zones`, `events-layer`, `alternatives`, `feedback`), ZBE orientativa, snapshot periodístico y feedback agregado.
 - Docs: corregida la contradicción sobre candidatura paralela a Periodismo de Datos; V-PRO concurre a Datos Abiertos y habilita reutilización periodística por terceros.

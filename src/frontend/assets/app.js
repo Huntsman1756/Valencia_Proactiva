@@ -1146,9 +1146,9 @@ function ensureMapLayers() {
 
 function ensureMapMarkerImages() {
   [
-    ["vpro-event-low", "#057a55", "E"],
-    ["vpro-event-mid", "#c57b13", "E"],
-    ["vpro-event-high", "#c7362f", "E"],
+    ["vpro-event-low", "#057a55", "!"],
+    ["vpro-event-mid", "#c57b13", "!"],
+    ["vpro-event-high", "#c7362f", "!"],
     ["vpro-alt-marker", "#6551a8", "A"],
   ].forEach(([name, color, letter]) => {
     if (!state.map.hasImage(name)) {
@@ -1159,19 +1159,19 @@ function ensureMapMarkerImages() {
 
 function createMarkerImage(color, letter) {
   const canvas = document.createElement("canvas");
-  canvas.width = 64;
-  canvas.height = 78;
+  canvas.width = 76;
+  canvas.height = 88;
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.shadowColor = "rgba(11, 32, 56, 0.28)";
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetY = 4;
+  ctx.shadowBlur = 10;
+  ctx.shadowOffsetY = 5;
   ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.arc(32, 28, 20, 0, Math.PI * 2);
-  ctx.moveTo(32, 70);
-  ctx.lineTo(20, 44);
-  ctx.lineTo(44, 44);
+  ctx.arc(38, 32, 24, 0, Math.PI * 2);
+  ctx.moveTo(38, 80);
+  ctx.lineTo(24, 52);
+  ctx.lineTo(52, 52);
   ctx.closePath();
   ctx.fill();
   ctx.shadowColor = "transparent";
@@ -1179,10 +1179,10 @@ function createMarkerImage(color, letter) {
   ctx.strokeStyle = "#ffffff";
   ctx.stroke();
   ctx.fillStyle = "#ffffff";
-  ctx.font = "700 24px system-ui, sans-serif";
+  ctx.font = "800 26px system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(letter, 32, 28);
+  ctx.fillText(letter, 38, 32);
   return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
