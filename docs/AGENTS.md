@@ -1078,3 +1078,6 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - No volver a usar siglas sin contexto en filtros: `VE` debe ser `Recarga vehículo eléctrico`; `EMT`/`FGV` deben indicar paradas/estaciones.
 - `Solo eventos activos` no debe ser solo un toggle visual: debe recargar o refiltrar de forma observable.
 - En mapa expandido debe existir una bandeja compacta de eventos visibles para no perder la lista de contexto.
+- Ajuste QA: `Fuentes/Metodología/Info` son drawers no modales. No deben ocultar `#events`, no deben activar backdrop bloqueante y deben mover el foco a `Cerrar`.
+- `Eventos cercanos` tiene control `Contraer/Ver eventos`; no volver a usar scroll vertical interno poco visible en la bandeja desktop.
+- Para accesibilidad tactil/personas mayores, perfiles y filtros deben envolver en varias lineas antes que esconderse en carruseles sin barra visible.

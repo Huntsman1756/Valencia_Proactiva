@@ -15,6 +15,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: eventos y alternativas pasan a pins MapLibre propios (`E`/`A`) para destacar sobre los iconos del mapa base; se ocultan simbolos POI/transporte del mapa base que compiten visualmente.
 - Frontend: `Solo eventos activos` recarga datos y cambia el volumen visible; al desactivarlo se muestran mas eventos disponibles para exploracion.
 - Frontend: el mapa expandido recupera una bandeja inferior compacta de eventos visibles para que la lista no desaparezca del flujo operativo.
+- Frontend: corregido bug donde `Fuentes/Metodologia/Info` ocultaban o bloqueaban la seccion `Eventos`; los paneles pasan a drawer no modal, sin backdrop bloqueante y con foco inicial en `Cerrar`.
+- Frontend: `Eventos cercanos` incorpora boton `Contraer/Ver eventos`; en desktop se elimina el scroll vertical interno de la bandeja y se usa carril horizontal sin scrollbar visible.
+- Accesibilidad: perfiles y filtros dejan de depender de carruseles con scrollbar oculta; ahora envuelven en varias lineas para personas mayores y navegacion tactil.
 
 ### Changed - Estado de despliegue - 2026-05-10
 - Docs: `STATUS.md` y `ROADMAP.md` actualizados para reflejar que la demo local está estable y que producción/VPS puede iniciarse como T-23/T-27/T-28 si ya hay servidor disponible.

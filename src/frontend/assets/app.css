@@ -112,6 +112,10 @@ a:hover {
   z-index: 80;
 }
 
+body.has-info-panel {
+  overflow: auto;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -350,11 +354,11 @@ a:hover {
 
 .profile-selector {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   min-width: 0;
-  overflow-x: auto;
+  overflow: visible;
   padding: 2px 0 4px;
-  scrollbar-width: none;
 }
 
 .profile-selector::-webkit-scrollbar,
@@ -368,7 +372,7 @@ a:hover {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 9px;
   align-items: center;
-  flex: 0 0 auto;
+  flex: 1 1 136px;
   min-height: 48px;
   padding: 8px 11px;
   border: 1px solid var(--line-strong);
@@ -503,9 +507,8 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  overflow-x: auto;
+  overflow: visible;
   padding-bottom: 3px;
-  scrollbar-width: none;
 }
 
 .poi-filters button {
@@ -832,14 +835,15 @@ a:hover {
   inset: 0;
   z-index: 65;
   background: rgba(11, 32, 56, 0.28);
+  pointer-events: none;
 }
 
 .info-panel:not([hidden]) {
   position: fixed;
-  top: 76px;
+  top: 128px;
   right: 10px;
   bottom: 10px;
-  z-index: 70;
+  z-index: 90;
   width: min(520px, calc(100vw - 20px));
   overflow: auto;
   padding: 18px;
@@ -852,6 +856,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 2;
+  align-self: start;
   justify-self: end;
   min-height: 34px;
   width: max-content;
@@ -862,10 +867,35 @@ a:hover {
   color: var(--ink);
   font-size: 13px;
   font-weight: 850;
+  line-height: 1;
 }
 
 .section-heading {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 10px;
+  align-items: start;
   margin-bottom: 12px;
+}
+
+.section-heading .eyebrow,
+.section-heading h2,
+.section-heading p {
+  grid-column: 1;
+}
+
+.event-panel-toggle {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: start;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 850;
 }
 
 .eyebrow {
@@ -905,6 +935,14 @@ a:hover {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
+}
+
+.event-list.is-collapsed .event-stack {
+  display: none;
+}
+
+.event-list.is-collapsed .section-heading {
+  margin-bottom: 0;
 }
 
 .event-card {
@@ -1033,6 +1071,11 @@ a:hover {
 .key-data-icon {
   color: var(--blue);
   font-weight: 900;
+}
+
+.key-data p {
+  min-width: 0;
+  margin: 0;
 }
 
 .key-data strong,
@@ -1585,8 +1628,7 @@ a:hover {
     right: 414px;
     bottom: 18px;
     z-index: 9;
-    max-height: 246px;
-    overflow: auto;
+    overflow: hidden;
     padding: 14px;
   }
 
@@ -1606,7 +1648,19 @@ a:hover {
   }
 
   .event-stack {
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .event-stack::-webkit-scrollbar {
+    display: none;
+  }
+
+  .event-card {
+    flex: 0 0 min(310px, 82vw);
   }
 }
 

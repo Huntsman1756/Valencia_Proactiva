@@ -72,6 +72,7 @@ const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
 const toggleMap = document.querySelector("#toggleMap");
 const mapEventTray = document.querySelector("#mapEventTray");
+const eventPanelToggle = document.querySelector("#eventPanelToggle");
 const poiFilters = document.querySelector("#poiFilters");
 const sourcesPanel = document.querySelector("#sourcesPanel");
 const methodologyPanel = document.querySelector("#methodologyPanel");
@@ -91,6 +92,7 @@ async function init() {
   setupProfiles();
   setupLanguageSelector();
   setupViews();
+  setupEventPanelToggle();
   setupQuickFilters();
   setupPoiFilters();
   setupMapToggle();
@@ -125,6 +127,7 @@ function applyTranslations() {
   document.querySelectorAll("[data-poi-filter]").forEach((button) => {
     button.textContent = labelForPoiFilter(button.dataset.poiFilter);
   });
+  updateEventPanelToggleText();
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   updateThemeButton();
   renderInfoPanels();
@@ -218,7 +221,7 @@ function setupViews() {
   panelBackdrop?.addEventListener("click", closeInfoPanel);
   document.addEventListener("click", (event) => {
     if (event.target.closest("[data-close-panel]")) {
-      closeInfoPanel();
+      closeInfoPanel({ revealEvents: true });
     }
   });
   document.addEventListener("keydown", (event) => {
@@ -234,7 +237,7 @@ function setupViews() {
         item.setAttribute("aria-pressed", String(item === button));
       });
       if (nextView === "events") {
-        closeInfoPanel({ keepEventsPressed: true });
+        closeInfoPanel({ keepEventsPressed: true, revealEvents: true });
         setTimeout(() => state.map?.resize(), 120);
         return;
       }
@@ -244,20 +247,24 @@ function setupViews() {
 }
 
 function openInfoPanel(view) {
-  document.querySelectorAll("[data-panel]").forEach((panel) => {
+  document.querySelectorAll(".info-panel[data-panel]").forEach((panel) => {
     const active = panel.dataset.panel === view;
     panel.hidden = !active;
-    panel.setAttribute("aria-modal", String(active));
+    panel.setAttribute("role", active ? "region" : "");
+    panel.removeAttribute("aria-modal");
+    if (active) {
+      panel.querySelector("[data-close-panel]")?.focus();
+    }
   });
   if (panelBackdrop) {
-    panelBackdrop.hidden = false;
+    panelBackdrop.hidden = true;
   }
   document.body.classList.add("has-info-panel");
 }
 
 function closeInfoPanel(options = {}) {
   state.activeView = "events";
-  document.querySelectorAll("[data-panel]").forEach((panel) => {
+  document.querySelectorAll(".info-panel[data-panel]").forEach((panel) => {
     panel.hidden = true;
     panel.removeAttribute("aria-modal");
   });
@@ -270,6 +277,34 @@ function closeInfoPanel(options = {}) {
       item.setAttribute("aria-pressed", String(item.dataset.view === "events"));
     });
   }
+  if (options.revealEvents) {
+    revealEventsPanel();
+  }
+}
+
+function revealEventsPanel() {
+  eventList.classList.remove("is-collapsed");
+  updateEventPanelToggleText();
+  document.querySelector("#events")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  document.querySelector("[data-view='events']")?.focus({ preventScroll: true });
+}
+
+function setupEventPanelToggle() {
+  eventPanelToggle?.addEventListener("click", () => {
+    const collapsed = eventList.classList.toggle("is-collapsed");
+    eventPanelToggle.setAttribute("aria-expanded", String(!collapsed));
+    updateEventPanelToggleText();
+  });
+  updateEventPanelToggleText();
+}
+
+function updateEventPanelToggleText() {
+  if (!eventPanelToggle) {
+    return;
+  }
+  eventPanelToggle.textContent = eventList.classList.contains("is-collapsed")
+    ? t("expandEvents")
+    : t("collapseEvents");
 }
 
 function setupQuickFilters() {

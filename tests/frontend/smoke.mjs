@@ -26,11 +26,25 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
   await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
+  const sourcesPanelState = await page.evaluate(() => ({
+    eventsHidden: document.querySelector("#events")?.hidden,
+    backdropHidden: document.querySelector("#panelBackdrop")?.hidden,
+    focusedClose: document.activeElement?.matches("#sourcesPanel [data-close-panel]"),
+    bodyOverflow: getComputedStyle(document.body).overflow,
+  }));
+  if (sourcesPanelState.eventsHidden || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
+    throw new Error(`Sources drawer blocks events: ${JSON.stringify(sourcesPanelState)}`);
+  }
+  if (!sourcesPanelState.focusedClose) {
+    throw new Error("Sources drawer does not move focus to its close button");
+  }
   await page.locator("[data-view='methodology']").click();
   await page.locator("#methodologyPanel").filter({ hasText: "Guia d'interacció i simbologia" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='info']").click();
   await page.locator("#additionalInfoPanel").filter({ hasText: "Limitacions actuals" }).waitFor({ timeout: 5000 });
   await page.locator("[data-view='events']").click();
+  await page.waitForFunction(() => !document.querySelector("#events")?.hidden, null, { timeout: 5000 });
+  await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("#toggleMap").click();
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
   await page.waitForTimeout(500);
@@ -86,6 +100,11 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     profileImpact: document.querySelector("#profileImpact")?.textContent,
     routeText: document.querySelector(".route-button")?.textContent,
     routeDisclaimer: document.querySelector(".route-note")?.textContent,
+    eventsPanelHidden: document.querySelector("#events")?.hidden,
+    visibleEventCards: Array.from(document.querySelectorAll(".event-card")).filter((card) => {
+      const rect = card.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    }).length,
     activePoiFilter: localStorage.getItem("vpro_poi_type"),
     tabs: Array.from(document.querySelectorAll("[data-view]")).map((item) => item.textContent),
     layers: {
@@ -122,6 +141,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (!data.routeDisclaimer?.includes("Google")) {
     throw new Error("Route disclaimer missing Google Maps limitation");
+  }
+  if (data.eventsPanelHidden || data.visibleEventCards < 1) {
+    throw new Error("Events panel disappeared after switching informational tabs");
   }
 
   await page.close();
