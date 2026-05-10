@@ -1081,3 +1081,4 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Ajuste QA: `Fuentes/Metodología/Info` son drawers no modales. No deben ocultar `#events`, no deben activar backdrop bloqueante y deben mover el foco a `Cerrar`.
 - `Eventos cercanos` tiene control `Contraer/Ver eventos`; no volver a usar scroll vertical interno poco visible en la bandeja desktop.
 - Para accesibilidad tactil/personas mayores, perfiles y filtros deben envolver en varias lineas antes que esconderse en carruseles sin barra visible.
+- Bugfix posterior: el estado `is-collapsed` debe vivir en `#events` porque el CSS depende de `.event-list.is-collapsed`; el carril desktop de `#eventList` debe mantener `overflow-x: auto` y scrollbar visible.

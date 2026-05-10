@@ -67,6 +67,7 @@ const state = {
 };
 
 const eventList = document.querySelector("#eventList");
+const eventsPanel = document.querySelector("#events");
 const statusText = document.querySelector("#statusText");
 const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
@@ -253,7 +254,7 @@ function openInfoPanel(view) {
     panel.setAttribute("role", active ? "region" : "");
     panel.removeAttribute("aria-modal");
     if (active) {
-      panel.querySelector("[data-close-panel]")?.focus();
+      setTimeout(() => panel.querySelector("[data-close-panel]")?.focus(), 80);
     }
   });
   if (panelBackdrop) {
@@ -283,15 +284,15 @@ function closeInfoPanel(options = {}) {
 }
 
 function revealEventsPanel() {
-  eventList.classList.remove("is-collapsed");
+  eventsPanel?.classList.remove("is-collapsed");
   updateEventPanelToggleText();
-  document.querySelector("#events")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  eventsPanel?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   document.querySelector("[data-view='events']")?.focus({ preventScroll: true });
 }
 
 function setupEventPanelToggle() {
   eventPanelToggle?.addEventListener("click", () => {
-    const collapsed = eventList.classList.toggle("is-collapsed");
+    const collapsed = eventsPanel?.classList.toggle("is-collapsed") || false;
     eventPanelToggle.setAttribute("aria-expanded", String(!collapsed));
     updateEventPanelToggleText();
   });
@@ -302,7 +303,7 @@ function updateEventPanelToggleText() {
   if (!eventPanelToggle) {
     return;
   }
-  eventPanelToggle.textContent = eventList.classList.contains("is-collapsed")
+  eventPanelToggle.textContent = eventsPanel?.classList.contains("is-collapsed")
     ? t("expandEvents")
     : t("collapseEvents");
 }

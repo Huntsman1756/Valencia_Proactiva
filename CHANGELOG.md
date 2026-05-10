@@ -18,6 +18,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: corregido bug donde `Fuentes/Metodologia/Info` ocultaban o bloqueaban la seccion `Eventos`; los paneles pasan a drawer no modal, sin backdrop bloqueante y con foco inicial en `Cerrar`.
 - Frontend: `Eventos cercanos` incorpora boton `Contraer/Ver eventos`; en desktop se elimina el scroll vertical interno de la bandeja y se usa carril horizontal sin scrollbar visible.
 - Accesibilidad: perfiles y filtros dejan de depender de carruseles con scrollbar oculta; ahora envuelven en varias lineas para personas mayores y navegacion tactil.
+- Fix: el boton `Contraer/Ver eventos` ahora aplica el estado sobre `#events`, no sobre el contenedor interno; el carril desktop muestra scrollbar horizontal usable para recorrer todas las incidencias.
 
 ### Changed - Estado de despliegue - 2026-05-10
 - Docs: `STATUS.md` y `ROADMAP.md` actualizados para reflejar que la demo local está estable y que producción/VPS puede iniciarse como T-23/T-27/T-28 si ya hay servidor disponible.

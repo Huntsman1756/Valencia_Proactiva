@@ -26,17 +26,14 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator("[data-view='sources']").click();
   await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
+  await page.waitForFunction(() => document.activeElement?.matches("#sourcesPanel [data-close-panel]"), null, { timeout: 5000 });
   const sourcesPanelState = await page.evaluate(() => ({
     eventsHidden: document.querySelector("#events")?.hidden,
     backdropHidden: document.querySelector("#panelBackdrop")?.hidden,
-    focusedClose: document.activeElement?.matches("#sourcesPanel [data-close-panel]"),
     bodyOverflow: getComputedStyle(document.body).overflow,
   }));
   if (sourcesPanelState.eventsHidden || !sourcesPanelState.backdropHidden || sourcesPanelState.bodyOverflow === "hidden") {
     throw new Error(`Sources drawer blocks events: ${JSON.stringify(sourcesPanelState)}`);
-  }
-  if (!sourcesPanelState.focusedClose) {
-    throw new Error("Sources drawer does not move focus to its close button");
   }
   await page.locator("[data-view='methodology']").click();
   await page.locator("#methodologyPanel").filter({ hasText: "Guia d'interacció i simbologia" }).waitFor({ timeout: 5000 });
@@ -45,6 +42,23 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("[data-view='events']").click();
   await page.waitForFunction(() => !document.querySelector("#events")?.hidden, null, { timeout: 5000 });
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
+  const eventToggleState = await page.evaluate(() => {
+    const toggle = document.querySelector("#eventPanelToggle");
+    const panel = document.querySelector("#events");
+    toggle?.click();
+    const collapsed = panel?.classList.contains("is-collapsed");
+    const hiddenWhileCollapsed = getComputedStyle(document.querySelector("#eventList")).display === "none";
+    toggle?.click();
+    return {
+      collapsed,
+      hiddenWhileCollapsed,
+      expanded: !panel?.classList.contains("is-collapsed"),
+      ariaExpanded: toggle?.getAttribute("aria-expanded"),
+    };
+  });
+  if (!eventToggleState.collapsed || !eventToggleState.hiddenWhileCollapsed || !eventToggleState.expanded || eventToggleState.ariaExpanded !== "true") {
+    throw new Error(`Event panel toggle is broken: ${JSON.stringify(eventToggleState)}`);
+  }
   await page.locator("#toggleMap").click();
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
   await page.waitForTimeout(500);
@@ -105,6 +119,14 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       const rect = card.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     }).length,
+    eventStackScroll: (() => {
+      const stack = document.querySelector("#eventList");
+      return {
+        scrollWidth: stack?.scrollWidth || 0,
+        clientWidth: stack?.clientWidth || 0,
+        overflowX: stack ? getComputedStyle(stack).overflowX : "",
+      };
+    })(),
     activePoiFilter: localStorage.getItem("vpro_poi_type"),
     tabs: Array.from(document.querySelectorAll("[data-view]")).map((item) => item.textContent),
     layers: {
@@ -144,6 +166,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (data.eventsPanelHidden || data.visibleEventCards < 1) {
     throw new Error("Events panel disappeared after switching informational tabs");
+  }
+  if (name === "desktop" && data.eventStackScroll.scrollWidth <= data.eventStackScroll.clientWidth) {
+    throw new Error(`Expected horizontal event rail on desktop: ${JSON.stringify(data.eventStackScroll)}`);
   }
 
   await page.close();

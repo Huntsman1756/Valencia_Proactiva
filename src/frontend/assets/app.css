@@ -1628,7 +1628,7 @@ body.has-info-panel {
     right: 414px;
     bottom: 18px;
     z-index: 9;
-    overflow: hidden;
+    overflow: visible;
     padding: 14px;
   }
 
@@ -1651,16 +1651,31 @@ body.has-info-panel {
     display: flex;
     gap: 10px;
     overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+    padding: 0 2px 12px 0;
+    scroll-padding-inline: 2px;
+    scroll-snap-type: x proximity;
+    scrollbar-color: var(--blue) rgba(11, 32, 56, 0.14);
+    scrollbar-width: thin;
   }
 
   .event-stack::-webkit-scrollbar {
-    display: none;
+    height: 9px;
+  }
+
+  .event-stack::-webkit-scrollbar-track {
+    border-radius: 999px;
+    background: rgba(11, 32, 56, 0.14);
+  }
+
+  .event-stack::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: var(--blue);
   }
 
   .event-card {
     flex: 0 0 min(310px, 82vw);
+    scroll-snap-align: start;
   }
 }
 
