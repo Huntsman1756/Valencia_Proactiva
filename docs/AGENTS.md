@@ -1067,3 +1067,10 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Revisados `STATUS.md`, `TODO.md`, `NEXT_STEPS.md` y `ROADMAP.md` tras la pregunta sobre despliegue.
 - Corregidos restos obsoletos: rama activa, blockers históricos, siguientes acciones sin VPS, Lighthouse y Golden Path.
 - Estado resultante: demo local estable; producción puede iniciarse con T-23/T-27/T-28 si el VPS ya está disponible. Concurso sigue teniendo pendientes Anexo II, vídeo, revisión final y solicitud.
+
+## Sesion 2026-05-10 - Claridad de mapa y contenidos
+- T-123 cerrado: la nav `Eventos/Fuentes/Metodología/Info` queda incrustada como texto con subrayado activo, no como cajas separadas.
+- Mapa: `impact_zones` se filtra por eventos visibles y se dibuja con relleno bajo + línea discontinua; no debe leerse como "todas estas calles están cortadas".
+- Mapa: `traffic-realtime` solo recibe eventos con severidad mayor que 1; los 410 tramos actuales de tráfico normal no deben llenar el mapa ni competir con los eventos.
+- Leyenda y popups: los puntos verdes son eventos, los morados son alternativas sugeridas para el perfil activo; los popups explican cada capa.
+- Contenido: Fuentes/Metodología/Info deben evitar grids 3x3 y bloques genéricos; usar separadores, acordeones y enlaces trazables.

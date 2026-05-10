@@ -71,6 +71,9 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 - Compacto por defecto.
 - Sin marco decorativo pesado.
 - Las capas y colores deben explicar estado, no decorar.
+- Las zonas de impacto son contexto estimado, no una afirmacion de calle cortada. Deben limitarse a eventos visibles y dibujarse con relleno suave y trazo discontinuo.
+- El trafico normal no se pinta como red de fondo. La capa de trafico solo debe aparecer cuando exista incidencia relevante; si no, compite con eventos y alternativas.
+- Las alternativas cercanas deben ser distinguibles de los eventos mediante color, leyenda y popup explicito asociado al perfil activo.
 
 ## Anti-patrones
 Prohibido en el frontend de V-PRO salvo decision documentada:

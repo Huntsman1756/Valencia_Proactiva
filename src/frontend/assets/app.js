@@ -845,8 +845,11 @@ function updateMap(cards) {
   }
 
   ensureMapLayers();
-  setGeoJsonSource("impact-zones", featureCollection(state.impactZones.map(impactZoneFeature)));
-  setGeoJsonSource("traffic-lines", featureCollection(state.trafficEvents.map(eventGeometryFeature).filter(Boolean)));
+  const visibleEventIds = new Set(cards.map(({ event }) => Number(event.id)));
+  const visibleImpactZones = state.impactZones.filter((zone) => visibleEventIds.has(Number(zone.event_id)));
+  const relevantTrafficEvents = state.trafficEvents.filter((event) => Number(event.severity || 1) > 1);
+  setGeoJsonSource("impact-zones", featureCollection(visibleImpactZones.map(impactZoneFeature)));
+  setGeoJsonSource("traffic-lines", featureCollection(relevantTrafficEvents.map(eventGeometryFeature).filter(Boolean)));
   setGeoJsonSource("event-points", featureCollection(cards.map(({ event }) => eventPointFeature(event)).filter(Boolean)));
   setGeoJsonSource(
     "alternative-points",
@@ -876,7 +879,7 @@ function ensureMapLayers() {
     source: "impact-zones",
     paint: {
       "fill-color": ["case", [">=", ["get", "severity"], 4], "#c7362f", "#c57b13"],
-      "fill-opacity": 0.18,
+      "fill-opacity": 0.1,
     },
   });
   state.map.addLayer({
@@ -885,7 +888,8 @@ function ensureMapLayers() {
     source: "impact-zones",
     paint: {
       "line-color": ["case", [">=", ["get", "severity"], 4], "#c7362f", "#c57b13"],
-      "line-width": 1.5,
+      "line-width": 2,
+      "line-dasharray": [2, 2],
     },
   });
   state.map.addLayer({
@@ -894,8 +898,8 @@ function ensureMapLayers() {
     source: "traffic-lines",
     paint: {
       "line-color": ["case", [">=", ["get", "severity"], 4], "#c7362f", [">=", ["get", "severity"], 3], "#c57b13", "#057a55"],
-      "line-width": ["interpolate", ["linear"], ["zoom"], 11, 2, 15, 5],
-      "line-opacity": 0.76,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 11, 1.5, 15, 3.5],
+      "line-opacity": 0.58,
     },
   });
   state.map.addLayer({
@@ -906,7 +910,7 @@ function ensureMapLayers() {
       "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 15, 9],
       "circle-color": ["case", [">=", ["get", "severity"], 4], "#c7362f", "#057a55"],
       "circle-stroke-color": "#fffffb",
-      "circle-stroke-width": 2,
+      "circle-stroke-width": 3,
     },
   });
   state.map.addLayer({
@@ -914,10 +918,11 @@ function ensureMapLayers() {
     type: "circle",
     source: "alternative-points",
     paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 4, 15, 7],
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 15, 8],
       "circle-color": "#6551a8",
-      "circle-stroke-color": "#fffffb",
-      "circle-stroke-width": 2,
+      "circle-stroke-color": "#0b2038",
+      "circle-stroke-width": 1.5,
+      "circle-opacity": 0.86,
     },
   });
   setupMapInteractions();
@@ -972,7 +977,7 @@ function popupForEventPoint(properties) {
 function popupForAlternativePoint(properties) {
   const accessible = properties.accessible === true || properties.accessible === "true";
   return popupHtml(properties.name || labelForPoi(properties.poi_type), [
-    labelForPoi(properties.poi_type),
+    `${t("legendAlternative")} - ${labelForPoi(properties.poi_type)}`,
     accessible ? t("popupAccessible") : t("popupAlternativeHint"),
   ]);
 }
@@ -982,6 +987,7 @@ function popupForImpactZone(properties) {
   return popupHtml(t("legendImpact"), [
     `${labelForType(properties.event_type)} - ${impact.label}`,
     formatMessage("popupImpactRadius", { meters: Math.round(Number(properties.buffer_distance || 0)) }),
+    t("popupImpactHint"),
   ]);
 }
 

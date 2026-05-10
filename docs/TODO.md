@@ -100,6 +100,7 @@
 | T-115 | Pase documental de consistencia: retirar rutas históricas `backend/app`, referencias OpenDataSoft antiguas y estados obsoletos en `README.md`, `METHODOLOGY.md`, `ROADMAP.md`, `CONTEXT.md`. | ✅ **Completado 2026-05-10** — README, METHODOLOGY, ROADMAP, CONTEXT, ARCHITECTURE, STATUS y TODO alineados al estado local no-VPS; las referencias restantes son contexto histórico o backlog. | 2026-05-10 |
 | T-116 | Pulido frontend concurso: evitar solape mapa/pestañas, ampliar Fuentes/Metodología/Info, añadir GitHub/AD.TR.15, leyenda y popups de mapa, revisar acentos ES/VAL. | ✅ **Completado 2026-05-10** — smoke mobile/desktop valida capas, leyenda y popup; DevTools confirma `overlapsTabs=false`. | 2026-05-10 |
 | T-117 | Reorganización explicativa de producto: cabecera con propuesta de valor, guía de uso, mapa sin lateral en anchos intermedios, pestañas con fuentes/metodología/info más completas, limitaciones y FAQ. | ✅ **Completado 2026-05-10** — smoke valida `layout.overlapsTabs=false`, guía de producto, ayuda de mapa, leyenda y popup. | 2026-05-10 |
+| T-123 | Claridad de mapa y contenidos: integrar nav sin cajas, evitar red de tráfico normal, limitar zonas de impacto a eventos visibles, ampliar leyenda y romper el patrón 3x3 en Fuentes/Metodología/Info. | ✅ **Completado 2026-05-10** — nav incrustada, tráfico solo con incidencia relevante, zonas visibles por evento mostrado, leyenda mayor y paneles informativos con separadores/acordeones. | 2026-05-10 |
 
 ---
 

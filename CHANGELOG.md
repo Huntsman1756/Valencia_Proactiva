@@ -5,6 +5,13 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Claridad de mapa y contenidos - 2026-05-10
+- Frontend: las secciones `Eventos`, `Fuentes`, `Metodologia` e `Info` pasan a navegacion incrustada tipo texto, sin aspecto de cajas/pills independientes.
+- Frontend: las zonas de impacto del mapa se limitan a los eventos visibles y se pintan como contexto estimado, con relleno suave y trazo discontinuo para no sugerir una calle cortada concreta.
+- Frontend: la capa de trafico deja de pintar todos los tramos normales; solo aparece cuando hay incidencia relevante, evitando una red verde confusa.
+- Frontend: la leyenda gana tamano y copia mas explicita; los puntos de alternativa se diferencian mejor de los eventos y sus popups indican que representan la alternativa sugerida para el perfil activo.
+- Frontend: `Fuentes`, `Metodologia` e `Info` reducen el patron de tarjetas 3x3 y pasan a bloques escaneables con separadores, acordeones y enlaces trazables.
+
 ### Changed - Estado de despliegue - 2026-05-10
 - Docs: `STATUS.md` y `ROADMAP.md` actualizados para reflejar que la demo local está estable y que producción/VPS puede iniciarse como T-23/T-27/T-28 si ya hay servidor disponible.
 - Docs: se corrigen restos obsoletos sobre rama activa, blockers históricos, Lighthouse y Golden Path.

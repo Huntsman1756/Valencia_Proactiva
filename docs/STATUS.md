@@ -95,14 +95,14 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Arranque Docker verificado | ✅ `db` + `api` levantan; `/health` 200 |
 | Action Template Engine | ✅ 5 plantillas, 506 acciones generadas en ingesta real, cobertura de perfiles demo |
 | Golden Path predespliegue | ✅ Demo recomendada: perfil Comercial sobre `ocupacio-via-publica` actual con enlace municipal real; `talls-transit-falles` queda como histórico/fallback documentado |
-| Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, tabs Fuentes/Metodología/Info ampliadas y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
+| Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda ampliada y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, nav incrustada `Eventos/Fuentes/Metodología/Info`, tráfico solo con incidencia relevante y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
 | Frontend civic utility | ✅ Rediseño map-first con cabecera institucional, perfiles/filtros en carril izquierdo, MapLibre central, detalle seleccionado a la derecha, hoja móvil en flujo y perfil Comercial; smoke Playwright mobile/desktop verde |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
 | Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
 | Deploy | pendiente de T-23/T-27/T-28 sobre VPS disponible |
 
 ## Última actualización
-- **Fecha:** 2026-05-10 (R-18 severidad operativa + front flotante)
+- **Fecha:** 2026-05-10 (R-19 claridad de mapa y contenidos)
 - **Autor:** Codex
 - **Entorno de la sesión ejecutora:** Opencode CLI + Qwen 3.6 sobre Windows — ver `docs/RULES-FOR-AGENTS.md § 10`.
 - **Siguiente revisión prevista:** preparación de VPS/producción si se confirma dominio, SSH y sistema operativo del servidor.
@@ -124,3 +124,4 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **R-16:** claridad de producto: eliminada nav superior duplicada, marca visible `VLC PROACTIVA`, perfiles con alternativa prioritaria distinta, aviso explícito de que Maps no evita incidencias, listado concreto de datasets en Fuentes, `comercio-ocupacion` cambia de ayudas genéricas `AE.CM.35` a carga/descarga `TR.AR.45`, y carga frontend con debounce anti-429.
 - **R-17:** navegación integrada en header: `Fuentes`, `Metodología` e `Info` se abren como drawer superpuesto y el mapa queda siempre como superficie principal. Añadidas tareas T-120 (Valhalla + `exclude_polygons`) y T-121 (Modo Alerta solo con fuentes oficiales verificadas).
 - **R-18:** severidad y diseño operativo: las ocupaciones sin gravedad oficial ya no caen todas a `1`; V-PRO deriva impacto conservador desde superficie y tipo de afección. Reingesta dev tras el cambio: `OCUPACION` queda `1=39`, `2=42`, `3=172`; `TRAFICO` queda `1=410` por estado oficial actual. El frontend pasa a layout flotante sobre mapa, con badges `Impacto`, modo claro/oscuro y paneles menos cuadriculados.
+- **R-19:** claridad de mapa y contenidos: nav de secciones incrustada sin cajas, zonas de impacto limitadas a eventos visibles, tráfico normal no se pinta, leyenda más legible y Fuentes/Metodología/Info pasan a bloques escaneables con separadores/acordeones.
