@@ -1074,3 +1074,7 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Mapa: `traffic-realtime` solo recibe eventos con severidad mayor que 1; los 410 tramos actuales de tráfico normal no deben llenar el mapa ni competir con los eventos.
 - Leyenda y popups: los puntos verdes son eventos, los morados son alternativas sugeridas para el perfil activo; los popups explican cada capa.
 - Contenido: Fuentes/Metodología/Info deben evitar grids 3x3 y bloques genéricos; usar separadores, acordeones y enlaces trazables.
+- Ajuste posterior: usar pins propios de MapLibre (`E` evento, `A` alternativa) y ocultar símbolos POI/transporte del mapa base si compiten con los datos V-PRO.
+- No volver a usar siglas sin contexto en filtros: `VE` debe ser `Recarga vehículo eléctrico`; `EMT`/`FGV` deben indicar paradas/estaciones.
+- `Solo eventos activos` no debe ser solo un toggle visual: debe recargar o refiltrar de forma observable.
+- En mapa expandido debe existir una bandeja compacta de eventos visibles para no perder la lista de contexto.

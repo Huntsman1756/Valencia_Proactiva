@@ -71,6 +71,7 @@ const statusText = document.querySelector("#statusText");
 const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
 const toggleMap = document.querySelector("#toggleMap");
+const mapEventTray = document.querySelector("#mapEventTray");
 const poiFilters = document.querySelector("#poiFilters");
 const sourcesPanel = document.querySelector("#sourcesPanel");
 const methodologyPanel = document.querySelector("#methodologyPanel");
@@ -279,6 +280,10 @@ function setupQuickFilters() {
       state[key] = !state[key];
       localStorage.setItem(key === "activeOnly" ? "vpro_active_only" : "vpro_show_zbe", String(state[key]));
       button.setAttribute("aria-checked", String(state[key]));
+      if (key === "activeOnly") {
+        scheduleDashboardLoad();
+        return;
+      }
       if (key === "showZbe") {
         applyLayerVisibility();
       }
@@ -349,7 +354,10 @@ async function setupMap() {
 
   window.vproDebug = { map: state.map, state };
   state.map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-  state.map.on("load", () => updateMap(filteredCards()));
+  state.map.on("load", () => {
+    reduceBaseMapVisualNoise();
+    updateMap(filteredCards());
+  });
   state.map.on("error", (event) => {
     const message = event?.error?.message;
     if (message) {
@@ -402,15 +410,17 @@ async function loadDashboard() {
   statusText.textContent = formatMessage("activeProfileLoading", { profile: profileLabel(state.profile) });
 
   try {
+    const eventLimit = state.activeOnly ? 8 : 16;
     const [events, impactZones, trafficEvents] = await Promise.all([
-      fetchJson(`${API_BASE}/api/v1/events/?limit=8`),
+      fetchJson(`${API_BASE}/api/v1/events/?limit=${eventLimit}`),
       fetchJson(`${API_BASE}/api/v1/spatial/impact-zones?limit=120`),
       fetchJson(`${API_BASE}/api/v1/spatial/events-layer?limit=160&event_type=TRAFICO`),
     ]);
     if (requestId !== state.dashboardRequestId) {
       return;
     }
-    state.events = normalizeEvents(events).slice(0, 6);
+    const normalizedEvents = normalizeEvents(events);
+    state.events = (state.activeOnly ? normalizedEvents.filter(isEventActive) : normalizedEvents).slice(0, state.activeOnly ? 6 : 10);
     state.impactZones = impactZones;
     state.trafficEvents = trafficEvents;
 
@@ -484,9 +494,17 @@ function normalizeEvent(event) {
   };
 }
 
+function isEventActive(event) {
+  if (!event?.end_time) {
+    return true;
+  }
+  return new Date(event.end_time).getTime() >= Date.now();
+}
+
 function renderCards(cards) {
   state.visibleCards = cards;
   eventList.innerHTML = "";
+  renderMapEventTray(cards);
   if (cards.length === 0) {
     renderSelectedEvent(null);
     eventList.innerHTML = `<div class="empty-state">${escapeHtml(t("emptyEvents"))}</div>`;
@@ -494,6 +512,31 @@ function renderCards(cards) {
   }
   cards.forEach((card, index) => eventList.appendChild(createEventCard(card, index)));
   selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
+}
+
+function renderMapEventTray(cards) {
+  if (!mapEventTray) {
+    return;
+  }
+  if (cards.length === 0) {
+    mapEventTray.innerHTML = "";
+    return;
+  }
+  mapEventTray.innerHTML = cards.slice(0, 6).map((card, index) => {
+    const impact = impactInfo(card.event);
+    return `
+      <button type="button" data-map-card="${index}" aria-pressed="${index === state.selectedCardIndex}">
+        <span class="tray-marker ${eventMarkerClass(card.event)}" aria-hidden="true"></span>
+        <span>
+          <strong>${escapeHtml(trimText(card.event.title, 42))}</strong>
+          <small>${escapeHtml(impact.label)}</small>
+        </span>
+      </button>
+    `;
+  }).join("");
+  mapEventTray.querySelectorAll("[data-map-card]").forEach((button) => {
+    button.addEventListener("click", () => selectCard(Number(button.dataset.mapCard)));
+  });
 }
 
 function filteredCards() {
@@ -593,6 +636,9 @@ function selectCard(index, options = {}) {
     const selected = Number(cardElement.dataset.cardIndex) === state.selectedCardIndex;
     cardElement.dataset.selected = String(selected);
     cardElement.setAttribute("aria-pressed", String(selected));
+  });
+  mapEventTray?.querySelectorAll("[data-map-card]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(Number(button.dataset.mapCard) === state.selectedCardIndex));
   });
   const card = state.visibleCards[state.selectedCardIndex];
   renderSelectedEvent(card);
@@ -868,6 +914,7 @@ function ensureMapLayers() {
     return;
   }
 
+  ensureMapMarkerImages();
   state.map.addSource("impact-zones", { type: "geojson", data: featureCollection([]) });
   state.map.addSource("traffic-lines", { type: "geojson", data: featureCollection([]) });
   state.map.addSource("event-points", { type: "geojson", data: featureCollection([]) });
@@ -904,28 +951,71 @@ function ensureMapLayers() {
   });
   state.map.addLayer({
     id: "event-points",
-    type: "circle",
+    type: "symbol",
     source: "event-points",
-    paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 15, 9],
-      "circle-color": ["case", [">=", ["get", "severity"], 4], "#c7362f", "#057a55"],
-      "circle-stroke-color": "#fffffb",
-      "circle-stroke-width": 3,
+    layout: {
+      "icon-image": ["get", "marker_icon"],
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.78, 15, 1.05],
+      "icon-anchor": "bottom",
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
     },
   });
   state.map.addLayer({
     id: "alternative-points",
-    type: "circle",
+    type: "symbol",
     source: "alternative-points",
-    paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 5, 15, 8],
-      "circle-color": "#6551a8",
-      "circle-stroke-color": "#0b2038",
-      "circle-stroke-width": 1.5,
-      "circle-opacity": 0.86,
+    layout: {
+      "icon-image": "vpro-alt-marker",
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 11, 0.72, 15, 0.98],
+      "icon-anchor": "bottom",
+      "icon-allow-overlap": true,
+      "icon-ignore-placement": true,
     },
   });
   setupMapInteractions();
+}
+
+function ensureMapMarkerImages() {
+  [
+    ["vpro-event-low", "#057a55", "E"],
+    ["vpro-event-mid", "#c57b13", "E"],
+    ["vpro-event-high", "#c7362f", "E"],
+    ["vpro-alt-marker", "#6551a8", "A"],
+  ].forEach(([name, color, letter]) => {
+    if (!state.map.hasImage(name)) {
+      state.map.addImage(name, createMarkerImage(color, letter), { pixelRatio: 2 });
+    }
+  });
+}
+
+function createMarkerImage(color, letter) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 78;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.shadowColor = "rgba(11, 32, 56, 0.28)";
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetY = 4;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(32, 28, 20, 0, Math.PI * 2);
+  ctx.moveTo(32, 70);
+  ctx.lineTo(20, 44);
+  ctx.lineTo(44, 44);
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = "#ffffff";
+  ctx.stroke();
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "700 24px system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(letter, 32, 28);
+  return ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 function setupMapInteractions() {
@@ -1027,6 +1117,17 @@ function applyLayerVisibility() {
   });
 }
 
+function reduceBaseMapVisualNoise() {
+  const noisyLayer = /(poi|transit|station|bus|rail|airport|aerialway|ferry|parking)/i;
+  state.map.getStyle().layers
+    .filter((layer) => layer.type === "symbol" && noisyLayer.test(layer.id))
+    .forEach((layer) => {
+      if (state.map.getLayer(layer.id)) {
+        state.map.setLayoutProperty(layer.id, "visibility", "none");
+      }
+    });
+}
+
 function featureCollection(features) {
   return { type: "FeatureCollection", features };
 }
@@ -1073,6 +1174,7 @@ function eventPointFeature(event) {
       type: event.type,
       type_label: labelForType(event.type),
       severity: Number(event.severity || 1),
+      marker_icon: eventMarkerIcon(event),
       title: event.title,
     },
   };
@@ -1156,6 +1258,28 @@ function labelForPoi(type) {
 
 function labelForPoiFilter(type) {
   return state.messages.poiFilters?.[type] || labelForPoi(type);
+}
+
+function eventMarkerIcon(event) {
+  const severity = Number(event?.severity || 1);
+  if (severity >= 4) {
+    return "vpro-event-high";
+  }
+  if (severity >= 2) {
+    return "vpro-event-mid";
+  }
+  return "vpro-event-low";
+}
+
+function eventMarkerClass(event) {
+  const severity = Number(event?.severity || 1);
+  if (severity >= 4) {
+    return "is-high";
+  }
+  if (severity >= 2) {
+    return "is-mid";
+  }
+  return "is-low";
 }
 
 function labelForSource(source) {

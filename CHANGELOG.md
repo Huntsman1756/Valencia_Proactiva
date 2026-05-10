@@ -11,6 +11,10 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: la capa de trafico deja de pintar todos los tramos normales; solo aparece cuando hay incidencia relevante, evitando una red verde confusa.
 - Frontend: la leyenda gana tamano y copia mas explicita; los puntos de alternativa se diferencian mejor de los eventos y sus popups indican que representan la alternativa sugerida para el perfil activo.
 - Frontend: `Fuentes`, `Metodologia` e `Info` reducen el patron de tarjetas 3x3 y pasan a bloques escaneables con separadores, acordeones y enlaces trazables.
+- Frontend: `Fuentes (14)` pasa a `Fuentes`; los filtros de alternativas evitan siglas sin contexto (`Plazas PMR`, `Paradas EMT`, `Recarga vehiculo electrico`, etc.).
+- Frontend: eventos y alternativas pasan a pins MapLibre propios (`E`/`A`) para destacar sobre los iconos del mapa base; se ocultan simbolos POI/transporte del mapa base que compiten visualmente.
+- Frontend: `Solo eventos activos` recarga datos y cambia el volumen visible; al desactivarlo se muestran mas eventos disponibles para exploracion.
+- Frontend: el mapa expandido recupera una bandeja inferior compacta de eventos visibles para que la lista no desaparezca del flujo operativo.
 
 ### Changed - Estado de despliegue - 2026-05-10
 - Docs: `STATUS.md` y `ROADMAP.md` actualizados para reflejar que la demo local está estable y que producción/VPS puede iniciarse como T-23/T-27/T-28 si ya hay servidor disponible.

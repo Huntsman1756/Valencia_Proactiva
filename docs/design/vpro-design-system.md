@@ -74,6 +74,8 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 - Las zonas de impacto son contexto estimado, no una afirmacion de calle cortada. Deben limitarse a eventos visibles y dibujarse con relleno suave y trazo discontinuo.
 - El trafico normal no se pinta como red de fondo. La capa de trafico solo debe aparecer cuando exista incidencia relevante; si no, compite con eventos y alternativas.
 - Las alternativas cercanas deben ser distinguibles de los eventos mediante color, leyenda y popup explicito asociado al perfil activo.
+- En mapa operativo, los marcadores V-PRO tienen prioridad sobre iconos del mapa base. Usar pins propios y ocultar POI/transporte base cuando resten legibilidad.
+- En vista expandida, conservar una bandeja compacta de eventos visibles para que el mapa no quede desconectado de la lista.
 
 ## Anti-patrones
 Prohibido en el frontend de V-PRO salvo decision documentada:
