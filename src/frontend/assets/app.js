@@ -951,7 +951,12 @@ function renderInfoPanels() {
             <strong>${t(`sourceName_${source.id}`)}</strong>
             <span>${t(`sourceDescription_${source.id}`)}</span>
             <ul class="dataset-list">
-              ${sourceDatasets(source.id).map((dataset) => `<li>${escapeHtml(dataset)}</li>`).join("")}
+              ${sourceDatasets(source.id).map((dataset) => `
+                <li>
+                  <span class="dataset-icon" aria-hidden="true">${escapeHtml(datasetIconLabel(dataset))}</span>
+                  <span>${escapeHtml(dataset)}</span>
+                </li>
+              `).join("")}
             </ul>
           </div>
           <small>${t(source.kindKey)} · ${formatMessage("datasetCount", { count: source.datasetCount })}</small>
@@ -1596,6 +1601,38 @@ function syntheticCommercialAction(profile, event) {
 function sourceDatasets(sourceId) {
   const datasets = state.messages.sourceDatasets?.[sourceId];
   return Array.isArray(datasets) ? datasets : [];
+}
+
+function datasetIconLabel(dataset) {
+  const value = String(dataset || "").toLowerCase();
+  if (value.includes("emt") || value.includes("autob")) {
+    return "BUS";
+  }
+  if (value.includes("fgv") || value.includes("metro")) {
+    return "MET";
+  }
+  if (value.includes("valenbisi") || value.includes("bici") || value.includes("ciclist")) {
+    return "BIC";
+  }
+  if (value.includes("pmr") || value.includes("mobilitat") || value.includes("acces")) {
+    return "PMR";
+  }
+  if (value.includes("zbe")) {
+    return "ZBE";
+  }
+  if (value.includes("tràfic") || value.includes("tráfico") || value.includes("transit")) {
+    return "TRF";
+  }
+  if (value.includes("feedback")) {
+    return "FB";
+  }
+  if (value.includes("impact")) {
+    return "GIS";
+  }
+  if (value.includes("recarga") || value.includes("recarrega") || value.includes("eléctr")) {
+    return "VE";
+  }
+  return "DAT";
 }
 
 function cleanTitle(value) {

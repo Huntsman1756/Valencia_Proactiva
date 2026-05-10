@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Narrative authority pass - 2026-05-10
+- Frontend: `Fuentes`, `Metodología` e `Info` refuerzan economía circular del dato, inferencia de severidad, centro de recursos para medios y feedback como sensor social de veracidad.
+- Frontend: la lista de datasets incorpora microbadges por modo/fuente (`BUS`, `BIC`, `PMR`, `ZBE`, etc.) y las métricas del bloque `Info` ganan peso visual.
+- Docs: `MEMORIA.md`, `METHODOLOGY.md` y el primer párrafo del Anexo II incorporan economía circular del dato, motor de proximidad inteligente e inferencia de severidad. Añadido párrafo de conclusión final para la solicitud oficial.
+
 ### Changed - Civic operations UI polish - 2026-05-10
 - Frontend: el mapa gana presencia como superficie principal; los paneles flotantes reducen bordes duros y el carril izquierdo deja de ensuciar la vista con scrollbar visible en escritorio.
 - Frontend: el feed inferior de eventos pasa de carrusel de tarjetas a lista operativa compacta con scroll vertical, pensada para revisar más incidencias de un vistazo.

@@ -122,7 +122,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
 - Operaciones:
   - Extracción de campos con fallbacks multilingües (`titulo` / `title` / `nom`).
   - Parseo de fechas en múltiples formatos (`%Y-%m-%d`, ISO 8601, `%d/%m/%Y`).
-  - Estimación de severidad cuando no está declarada. Para `OCUPACION`, la regla usa superficie publicada (`M2`) y tipo de afección (`acera`, `calzada`, `carril`, `zona estacionamiento`, `carga/descarga`); para otros eventos conserva la heurística de palabras clave o el dato de origen si existe.
+  - Inferencia de severidad cuando no está declarada. Para `OCUPACION`, la regla usa superficie publicada (`M2`) y tipo de afección (`acera`, `calzada`, `carril`, `zona estacionamiento`, `carga/descarga`); para otros eventos conserva la heurística de palabras clave o el dato de origen si existe. Esta inferencia evita que todas las incidencias aparezcan como severidad 1 cuando la fuente no publica gravedad explícita.
   - Validación geométrica con Shapely (`is_valid`, `not is_empty`).
 - Registros sin geometría o con geometría inválida → descartados y registrados en logs.
 
@@ -142,6 +142,7 @@ Si la fuente no declara licencia abierta, no se exporta contenido bruto. Solo se
   4. Reproyectar el polígono resultante de vuelta a EPSG:4326.
   5. Insertar como `ImpactZone` vinculada al evento.
 - **Motivación del CRS:** operar directamente en grados (EPSG:4326) da buffers deformados y de tamaño impredecible. UTM 30N es el huso correcto para Valencia y permite distancias reales en metros.
+- **Motor de proximidad inteligente:** las zonas de impacto se usan como radio de conflicto. El Alternative Finder evita recomendar nodos de alternativa dentro del área afectada cuando recibe `event_id`, de modo que el mapa diferencia claramente nodos de evento (`E`) y nodos de alternativa (`A`).
 
 ### 3.5. Motor de plantillas de acción
 - Módulo: `src/backend/engine/action_templates.py`.
@@ -229,7 +230,7 @@ Los datasets generados (zonas de impacto, acciones, plantillas y feedback agrega
 - `exports/impact_zones.geojson` — todas las zonas activas.
 - `exports/mitigation_actions.csv` — acciones por evento con enlaces a trámites.
 - `exports/action_templates.yaml` — reglas declarativas.
-- `exports/feedback_aggregated.csv` — votos agregados por acción, perfil y tipo de evento, sin `session_token`.
+- `exports/feedback_aggregated.csv` — votos agregados por acción, perfil y tipo de evento, sin `session_token`. Este dataset permite auditar la brecha entre recomendación oficial/derivada y utilidad percibida por la ciudadanía.
 
 Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh -lc 'VPRO_EXPORT_DIR=/exports python -m scripts.export_derived_data'`.
 
