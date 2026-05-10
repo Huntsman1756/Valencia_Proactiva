@@ -125,8 +125,6 @@
   "impactMedium": "medio",
   "impactHigh": "alto",
   "noAlternative": "Sin alternativa cercana en el radio actual",
-  "route": "Ir al punto",
-  "routeDisclaimer": "Abre el punto alternativo en Maps. Google no recibe las incidencias de VLC PROACTIVA ni garantiza evitarlas.",
   "exportSnapshot": "Exportar snapshot",
   "snapshotCopied": "Snapshot periodístico copiado",
   "snapshotCopyFallback": "No se pudo copiar el snapshot automáticamente",

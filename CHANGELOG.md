@@ -5,6 +5,11 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Reordenacion operativa de eventos - 2026-05-10
+- Frontend: `Eventos cercanos` pasa al carril derecho como lista operativa compacta; la ficha del evento seleccionado se desplaza al panel inferior sobre el mapa.
+- Frontend: se elimina el CTA visible de Google Maps y el disclaimer asociado; la accion principal queda dentro de VLC PROACTIVA mediante seleccion de evento, snapshot y feedback.
+- Tests: el smoke valida que no aparezcan botones de ruta externa ni menciones visibles a Google en la interfaz.
+
 ### Changed - Institutional credibility UI pass - 2026-05-10
 - Frontend: paleta azul/verde menos saturada, marca superior más sobria y panel derecho reducido para sentirse como detalle contextual, no tercera columna protagonista.
 - Frontend: feed inferior más bajo y compacto para devolver protagonismo al mapa; páginas informativas afinan ancho de lectura, interlineado y ritmo editorial.
@@ -81,7 +86,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 - Frontend: eliminada la navegación superior duplicada; quedan las secciones operativas `Eventos`, `Fuentes`, `Metodología` e `Info`.
 - Frontend: marca pública visible consolidada como `VLC PROACTIVA`; se retiran restos visibles de `V-PRO` en la UI.
 - Frontend: cada perfil prioriza una capa distinta de alternativas (`Comercio -> PARKING`, `PMR -> APARCAMIENTO_PMR`, `Bici -> VALENBISI`, `Transporte -> PARADA_EMT`) y muestra una explicación compacta del criterio aplicado.
-- Frontend: `Ruta` pasa a `Abrir destino` con aviso explícito de que Google Maps no recibe las incidencias ni garantiza evitarlas.
+- Frontend: se retira la ruta externa como accion principal; queda pendiente routing propio antes de prometer itinerarios que eviten incidencias.
 - Frontend: la pestaña `Fuentes` lista datasets concretos usados, no solo el número agregado.
 - Backend: `comercio-ocupacion` deja de apuntar a ayudas genéricas `AE.CM.35` y prioriza la gestión municipal de carga y descarga `TR.AR.45`.
 - Frontend: añadida carga con debounce para evitar ráfagas de peticiones y falsos `429` al cambiar perfiles o filtros rápido.

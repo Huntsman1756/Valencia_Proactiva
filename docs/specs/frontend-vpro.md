@@ -5,7 +5,7 @@
 |---|---|
 | Interaccion | Push proactivo: al abrir la app ya se muestran eventos cercanos. |
 | Estilo visual | Ciudadano/cercano: inclusivo, calido, accesible y sobrio. |
-| Layout principal | Operativa en tres zonas: carril izquierdo de perfil/filtros, mapa central y panel derecho de accion. En movil, mapa primero y detalle como hoja inferior dentro del flujo. |
+| Layout principal | Operativa map-first: carril izquierdo de perfil/filtros, lista compacta de eventos a la derecha y ficha del evento seleccionado abajo sobre el mapa. En movil, mapa primero y detalle dentro del flujo. |
 | Tarjeta de accion | Equilibrada: titulo, distancia, un dato clave y accion principal. |
 
 La direccion visual formal queda definida en `docs/design/vpro-design-system.md` como **Civic Utility / Operativa Ciudadana**. Es obligatoria para futuras iteraciones de UI.
@@ -18,7 +18,7 @@ Construir una interfaz usable de V-PRO para mobile-first con apariencia de herra
 2. Obtiene eventos activos desde `GET /api/v1/events`.
 3. Para cada evento visible, consulta alternativas con `GET /api/v1/spatial/alternatives?lon=&lat=&event_id=&profile=`.
 4. Renderiza una lista de tarjetas ordenadas por severidad y cercania.
-5. La accion principal distingue entre destino externo y referencia administrativa. Google Maps es solo fallback de destino; no se presenta como ruta que evita incidencias.
+5. La accion principal se mantiene dentro de VLC PROACTIVA: seleccionar evento, revisar alternativa, exportar snapshot o enviar feedback. No se muestra ruta externa hasta disponer de routing propio con incidencias.
 6. Los botones de feedback llaman a `POST /api/v1/feedback` cuando el evento trae `mitigation_actions`; si no hay accion asociada, dejan feedback local no persistido como fallback.
 7. El mapa central muestra eventos, POIs, trafico y zonas de impacto; al tocar `Expandir` pasa a vista completa.
 8. Las tabs `Fuentes`, `Metodologia` e `Info` son paginas internas de ancho completo; no se abren como drawer ni modal para evitar solapes con alertas o detalle.

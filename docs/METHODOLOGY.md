@@ -211,7 +211,7 @@ Estas métricas las imprime `src/scripts/run_ingest.py` en stdout y se capturan 
 - La estimación de severidad sigue siendo derivada cuando el portal no publica gravedad explícita. Es mejor que mostrar todo como `1`, pero debe explicarse como impacto operativo estimado y no como prioridad oficial municipal.
 - Los eventos puntuales (sin área) reciben un buffer por defecto que puede no reflejar el área real de afectación.
 - Algunos datasets del portal pueden cambiar de slug o formato; el sistema loguea el error pero no intenta auto-recuperarse.
-- Las rutas externas de Google Maps no conocen las incidencias internas de V-PRO; solo sirven como fallback de destino. El routing propio con Valhalla queda documentado como evolución post-MVP.
+- La UI no ofrece rutas externas como accion principal: un servicio generalista no conoce las zonas de impacto internas. El routing propio con Valhalla queda documentado como evolucion post-MVP antes de prometer rutas que eviten incidencias.
 - El comprobador ZBE no decide si un vehículo puede circular legalmente: solo orienta por distintivo ambiental y remite a la fuente municipal.
 
 ## 5. Reproducibilidad

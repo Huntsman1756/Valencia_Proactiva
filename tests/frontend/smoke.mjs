@@ -123,9 +123,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
     profileImpact: document.querySelector("#profileImpact")?.textContent,
     zbeResult: document.querySelector("#zbeVehicleResult")?.textContent,
-    routeText: document.querySelector(".route-button")?.textContent,
+    routeButtons: document.querySelectorAll(".route-button").length,
     snapshotText: document.querySelector(".snapshot-button")?.textContent,
-    routeDisclaimer: document.querySelector(".route-note")?.textContent,
+    googleMention: document.body.textContent.includes("Google"),
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
     modeGuidance: document.querySelector(".mode-guidance")?.textContent,
@@ -180,8 +180,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   if (data.sourceDatasetCount < 10) {
     throw new Error(`Expected detailed source datasets, got ${data.sourceDatasetCount}`);
   }
-  if (!data.routeDisclaimer?.includes("Google")) {
-    throw new Error("Route disclaimer missing Google Maps limitation");
+  if (data.routeButtons !== 0 || data.googleMention) {
+    throw new Error(`Google Maps route action should not be visible: ${JSON.stringify({ routeButtons: data.routeButtons, googleMention: data.googleMention })}`);
   }
   if (!data.snapshotText?.includes("snapshot")) {
     throw new Error("Journalism snapshot action is missing");

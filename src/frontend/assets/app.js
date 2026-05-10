@@ -714,10 +714,6 @@ function createEventCard(card, index) {
         <span>${alternative ? `${distance} · ${places}` : t("noAlternative")}</span>
       </p>
     </div>
-    <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
-    <div class="card-actions">
-      <button type="button" class="route-button">${t("route")}</button>
-    </div>
   `;
 
   article.addEventListener("click", (eventClick) => {
@@ -733,8 +729,6 @@ function createEventCard(card, index) {
       selectCard(index);
     }
   });
-  article.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
-
   return article;
 }
 
@@ -819,7 +813,6 @@ function renderSelectedEvent(card) {
       <p class="mode-guidance">${escapeHtml(profileAlternativeGuidance(card))}</p>
       <p><strong>${escapeHtml(alternativeName || t("noAlternative"))}</strong></p>
       <p>${alternative ? escapeHtml(`${distance} · ${places} · ${labelForPoi(alternative.poi_type)}`) : escapeHtml(t("noAlternative"))}</p>
-      <p class="route-note">${escapeHtml(t("routeDisclaimer"))}</p>
     </section>
     <section class="detail-block">
       <h3>${t("adminActionTitle")}</h3>
@@ -829,7 +822,6 @@ function renderSelectedEvent(card) {
     <section class="detail-block">
       <h3>${t("feedbackQuestion")}</h3>
       <div class="detail-actions">
-        <button type="button" class="route-button">${t("route")}</button>
         <button type="button" class="snapshot-button">${t("exportSnapshot")}</button>
         <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
           <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}"><span aria-hidden="true">+</span><span>${t("useful")}</span></button>
@@ -839,7 +831,6 @@ function renderSelectedEvent(card) {
     </section>
   `;
 
-  selectedEventPanel.querySelector(".route-button").addEventListener("click", () => openRoute(alternative, event));
   selectedEventPanel.querySelector(".snapshot-button").addEventListener("click", () => exportSnapshot(card));
   selectedEventPanel.querySelectorAll(".feedback-button").forEach((button) => {
     button.addEventListener("click", () => submitFeedback(button, card));
@@ -1372,11 +1363,6 @@ function alternativeFeature(alternative) {
       accessible: Boolean(alternative.accessible),
     },
   };
-}
-
-function openRoute(alternative, event) {
-  const coords = alternative?.geometry?.coordinates || event.center || DEFAULT_CENTER;
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`, "_blank", "noopener");
 }
 
 async function submitFeedback(button, card) {
