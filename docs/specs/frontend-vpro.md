@@ -24,6 +24,8 @@ Construir una interfaz usable de V-PRO para mobile-first con apariencia de herra
 8. Las tabs `Fuentes`, `Metodologia` e `Info` son paginas internas de ancho completo; no se abren como drawer ni modal para evitar solapes con alertas o detalle.
 9. `Vehiculo y ZBE` orienta por distintivo ambiental y enlaza a la fuente municipal, sin sustituir ordenanza ni señalizacion.
 10. `Exportar snapshot` copia un payload trazable para medios locales, memoria o auditoria.
+11. `Info` muestra un pulso urbano agregado y `Fuentes` expone un semaforo de calidad de datos para convertir la app en herramienta de lectura institucional, no solo consulta puntual.
+12. La accion administrativa explica el modelo once-only/deep-link como evolucion municipal: la incidencia debe viajar con la accion para no pedir al ciudadano datos ya conocidos.
 
 ## Pantalla inicial
 ### Cabecera civica

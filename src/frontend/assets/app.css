@@ -1484,6 +1484,55 @@ body.has-section-tab .info-panel:not([hidden]) {
   white-space: nowrap;
 }
 
+.source-health {
+  padding: 8px 0 2px;
+}
+
+.health-list {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.health-row {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 0.9fr) minmax(180px, 1.4fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.health-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 16%, transparent);
+}
+
+.health-row[data-health="review"] .health-led {
+  background: var(--orange);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 18%, transparent);
+}
+
+.health-row[data-health="quiet"] .health-led,
+.health-row[data-health="warn"] .health-led {
+  background: var(--muted);
+  box-shadow: 0 0 0 4px rgba(84, 103, 122, 0.14);
+}
+
+.health-row strong,
+.health-row small {
+  color: var(--ink);
+}
+
+.health-row span:not(.health-led),
+.health-row small {
+  color: var(--muted);
+  line-height: 1.35;
+}
+
 .dataset-list {
   display: grid;
   gap: 7px;
@@ -1591,6 +1640,65 @@ body.has-section-tab .info-panel:not([hidden]) {
   border-bottom: 1px solid var(--line);
 }
 
+.urban-pulse {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  gap: clamp(18px, 4vw, 42px);
+  align-items: end;
+  padding: 18px 0;
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.urban-pulse h3 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 38px);
+  line-height: 1.02;
+}
+
+.urban-pulse p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.urban-pulse dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.urban-pulse dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.urban-pulse dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.urban-pulse dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 28px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.admin-deeplink {
+  padding: 8px 10px;
+  border-left: 3px solid var(--orange);
+  background: color-mix(in srgb, var(--orange) 9%, transparent);
+  color: var(--ink) !important;
+  font-size: 12px;
+}
+
 .info-metrics div {
   min-width: 110px;
   padding: 0;
@@ -1646,6 +1754,23 @@ body.has-section-tab .info-panel:not([hidden]) {
   box-shadow: var(--shadow);
 }
 
+@media (max-width: 719px) {
+  .urban-pulse,
+  .health-row {
+    grid-template-columns: 1fr;
+  }
+
+  .health-row {
+    gap: 5px;
+  }
+
+  .source-row a {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+}
+
 @media (min-width: 720px) {
   .data-status {
     display: block;
@@ -1684,13 +1809,13 @@ body.has-section-tab .info-panel:not([hidden]) {
     position: relative;
     display: grid;
     grid-template-columns: 310px minmax(0, 1fr) 350px;
-    grid-template-rows: minmax(680px, calc(100vh - 96px));
+    grid-template-rows: minmax(680px, calc(100vh - 72px));
     align-items: stretch;
     gap: 0;
     width: 100%;
     max-width: none;
     min-height: calc(100vh - 72px);
-    padding: 12px 16px 16px;
+    padding: 0;
     overflow: hidden;
   }
 
@@ -1721,7 +1846,7 @@ body.has-section-tab .info-panel:not([hidden]) {
     grid-column: 1;
     grid-row: 1;
     width: 292px;
-    margin-left: 2px;
+    margin-left: 16px;
     scrollbar-width: none;
   }
 
@@ -1933,7 +2058,7 @@ body.has-section-tab .info-panel:not([hidden]) {
   }
 
   .map-canvas {
-    height: calc(100vh - 104px);
+    height: calc(100vh - 72px);
     min-height: 680px;
   }
 

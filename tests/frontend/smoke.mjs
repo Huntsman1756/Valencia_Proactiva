@@ -121,6 +121,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     storedLanguage: localStorage.getItem("vpro_language"),
     sourceStrip: document.querySelector(".source-strip")?.textContent,
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
+    sourceHealthText: document.querySelector(".source-health")?.textContent,
     profileImpact: document.querySelector("#profileImpact")?.textContent,
     zbeResult: document.querySelector("#zbeVehicleResult")?.textContent,
     routeButtons: document.querySelectorAll(".route-button").length,
@@ -129,6 +130,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
     modeGuidance: document.querySelector(".mode-guidance")?.textContent,
+    urbanPulseText: document.querySelector(".urban-pulse")?.textContent,
+    adminDeepLinkText: document.querySelector(".admin-deeplink")?.textContent,
     alertMode: document.documentElement.dataset.alert,
     eventsPanelHidden: document.querySelector("#events")?.hidden,
     visibleEventCards: Array.from(document.querySelectorAll(".event-card")).filter((card) => {
@@ -179,6 +182,12 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (data.sourceDatasetCount < 10) {
     throw new Error(`Expected detailed source datasets, got ${data.sourceDatasetCount}`);
+  }
+  if (!data.sourceHealthText?.includes("EMT") || !data.urbanPulseText?.includes("Salut operativa")) {
+    throw new Error(`Missing source health or urban pulse: ${JSON.stringify({ sourceHealthText: data.sourceHealthText, urbanPulseText: data.urbanPulseText })}`);
+  }
+  if (!data.adminDeepLinkText?.includes("Burocràcia zero")) {
+    throw new Error(`Missing zero-bureaucracy admin note: ${data.adminDeepLinkText}`);
   }
   if (data.routeButtons !== 0 || data.googleMention) {
     throw new Error(`Google Maps route action should not be visible: ${JSON.stringify({ routeButtons: data.routeButtons, googleMention: data.googleMention })}`);

@@ -102,7 +102,7 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Deploy | pendiente de T-23/T-27/T-28 sobre VPS disponible |
 
 ## Última actualización
-- **Fecha:** 2026-05-10 (R-19 claridad de mapa y contenidos)
+- **Fecha:** 2026-05-11 (R-20 pulso urbano y auditoria civica)
 - **Autor:** Codex
 - **Entorno de la sesión ejecutora:** Opencode CLI + Qwen 3.6 sobre Windows — ver `docs/RULES-FOR-AGENTS.md § 10`.
 - **Siguiente revisión prevista:** preparación de VPS/producción si se confirma dominio, SSH y sistema operativo del servidor.
@@ -125,3 +125,4 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 - **R-17:** navegación integrada en header: `Fuentes`, `Metodología` e `Info` se muestran como pestañas centrales a página completa del área principal, sin mapa ni panel derecho superpuestos. Añadidas tareas T-120 (Valhalla + `exclude_polygons`) y T-121 (Modo Alerta solo con fuentes oficiales verificadas).
 - **R-18:** severidad y diseño operativo: las ocupaciones sin gravedad oficial ya no caen todas a `1`; V-PRO deriva impacto conservador desde superficie y tipo de afección. Reingesta dev tras el cambio: `OCUPACION` queda `1=39`, `2=42`, `3=172`; `TRAFICO` queda `1=410` por estado oficial actual. El frontend pasa a layout flotante sobre mapa, con badges `Impacto`, modo claro/oscuro y paneles menos cuadriculados.
 - **R-19:** claridad de mapa y contenidos: nav de secciones incrustada sin cajas, zonas de impacto limitadas a eventos visibles, tráfico normal no se pinta, leyenda más legible y Fuentes/Metodología/Info pasan a bloques escaneables con separadores/acordeones. Ajuste posterior: pins propios `E`/`A`, filtros de alternativas sin siglas opacas, `Fuentes` sin contador en nav, `Vista resumida` recarga datos, mapa expandido con bandeja compacta de eventos y pestañas informativas centrales.
+- **R-20:** pulso urbano y auditoria civica: `Info` muestra salud operativa agregada, `Fuentes` incorpora semaforo de calidad del portal, accion administrativa explica deep-link once-only futuro y el mapa desktop pasa a tratamiento full-bleed con offset de seleccion para no ocultar el pin bajo la ficha inferior.

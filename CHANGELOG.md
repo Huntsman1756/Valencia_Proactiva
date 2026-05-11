@@ -5,6 +5,12 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Added - Pulso urbano y auditoria civica - 2026-05-11
+- Frontend: `Info` incorpora `Pulso urbano`, un resumen agregado de calles potencialmente afectadas, zonas alteradas y porcentaje de datos trazables.
+- Frontend: `Fuentes` incorpora un semaforo de calidad del portal para distinguir fuentes operativas, fuentes sin incidencia relevante y avisos en validacion diferida.
+- Frontend: la accion administrativa muestra una nota de `Burocracia cero`, explicando como una futura integracion municipal podria pre-referenciar el expediente con el ID de incidencia.
+- Frontend: el mapa gana tratamiento full-bleed en escritorio y la seleccion de eventos aplica offset de camara para mantener el pin visible por encima de la ficha inferior.
+
 ### Changed - Reordenacion operativa de eventos - 2026-05-10
 - Frontend: `Eventos cercanos` pasa al carril derecho como lista operativa compacta; la ficha del evento seleccionado se desplaza al panel inferior sobre el mapa.
 - Frontend: se elimina el CTA visible de Google Maps y el disclaimer asociado; la accion principal queda dentro de VLC PROACTIVA mediante seleccion de evento, snapshot y feedback.

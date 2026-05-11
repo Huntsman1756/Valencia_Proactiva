@@ -239,5 +239,7 @@ Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh
 - Datos meteorológicos de AEMET.
 - Datos de calidad del aire.
 - Integración con expedientes administrativos municipales vía sede electrónica.
+- Deep-link administrativo once-only: cuando exista convenio municipal, la accion podria abrir sede electronica con `source_id`, tipo de evento y area afectada ya referenciados.
+- Semaforo de calidad de fuentes: exponer estado operativo, validacion diferida y ausencia de incidencias relevantes como metadato de confianza para ciudadania y medios.
 - Routing open source con Valhalla: usar `impact_zones` como `exclude_polygons` para calcular rutas que eviten cortes cuando el grafo local esté disponible.
 - Perfil peatonal con rutas iluminadas, condicionado a una fuente oficial de alumbrado público y metodología específica para no generar falsa sensación de seguridad.

@@ -133,6 +133,9 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **API pública** documentada con OpenAPI/Swagger — cualquier entidad puede construir sobre V-PRO.
 - **Metodología abierta** en `METHODOLOGY.md` con limitaciones y supuestos explícitos.
 - **Centro de recursos para medios:** cada evento puede exportarse como snapshot trazable con fuente, impacto, alternativa y código embebible, facilitando que medios locales lo reutilicen en piezas de periodismo de datos sobre obras, Fallas, maratones o movilidad.
+- **Pulso urbano agregado:** la demo resume calles potencialmente afectadas, zonas con movilidad alterada y porcentaje de datos trazables para ofrecer un titular operativo reutilizable por gestores publicos y medios.
+- **Semaforo de calidad del portal:** la seccion `Fuentes` funciona como auditoria civica amable, diferenciando datasets operativos, fuentes sin incidencia relevante y avisos en validacion diferida antes de pintarlos en el mapa.
+- **Burocracia cero:** la accion administrativa se plantea como deep-link futuro a sede electronica con la incidencia ya referenciada, aplicando el principio once-only: no pedir al ciudadano datos que la administracion ya posee.
 - **Decisiones arquitectónicas** registradas como Architecture Decision Records en `docs/DECISIONS.md` (4 ADRs firmados).
 - **Contribuciones externas bienvenidas** mediante PR según `CONTRIBUTING.md`.
 - **Compromiso de publicación** en el Portal de Datos Abiertos si resulta premiado, conforme a la cláusula 12 de las bases.

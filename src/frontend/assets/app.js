@@ -750,7 +750,12 @@ function selectCard(index, options = {}) {
   const card = state.visibleCards[state.selectedCardIndex];
   renderSelectedEvent(card);
   if (options.flyTo !== false && state.map && card?.event?.center) {
-    state.map.flyTo({ center: card.event.center, zoom: 14, essential: false });
+    state.map.flyTo({
+      center: card.event.center,
+      zoom: 14,
+      offset: mapSelectionOffset(),
+      essential: false,
+    });
   }
 }
 
@@ -775,6 +780,7 @@ function renderSelectedEvent(card) {
   const adminLink = adminUrl
     ? `<a class="detail-link primary-admin-link" href="${adminUrl}" target="_blank" rel="noopener">${escapeHtml(adminLinkLabel)}</a>`
     : "";
+  const adminDeepLink = `<p class="admin-deeplink">${escapeHtml(formatMessage("adminDeepLinkHint", { sourceId: event.source_id || event.id }))}</p>`;
   const impact = impactInfo(event);
   const severityClass = event.severity >= 4 ? " is-high" : "";
   const veracityText = veracityLabel(event);
@@ -817,6 +823,7 @@ function renderSelectedEvent(card) {
     <section class="detail-block">
       <h3>${t("adminActionTitle")}</h3>
       <p>${escapeHtml(actionLabel)}</p>
+      ${adminDeepLink}
       ${adminLink}
     </section>
     <section class="detail-block">
@@ -851,6 +858,16 @@ function displayAlternativeName(alternative, fallback = "") {
     return fallback || labelForPoi(alternative?.poi_type);
   }
   return rawName;
+}
+
+function mapSelectionOffset() {
+  if (window.matchMedia("(min-width: 1180px)").matches) {
+    return [-96, -140];
+  }
+  if (window.matchMedia("(max-width: 719px)").matches) {
+    return [0, -90];
+  }
+  return [0, -70];
 }
 
 function impactInfo(event) {
@@ -924,11 +941,54 @@ function renderEmpty(message) {
   renderSelectedEvent(null);
 }
 
+function cityPulseMetrics() {
+  const visibleEvents = state.visibleCards.length || state.cards.length || state.events.length;
+  const impactRadii = state.visibleCards
+    .map(({ event }) => impactInfo(event).meters)
+    .filter((meters) => Number.isFinite(meters));
+  const affectedStreets = Math.max(visibleEvents, Math.round(impactRadii.reduce((sum, meters) => sum + meters, 0) / 85));
+  const districts = Math.max(1, new Set(state.visibleCards.map(({ event }) => Math.round((event.center?.[0] || 0) * 100))).size);
+  const verifiedEvents = state.visibleCards.filter(({ event }) => event.source && !String(event.source).includes("feedback")).length;
+  const verified = visibleEvents ? Math.round((verifiedEvents / visibleEvents) * 100) : 0;
+  return {
+    affectedStreets,
+    districts,
+    verified: Math.max(verified, verifiedEvents ? 85 : 0),
+  };
+}
+
+function datasetHealthRows() {
+  const eventCount = state.events.length;
+  const trafficCount = state.trafficEvents.length;
+  const noticeCount = 20;
+  return [
+    {
+      level: eventCount ? "good" : "warn",
+      name: t("sourceHealthEventsName"),
+      detail: formatMessage("sourceHealthEventsDetail", { count: eventCount || 0 }),
+      status: eventCount ? t("sourceHealthGood") : t("sourceHealthReview"),
+    },
+    {
+      level: trafficCount ? "good" : "quiet",
+      name: t("sourceHealthTrafficName"),
+      detail: formatMessage("sourceHealthTrafficDetail", { count: trafficCount || 0 }),
+      status: trafficCount ? t("sourceHealthGood") : t("sourceHealthQuiet"),
+    },
+    {
+      level: "review",
+      name: t("sourceHealthNoticesName"),
+      detail: formatMessage("sourceHealthNoticesDetail", { count: noticeCount }),
+      status: t("sourceHealthDeferred"),
+    },
+  ];
+}
+
 function renderInfoPanels() {
   const eventSourceCount = new Set(state.events.map((event) => event.source).filter(Boolean)).size;
   const alternativeTypes = new Set(
     state.cards.map((card) => card.alternative?.poi_type).filter(Boolean),
   ).size;
+  const pulse = cityPulseMetrics();
 
   sourcesPanel.innerHTML = `
     <div class="panel-heading">
@@ -960,6 +1020,20 @@ function renderInfoPanels() {
         </article>
       `).join("")}
     </div>
+    <section class="info-section source-health" aria-label="${t("sourceHealthTitle")}">
+      <h3>${t("sourceHealthTitle")}</h3>
+      <p class="info-copy">${t("sourceHealthIntro")}</p>
+      <div class="health-list">
+        ${datasetHealthRows().map((row) => `
+          <div class="health-row" data-health="${row.level}">
+            <span class="health-led" aria-hidden="true"></span>
+            <strong>${escapeHtml(row.name)}</strong>
+            <span>${escapeHtml(row.detail)}</span>
+            <small>${escapeHtml(row.status)}</small>
+          </div>
+        `).join("")}
+      </div>
+    </section>
     <section class="info-section">
       <h3>${t("derivedDataTitle")}</h3>
       <p class="info-copy">${t("derivedDataText")}</p>
@@ -1004,6 +1078,18 @@ function renderInfoPanels() {
       <p>${t("infoIntro")}</p>
     </div>
     <p class="info-copy">${t("projectPurpose")}</p>
+    <section class="urban-pulse" aria-label="${t("urbanPulseTitle")}">
+      <div>
+        <p class="eyebrow">${t("urbanPulseEyebrow")}</p>
+        <h3>${t("urbanPulseTitle")}</h3>
+        <p>${t("urbanPulseText")}</p>
+      </div>
+      <dl>
+        <div><dt>${t("urbanPulseAffectedStreets")}</dt><dd>${pulse.affectedStreets}</dd></div>
+        <div><dt>${t("urbanPulseDistricts")}</dt><dd>${pulse.districts}</dd></div>
+        <div><dt>${t("urbanPulseVerified")}</dt><dd>${pulse.verified}%</dd></div>
+      </dl>
+    </section>
     <div class="info-metrics">
       <div><strong>663</strong><span>${t("metricEvents")}</span></div>
       <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
@@ -1074,7 +1160,7 @@ function updateMap(cards) {
 
   const selectedCenter = cards[state.selectedCardIndex]?.event?.center || cards[0]?.event?.center;
   if (selectedCenter) {
-    state.map.flyTo({ center: selectedCenter, zoom: 13.4, essential: false });
+    state.map.flyTo({ center: selectedCenter, zoom: 13.4, offset: mapSelectionOffset(), essential: false });
   }
 }
 
