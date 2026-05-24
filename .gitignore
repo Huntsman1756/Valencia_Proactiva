@@ -44,4 +44,9 @@ docs/_build/
 
 # Local agent scratch artifacts
 .superpowers/
+.agents/
+.claude/
+.cline/
+.kiro/
 .tmp/
+skills-lock.json

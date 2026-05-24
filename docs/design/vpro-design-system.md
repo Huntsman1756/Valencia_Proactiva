@@ -42,6 +42,9 @@ Evitar paletas dominadas por morado, azul oscuro, crema/beige, naranja o gradien
 - No cargar fuentes externas en el MVP.
 - Usar numeros tabulares para distancias, plazas, severidad y contadores.
 - No usar tipografia heroica salvo en el titulo contextual.
+- La UI debe usar tokens tipograficos explicitos para evitar saltos de escala entre tarjetas, detalle y controles.
+- Reservar pesos 800-900 para marcas, iconos o controles muy cortos; en texto operativo usar pesos intermedios para no deformar letras.
+- Las direcciones largas se parten por palabras (`break-word`/`word-break: normal`), nunca letra a letra salvo identificadores tecnicos sin espacios.
 
 ## Layout
 - Mobile-first.

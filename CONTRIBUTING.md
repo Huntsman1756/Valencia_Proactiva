@@ -95,6 +95,7 @@ Ver `ARCHITECTURE.md § Estructura canónica del repositorio`. **No** muevas arc
 ## Seguridad
 - Nunca abras issues públicos sobre vulnerabilidades. Contacta primero por email a la persona responsable.
 - Si encuentras un secret leaked en git, avisa antes de hacer nada; hay que rotar y reescribir historia en coordinación.
+- Para publicación pública, no reutilizar un repositorio privado con historial sensible. Crear un repositorio nuevo desde una copia auditada y seguir [`docs/concurso/publicacion-repositorio-publico.md`](./docs/concurso/publicacion-repositorio-publico.md).
 - Corre `pip-audit` localmente antes de actualizar dependencias.
 
 ## Código de conducta

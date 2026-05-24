@@ -1105,3 +1105,67 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Frontend: el selector `Vehiculo y ZBE` debe ser conservador; no afirmar permiso legal, solo orientar por distintivo ambiental y enlazar a ordenanza.
 - Alternativas: el detalle debe explicar el criterio segun perfil/medio (bus EMT, Metrovalencia, Valenbisi, PMR, comercio) para que no parezca que todos los perfiles reciben lo mismo.
 - Feedback: evitar botones solo simbolicos; usar texto visible `Util/No util` o equivalente bilingue.
+
+## Sesion 2026-05-17 - T-135 ubicaciones legibles
+- Backend/API: `UrbanEventResponse` expone `location_label` calculado desde `extra_data`; `spatial` mantiene el mismo contrato para sugerencias proactivas.
+- Ingesta: `ArcGiSCRaper` conserva `direccion`, `calle`, `localizacion`, `desc_calle` y `numero_policia_origen` como etiqueta humana. Para `ocupacio-via-publica`, `desc_calle` pasa a ser titulo si el registro no trae otro titulo mejor.
+- Ingesta idempotente: `_refresh_existing_event` refresca `extra_data` y titulos `Sin titulo` aunque la severidad no cambie, para corregir filas ya existentes sin truncar tablas.
+- Frontend: tarjetas, detalle seleccionado y snapshot muestran `location_label`; las coordenadas dejan de ser texto visible principal.
+- Ajuste visual posterior: las tarjetas del carril derecho colapsan duplicados tipo `C/ ASTURIES` + `C/ ASTURIES 26` y suben el peso/tamaño del lugar principal para facilitar escaneo.
+- Ajuste visual posterior: el badge verde de verificacion de cada tarjeta pasa a texto de confianza sin caja, dejando el chip de impacto como unico elemento destacado en la alerta.
+- Ajuste visual posterior: la hoja inferior incorpora `Contraer detalle`, concentra el scroll en `selected-event-panel`, mantiene fondo flotante con blur, destaca la tarjeta activa por elevacion/fondo y separa mejor `Util` / `No util` en movil.
+- Datos locales: ejecutada reingesta real contra Geoportal; segunda pasada idempotente reporto `scraped=14220`, `normalized=14220`, `stored=0`, `refreshed_events=1006`, `skipped_duplicates=14220`, `errors=0`.
+- Verificacion: `ruff`, `mypy`, `pytest -q` (103 passed), `pip-audit`, `docker compose -f infra/docker-compose.yml up -d --build`, `/health`, API local con `location_label` y smoke Playwright mobile/desktop verdes. Capturas `docs/reports/frontend-mobile.png` y `docs/reports/frontend-desktop.png` regeneradas.
+
+## Sesion 2026-05-17 - T-136 memoria y publicacion segura
+- MEMORIA: refuerza la tesis "VLC PROACTIVA no es un mapa", incorpora la interfaz como prueba de gobernanza (`Fuentes`, semaforo de calidad, pulso urbano, detalle accionable y snapshots para medios) y actualiza la fecha de revision.
+- Concurso: `docs/concurso/anexo-ii-primer-parrafo.md` y `docs/concurso/parrafo-conclusion-final.md` se alinean con economia circular del dato, validacion diferida, ubicaciones legibles y reutilizacion periodistica.
+- Publicacion segura: añadido `docs/concurso/publicacion-repositorio-publico.md`; README y CONTRIBUTING recomiendan crear un repo publico nuevo con historial limpio si el privado ha contenido secretos, y rotar cualquier secreto expuesto.
+- Higiene local: `.gitignore` excluye `.agents/`, `.claude/`, `.cline/`, `.kiro/` y `skills-lock.json` para evitar publicar artefactos locales de agentes.
+
+## Sesion 2026-05-17 - T-137 FAQ primera visita
+- Frontend: `Info` mantiene el FAQ abierto por defecto y pasa de 3 preguntas conceptuales a 9 preguntas practicas.
+- UX writing: se explican lectura de tarjeta, eleccion de perfil, cambio de filtros, significado de impacto, validacion diferida, feedback anonimo, limites frente a fuentes oficiales y primer flujo recomendado.
+- Tests: smoke Playwright valida al menos 8 preguntas y la presencia de ayudas clave en valenciano (`Quin perfil trie`, `Com llisc una targeta`, `Quan he de canviar`).
+
+## Sesion 2026-05-17 - T-138 aviso local de novedades
+- Frontend: `Eventos cercanos` incorpora un aviso sutil de novedades desde la ultima visita cuando el perfil activo coincide con el perfil guardado.
+- Privacidad: solo se guardan `vpro_last_seen_at` y `vpro_last_seen_profile` en `localStorage`; no se envia telemetria ni zona habitual al servidor.
+- Roadmap: `T-128` sigue como evolucion Web Push consentida, pero el MVP ya demuestra proactividad privada con una logica zero-server.
+- Tests: smoke Playwright simula una visita anterior antigua, valida el aviso en valenciano y confirma persistencia local del perfil/timestamp.
+
+## Sesion 2026-05-24 - Ralph feed publico y CX23
+- Metodo: continuacion estilo Ralph sobre `prd.json`/`progress.txt`, con historias pequenas y verificacion focal antes de cierre.
+- Referencia externa revisada: `javierarce/avisos-madrid` aporta el patron de feed JSON plano, permalink HTML por aviso y publicacion estatica reutilizable; no se copia frontend ni pipeline Flat/GitHub Actions.
+- Backend/export: `src/scripts/export_derived_data.py` ahora genera `latest_events.json`, `data_health.json` y `events/<event_id>.html` ademas de `impact_zones.geojson`, `mitigation_actions.csv` y `feedback_aggregated.csv`.
+- Privacidad/licencia: los permalinks y feeds usan eventos ya derivados por V-PRO; el feedback agregado sigue sin `session_token` ni PII.
+- Infra: se anaden `infra/provision.sh`, `infra/deploy.md` y unidades systemd para `vpro-api`, `vpro-ingest` y `vpro-export` orientadas al servidor de produccion mediante alias SSH local.
+- Regla operativa nueva: en produccion, `vpro-export.timer` debe escribir en `/var/www/vpro/exports` con `VPRO_PUBLIC_BASE_URL` definido para que los permalinks sean absolutos.
+- Verificacion ejecutada: `python -m ruff check src tests`, `python -m mypy src`, `python -m pytest -q` (103 passed), `python -m pip_audit -r config\requirements.txt --strict`, `docker compose -f infra/docker-compose.yml up -d --build`, `curl http://localhost:8000/health`, export real en Docker (`latest_events=100`, `event_pages=100`, `data_health=6`) y `bash -n infra/provision.sh`.
+- Pendiente: no se ha ejecutado provisionado en el VPS real ni validacion publica de dominio/tunnel/securityheaders.com.
+
+## Sesion 2026-05-24 - Ralph legibilidad tipografica UI
+- Metodo: R-15 en `prd.json`/`progress.txt`, con ajuste pequeno y verificacion visual antes de cierre.
+- Referencia externa revisada: `nexu-io/open-design` se toma como patron de proceso (direccion visual, tokens y anti-patrones); no se copia ningun sistema de marca.
+- Frontend: `src/frontend/assets/app.css` define tokens tipograficos UI, reduce pesos extremos en tarjetas/detalle y cambia cortes de calle de `overflow-wrap:anywhere` a `break-word` + `word-break:normal`.
+- Layout: el carril `Eventos cercanos` gana ancho util en desktop y conserva scroll vertical para no romper el flujo operativo.
+- Docs: `docs/design/vpro-design-system.md`, `docs/STATUS.md`, `docs/TODO.md`, `CHANGELOG.md`, `prd.json` y `progress.txt` actualizados.
+- Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, smoke Playwright mobile/desktop contra `http://localhost:8080` y captura limpia `docs/reports/frontend-desktop-typography-check.png`.
+
+## Sesion 2026-05-24 - R-16 primer despliegue VPS
+- Metodo: despliegue operativo mediante alias SSH local `vpro-prod`; no versionar IP, ID de proveedor ni IPv6.
+- Provisionado: `infra/provision.sh` ejecutado en VPS con Nginx, PostgreSQL/PostGIS, usuario `vpro`, UFW, unattended-upgrades y SSH key-only.
+- Configuracion: `infra/configure-env.sh` genera `/etc/vpro/env`, crea credenciales locales y aplica password al rol `vpro` sin imprimir secretos.
+- Runtime: el VPS usa Python 3.12 instalado con `uv` bajo `/opt/vpro/.python`; `.venv` y dependencias quedan bajo `/opt/vpro` para que el usuario systemd pueda ejecutarlas.
+- Systemd/Nginx: `vpro-api.service` activo con `PYTHONPATH=/opt/vpro/src/backend`; `vpro-ingest.timer` y `vpro-export.timer` activos cada 30 minutos; `server_tokens off` aplicado en Nginx global.
+- Datos produccion: ingesta real `scraped=14240`, `normalized=14240`, `stored_events=669`, `stored_pois=13159`, `refreshed_events=357`, `errors=0`.
+- Export produccion: `impact_zones=672`, `mitigation_actions=950`, `latest_events=100`, `event_pages=100`, `data_health=6` en `/var/www/vpro/exports`.
+- Verificacion ejecutada: `curl /health` local y publico OK, frontend HTTP 200, `/exports/data_health.json` OK, `nginx -t` OK, `systemctl is-active vpro-api.service nginx` activo y timers listados.
+- Dominio/HTTPS: `vlcproactiva.es` y `www.vlcproactiva.es` propagados, Let's Encrypt emitido hasta 2026-08-22, UFW abierto en 443, HTTP redirige a HTTPS y `VPRO_PUBLIC_BASE_URL=https://vlcproactiva.es/exports`.
+- Pendiente: pasar securityheaders.com sobre la URL HTTPS estable y ajustar cabeceras si aparece alguna recomendacion.
+## Sesión 2026-05-24 · Cierre candidatura AD.TR.15 y repo público
+
+- Se añade `docs/concurso/checklist-candidatura-adtr15.md` con requisitos formales, criterios de valoración, evidencias de producción y pendientes administrativos.
+- Se actualizan `README.md`, `docs/MEMORIA.md`, `docs/ARCHITECTURE.md`, `docs/concurso/publicacion-repositorio-publico.md` y `docs/concurso/video-storytelling-90s.md` para reflejar `https://vlcproactiva.es`, Let's Encrypt, systemd timers, repo público y política de no publicar datos personales ni secretos.
+- Auditoría externa: GitHub muestra `Huntsman1756/Valencia_Proactiva` como repositorio público. La copia pública está por detrás del estado local de producción y debe sincronizarse con la release auditada antes de enlazarla en la solicitud final.
+- Auditoría local: se mantiene la regla de no versionar IP, ID de proveedor, claves, `.env`, documentos administrativos ni artefactos internos innecesarios.

@@ -273,6 +273,7 @@ class ArcGiSCRaper:
             "source_id": self._extract_source_id(props, config),
             "extra_data": {
                 **self._extra_data_from_props(props),
+                **self._location_extra_data(props),
                 "poi_type": config.get("poi_type"),
                 "accessible": config.get("accessible", False),
                 "dataset_key": config.get("dataset_key"),
@@ -294,6 +295,7 @@ class ArcGiSCRaper:
             "name",
             "denominacion",
             "calle",
+            "desc_calle",
             "direccion",
             "address",
         ):
@@ -302,6 +304,25 @@ class ArcGiSCRaper:
                 return str(value)
 
         return config.get("default_title", "Sin titulo")
+
+    def _location_extra_data(self, props: Dict) -> Dict[str, str]:
+        for key in (
+            "location_label",
+            "direccion",
+            "address",
+            "calle",
+            "desc_calle",
+            "localizacion",
+            "localización",
+        ):
+            value = props.get(key)
+            if value not in (None, ""):
+                label = str(value).strip()
+                number = props.get("numero_policia_origen")
+                if key == "desc_calle" and number not in (None, ""):
+                    label = f"{label} {str(number).strip()}"
+                return {"location_label": label}
+        return {}
 
     def _extract_description(self, props: Dict) -> str:
         for key in (

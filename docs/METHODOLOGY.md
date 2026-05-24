@@ -226,11 +226,14 @@ curl "http://localhost:8000/api/v1/spatial/events/nearby?lon=-0.3763&lat=39.4699
 ```
 
 ## 6. Publicación de los datos derivados
-Los datasets generados (zonas de impacto, acciones, plantillas y feedback agregado) se publicarán como:
+Los datasets generados (zonas de impacto, acciones, plantillas, feedback agregado, feed público y salud de datos) se publicarán como:
 - `exports/impact_zones.geojson` — todas las zonas activas.
 - `exports/mitigation_actions.csv` — acciones por evento con enlaces a trámites.
 - `exports/action_templates.yaml` — reglas declarativas.
 - `exports/feedback_aggregated.csv` — votos agregados por acción, perfil y tipo de evento, sin `session_token`. Este dataset permite auditar la brecha entre recomendación oficial/derivada y utilidad percibida por la ciudadanía.
+- `exports/latest_events.json` — feed estático de últimos eventos con geometría, fuente y permalink.
+- `exports/events/<event_id>.html` — permalink HTML por evento para inspección y reutilización periodística.
+- `exports/data_health.json` — conteos y frescura por tabla para monitorizar si la ingesta sigue viva.
 
 Comando de exportación: `docker compose -f infra/docker-compose.yml exec api sh -lc 'VPRO_EXPORT_DIR=/exports python -m scripts.export_derived_data'`.
 

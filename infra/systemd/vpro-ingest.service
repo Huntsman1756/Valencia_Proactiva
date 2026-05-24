@@ -1,0 +1,14 @@
+[Unit]
+Description=VLC PROACTIVA ingest run
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=oneshot
+User=vpro
+Group=vpro
+EnvironmentFile=/etc/vpro/env
+WorkingDirectory=/opt/vpro
+ExecStart=/opt/vpro/.venv/bin/python -m src.scripts.run_ingest
+StandardOutput=append:/var/log/vpro/ingest.log
+StandardError=append:/var/log/vpro/ingest.log

@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh VLC PROACTIVA public exports every 30 minutes
+
+[Timer]
+OnBootSec=8min
+OnUnitActiveSec=30min
+AccuracySec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

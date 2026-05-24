@@ -26,6 +26,7 @@ class _Event:
     severity = 3
     source = "test"
     source_id = "test:5"
+    extra_data = {"location_label": "Carrer de Colon"}
     geometry_as_geojson = {"type": "Point", "coordinates": [-0.3763, 39.4699]}
     center = (-0.3763, 39.4699)
     created_at = datetime(2026, 5, 10, 12, 0, 0)
@@ -38,6 +39,12 @@ def test_event_response_includes_mitigation_actions():
 
     assert response.mitigation_actions[0].id == 31
     assert response.mitigation_actions[0].payload["profiles"] == ["PMR"]
+
+
+def test_event_response_includes_location_label_from_extra_data():
+    response = _event_to_response(_Event())
+
+    assert response.location_label == "Carrer de Colon"
 
 
 def test_geojson_to_wkt_sets_srid():

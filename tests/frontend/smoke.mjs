@@ -18,6 +18,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.evaluate(() => {
     localStorage.setItem("vpro_session_token", crypto.randomUUID().replaceAll("-", ""));
     localStorage.setItem("vpro_alert_mode", "false");
+    localStorage.setItem("vpro_last_seen_at", "2000-01-01T00:00:00.000Z");
+    localStorage.setItem("vpro_last_seen_profile", "PMR");
   });
   await page.reload({ waitUntil: "networkidle" });
   await page.locator("[data-lang='val']").click();
@@ -29,6 +31,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.locator("#toast").filter({ hasText: "Mode alerta preparat" }).waitFor({ timeout: 5000 });
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
+  await page.locator(".event-card").nth(1).click();
+  await page.locator(".event-card").nth(1).evaluate((card) => card.dataset.selected === "true");
   await page.locator("[data-view='sources']").click();
   await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
   const sourcesPanelState = await page.evaluate(() => ({
@@ -67,6 +71,28 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   if (!eventToggleState.collapsed || !eventToggleState.hiddenWhileCollapsed || !eventToggleState.expanded || eventToggleState.ariaExpanded !== "true") {
     throw new Error(`Event panel toggle is broken: ${JSON.stringify(eventToggleState)}`);
   }
+  const detailToggleState = await page.evaluate(() => {
+    const toggle = document.querySelector("#detailPanelToggle");
+    const rail = document.querySelector(".detail-rail");
+    const panel = document.querySelector("#selectedEventPanel");
+    const expandedLabel = toggle?.textContent;
+    toggle?.click();
+    const collapsed = rail?.classList.contains("is-collapsed");
+    const hiddenWhileCollapsed = panel ? getComputedStyle(panel).display === "none" : false;
+    toggle?.click();
+    return {
+      hasToggle: Boolean(toggle),
+      expandedLabel,
+      collapsed,
+      hiddenWhileCollapsed,
+      expanded: !rail?.classList.contains("is-collapsed"),
+      ariaExpanded: toggle?.getAttribute("aria-expanded"),
+    };
+  });
+  if (!detailToggleState.hasToggle || !detailToggleState.collapsed || !detailToggleState.hiddenWhileCollapsed || !detailToggleState.expanded || detailToggleState.ariaExpanded !== "true") {
+    throw new Error(`Detail panel toggle is broken: ${JSON.stringify(detailToggleState)}`);
+  }
+  await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator("#toggleMap").click();
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
   await page.waitForTimeout(500);
@@ -85,7 +111,12 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     for (let x = 8; x < rect.width; x += 8) {
       for (let y = 8; y < rect.height; y += 8) {
         if (map.queryRenderedFeatures([x, y], { layers: ["event-points"] }).length > 0) {
-          return { x: rect.left + x, y: rect.top + y };
+          const absoluteX = rect.left + x;
+          const absoluteY = rect.top + y;
+          const target = document.elementFromPoint(absoluteX, absoluteY);
+          if (target?.closest(".maplibregl-canvas-container")) {
+            return { x: absoluteX, y: absoluteY };
+          }
         }
       }
     }
@@ -99,7 +130,6 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     }
     await page.locator(".maplibregl-popup-content").first().waitFor({ timeout: 5000 });
   }
-  await page.screenshot({ path: `docs/reports/frontend-${name}.png`, fullPage: true });
   await page.locator("#toggleMap").click();
   await page.locator("#selectedEventPanel .snapshot-button").click();
   await page.locator("#toast").filter({ hasText: "Snapshot periodístic copiat" }).waitFor({ timeout: 5000 });
@@ -120,6 +150,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     htmlLang: document.documentElement.lang,
     storedLanguage: localStorage.getItem("vpro_language"),
     sourceStrip: document.querySelector(".source-strip")?.textContent,
+    localDeltaNotice: document.querySelector(".local-delta-notice")?.textContent,
+    localDeltaProfile: localStorage.getItem("vpro_last_seen_profile"),
+    localDeltaTimestamp: localStorage.getItem("vpro_last_seen_at"),
+    eventCardVeracityBadges: document.querySelectorAll(".event-card .veracity-badge").length,
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
     sourceHealthText: document.querySelector(".source-health")?.textContent,
     profileImpact: document.querySelector("#profileImpact")?.textContent,
@@ -129,8 +163,63 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     googleMention: document.body.textContent.includes("Google"),
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
+    eventCardTitle: document.querySelector(".event-card h3")?.textContent,
+    selectedLocation: document.querySelector(".detail-list dd")?.textContent,
+    eventCardLocation: document.querySelector(".event-card .event-location")?.textContent,
+    activeCardStyle: (() => {
+      const selected = document.querySelector(".event-card[data-selected='true']");
+      const firstIdle = document.querySelector(".event-card:not([data-selected='true'])");
+      const selectedStyle = selected ? getComputedStyle(selected) : null;
+      const idleStyle = firstIdle ? getComputedStyle(firstIdle) : null;
+      return {
+        selectedBoxShadow: selectedStyle?.boxShadow || "",
+        idleBoxShadow: idleStyle?.boxShadow || "",
+        selectedBackground: selectedStyle?.backgroundColor || "",
+        idleBackground: idleStyle?.backgroundColor || "",
+        selectedBorderLeftColor: selectedStyle?.borderLeftColor || "",
+        idleBorderLeftColor: idleStyle?.borderLeftColor || "",
+        themeBlue: (() => {
+          const probe = document.createElement("span");
+          probe.style.color = "var(--blue)";
+          document.body.append(probe);
+          const color = getComputedStyle(probe).color;
+          probe.remove();
+          return color;
+        })(),
+      };
+    })(),
+    detailSheet: (() => {
+      const rail = document.querySelector(".detail-rail");
+      const panel = document.querySelector("#selectedEventPanel");
+      const toggle = document.querySelector("#detailPanelToggle");
+      const railStyle = rail ? getComputedStyle(rail) : null;
+      const panelStyle = panel ? getComputedStyle(panel) : null;
+      return {
+        hasToggle: Boolean(toggle),
+        toggleText: toggle?.textContent || "",
+        railOverflowY: railStyle?.overflowY || "",
+        panelOverflowY: panelStyle?.overflowY || "",
+        railBoxShadow: railStyle?.boxShadow || "",
+        railBackdropFilter: railStyle?.backdropFilter || railStyle?.webkitBackdropFilter || "",
+        railBackground: railStyle?.backgroundColor || "",
+      };
+    })(),
+    feedbackLayout: (() => {
+      const group = document.querySelector(".feedback-group");
+      const buttons = Array.from(document.querySelectorAll(".feedback-button")).map((button) => {
+        const rect = button.getBoundingClientRect();
+        return { width: rect.width, height: rect.height };
+      });
+      const groupStyle = group ? getComputedStyle(group) : null;
+      return {
+        gap: Number.parseFloat(groupStyle?.columnGap || groupStyle?.gap || "0"),
+        buttons,
+      };
+    })(),
     modeGuidance: document.querySelector(".mode-guidance")?.textContent,
     urbanPulseText: document.querySelector(".urban-pulse")?.textContent,
+    faqText: document.querySelector(".faq-list")?.textContent,
+    faqItems: document.querySelectorAll(".faq-list .faq-item").length,
     adminDeepLinkText: document.querySelector(".admin-deeplink")?.textContent,
     alertMode: document.documentElement.dataset.alert,
     eventsPanelHidden: document.querySelector("#events")?.hidden,
@@ -183,6 +272,9 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   if (data.sourceDatasetCount < 10) {
     throw new Error(`Expected detailed source datasets, got ${data.sourceDatasetCount}`);
   }
+  if (data.faqItems < 8 || !data.faqText?.includes("Quin perfil trie") || !data.faqText?.includes("Com llisc una targeta") || !data.faqText?.includes("Quan he de canviar")) {
+    throw new Error(`First-visit FAQ is too thin: ${JSON.stringify({ faqItems: data.faqItems, faqText: data.faqText })}`);
+  }
   if (!data.sourceHealthText?.includes("EMT") || !data.urbanPulseText?.includes("Salut operativa")) {
     throw new Error(`Missing source health or urban pulse: ${JSON.stringify({ sourceHealthText: data.sourceHealthText, urbanPulseText: data.urbanPulseText })}`);
   }
@@ -191,6 +283,16 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (data.routeButtons !== 0 || data.googleMention) {
     throw new Error(`Google Maps route action should not be visible: ${JSON.stringify({ routeButtons: data.routeButtons, googleMention: data.googleMention })}`);
+  }
+  if (data.eventCardVeracityBadges !== 0) {
+    throw new Error(`Event cards still use boxed verification badges: ${data.eventCardVeracityBadges}`);
+  }
+  if (!data.localDeltaNotice?.includes("incid") || !data.localDeltaNotice?.includes("última visita") || data.localDeltaProfile !== "PMR" || !data.localDeltaTimestamp) {
+    throw new Error(`Local novelty notice is missing or not persisted privately: ${JSON.stringify({
+      notice: data.localDeltaNotice,
+      profile: data.localDeltaProfile,
+      timestamp: data.localDeltaTimestamp,
+    })}`);
   }
   if (!data.snapshotText?.includes("snapshot")) {
     throw new Error("Journalism snapshot action is missing");
@@ -203,6 +305,31 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   }
   if (!data.temporalImpact?.includes("Impacte previst")) {
     throw new Error("Temporal impact detail is missing");
+  }
+  const eventCardPlace = data.eventCardLocation || data.eventCardTitle;
+  if (!data.selectedLocation || /-?\d+\.\d{4,}/.test(data.selectedLocation) || !eventCardPlace || /-?\d+\.\d{4,}/.test(eventCardPlace)) {
+    throw new Error(`Human-readable location is missing: ${JSON.stringify({ selectedLocation: data.selectedLocation, eventCardPlace })}`);
+  }
+  if (data.eventCardTitle && data.eventCardLocation?.startsWith(data.eventCardTitle)) {
+    throw new Error(`Event card repeats the same street as title and location: ${JSON.stringify({ title: data.eventCardTitle, location: data.eventCardLocation })}`);
+  }
+  if (!data.detailSheet.hasToggle || data.detailSheet.railOverflowY !== "hidden" || !data.detailSheet.panelOverflowY.includes("auto") || data.detailSheet.railBoxShadow === "none") {
+    throw new Error(`Detail bottom sheet hierarchy is weak: ${JSON.stringify(data.detailSheet)}`);
+  }
+  if (!data.detailSheet.railBackdropFilter || data.detailSheet.railBackdropFilter === "none") {
+    throw new Error(`Detail bottom sheet is missing backdrop blur: ${JSON.stringify(data.detailSheet)}`);
+  }
+  if (data.activeCardStyle.selectedBoxShadow === data.activeCardStyle.idleBoxShadow && data.activeCardStyle.selectedBackground === data.activeCardStyle.idleBackground) {
+    throw new Error(`Selected event card does not visually dominate idle cards: ${JSON.stringify(data.activeCardStyle)}`);
+  }
+  if (name === "desktop" && data.activeCardStyle.selectedBorderLeftColor === data.activeCardStyle.themeBlue) {
+    throw new Error(`Selected event card still relies on a hard left-border color: ${JSON.stringify(data.activeCardStyle)}`);
+  }
+  if (name === "mobile") {
+    const smallFeedbackButtons = data.feedbackLayout.buttons.filter((button) => button.width < 52 || button.height < 48);
+    if (data.feedbackLayout.gap < 10 || smallFeedbackButtons.length > 0) {
+      throw new Error(`Mobile feedback controls are too tight: ${JSON.stringify(data.feedbackLayout)}`);
+    }
   }
   if (data.eventsPanelHidden || data.visibleEventCards < 1) {
     throw new Error("Events panel disappeared after switching informational tabs");

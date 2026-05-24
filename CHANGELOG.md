@@ -5,6 +5,45 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - Checklist candidatura y repo publico - 2026-05-24
+- Concurso: añadido `docs/concurso/checklist-candidatura-adtr15.md` con matriz de requisitos, evidencias de producción, criterios de valoración y pendientes de Sede Electrónica.
+- Docs: README, memoria, arquitectura y guion de vídeo quedan alineados con `https://vlcproactiva.es`, Let's Encrypt, systemd timers y repositorio público `Huntsman1756/Valencia_Proactiva`.
+- Seguridad/publicación: `docs/concurso/publicacion-repositorio-publico.md` documenta la auditoría del repo público, el estado desactualizado frente a local y la política de no publicar datos personales, `.env`, IP/ID del VPS ni artefactos internos innecesarios.
+
+### Added - Primer despliegue VPS - 2026-05-24
+- Infra: `infra/configure-env.sh` genera `/etc/vpro/env` y aplica credenciales de base de datos en el servidor sin versionar secretos.
+- Deploy: primera release HTTP ejecutada en el VPS mediante alias SSH local; API, Nginx, ingesta systemd, export systemd y timers quedan activos.
+- Datos: ingesta produccion validada con `stored_events=669`, `stored_pois=13159`, `refreshed_events=357`, `errors=0`; export publico validado con `latest_events=100`, `event_pages=100` y `data_health=6`.
+- Seguridad: `server_tokens off` aplicado en Nginx global del VPS y cabeceras HTTP verificadas por `curl -I`.
+- Dominio: `vlcproactiva.es` y `www.vlcproactiva.es` configurados con Let's Encrypt; HTTP redirige a HTTPS y los exports publican permalinks con `https://vlcproactiva.es/exports`.
+- Docs: `infra/deploy.md`, `docs/STATUS.md`, `docs/TODO.md`, `docs/AGENTS.md`, `progress.txt` y `prd.json` reflejan el despliegue sin guardar IP ni datos de proveedor en git.
+
+### Changed - Legibilidad tipografica de eventos - 2026-05-24
+- Frontend: tarjetas de `Eventos cercanos` y panel de detalle usan una escala tipografica mas consistente, con pesos menos extremos y cortes de calle por palabras.
+- Frontend: el carril de eventos en desktop gana ancho util y mantiene scroll operativo para que direcciones largas como `C/ ASTURIES 26` no se rompan letra a letra.
+- Docs: el sistema de diseno incorpora reglas explicitas de tokens tipograficos, pesos y wrapping para calles largas.
+
+### Added - Feed publico y preparacion CX23 - 2026-05-24
+- Exports: `src/scripts/export_derived_data.py` genera `latest_events.json`, `data_health.json` y permalinks estaticos `events/<event_id>.html`, ademas de los GeoJSON/CSV existentes.
+- Tests: `tests/backend/test_export_derived_data.py` cubre feed publico, permalink HTML, salud de datos y ausencia de `session_token` en feedback agregado.
+- Infra: anadidos `infra/provision.sh`, `infra/deploy.md` y unidades systemd `vpro-api`, `vpro-ingest` y `vpro-export` para desplegar en el servidor de produccion mediante alias SSH local.
+- Docs: README, arquitectura, fuentes, metodologia, roadmap, estado y TODO quedan alineados con CX23 y con el patron de publicacion tipo Avisos Madrid.
+
+### Changed - Memoria AD.TR.15 y publicacion segura - 2026-05-17
+- Docs: `docs/MEMORIA.md` refuerza la narrativa "no es un mapa", la interfaz como prueba de gobernanza, el semaforo de calidad, el pulso urbano y los snapshots trazables para medios.
+- Docs: `docs/concurso/anexo-ii-primer-parrafo.md` y `docs/concurso/parrafo-conclusion-final.md` se alinean con economia circular del dato, validacion diferida y ubicaciones comprensibles.
+- Seguridad/publicacion: nueva guia `docs/concurso/publicacion-repositorio-publico.md`; README y CONTRIBUTING recomiendan crear un repositorio publico limpio si el repo privado ha contenido secretos.
+- Repo hygiene: `.gitignore` excluye carpetas locales de agentes y `skills-lock.json` para reducir riesgo de publicar artefactos privados.
+- Frontend: `Info` incorpora un FAQ ampliado y abierto por defecto para primera visita, con lectura de tarjetas, eleccion de perfil, filtros, impacto, validacion diferida, feedback y limites oficiales.
+- Frontend: `Eventos cercanos` muestra un aviso de novedades desde la ultima visita calculado con `localStorage` (`vpro_last_seen_at` + perfil activo), sin enviar telemetria al servidor.
+
+### Changed - Ubicaciones legibles en eventos - 2026-05-17
+- Backend: `UrbanEventResponse` expone `location_label` y la ingesta conserva campos reales de calle (`desc_calle`, `numero_policia_origen`, `direccion`, `calle`) como etiqueta humana.
+- Backend: la reingesta idempotente refresca `extra_data` y reemplaza titulos pobres `Sin titulo` por el nombre de calle cuando el portal publica un lugar fiable.
+- Frontend: tarjetas, panel de detalle y snapshot muestran lugares como `C/ ASTURIES 26` en vez de coordenadas; las tarjetas evitan duplicar calle/calle+número, aumentan la jerarquía tipográfica del lugar y sustituyen el badge de verificacion por una linea discreta para dejar un unico chip visual de impacto.
+- Frontend: la hoja inferior de detalle puede contraerse, elimina el doble scroll vertical, usa `surface-float` con desenfoque de fondo, refuerza la tarjeta activa con fondo/sombra y amplia la separacion tactil de feedback en movil.
+- Tests: cobertura backend para `location_label` y smoke Playwright mobile/desktop validan que la ubicacion visible no sea una pareja de coordenadas.
+
 ### Added - Pulso urbano y auditoria civica - 2026-05-11
 - Frontend: `Info` incorpora `Pulso urbano`, un resumen agregado de calles potencialmente afectadas, zonas alteradas y porcentaje de datos trazables.
 - Frontend: `Fuentes` incorpora un semaforo de calidad del portal para distinguir fuentes operativas, fuentes sin incidencia relevante y avisos en validacion diferida.

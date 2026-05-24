@@ -79,6 +79,7 @@ class UrbanEventResponse(BaseModel):
     type: UrbanEventType
     title: str
     description: Optional[str] = None
+    location_label: Optional[str] = None
     start_time: datetime
     end_time: Optional[datetime] = None
     severity: int

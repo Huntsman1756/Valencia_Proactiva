@@ -23,6 +23,15 @@ def _profile_requires_accessible(profile: str | None) -> bool:
     return (profile or "").upper() == "PMR"
 
 
+def _location_label_from_extra_data(extra_data: dict | None) -> str | None:
+    data = extra_data or {}
+    for key in ("location_label", "direccion", "address", "calle", "localizacion", "localización"):
+        value = data.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return None
+
+
 def _build_alternatives_query(
     *,
     lon: float,
@@ -213,6 +222,7 @@ async def get_proactive_suggestions(
                 type=event_row["type"],
                 title=event_row["title"],
                 description=event_row["description"],
+                location_label=_location_label_from_extra_data(event_row["extra_data"]),
                 start_time=event_row["start_time"],
                 end_time=event_row["end_time"],
                 severity=event_row["severity"],

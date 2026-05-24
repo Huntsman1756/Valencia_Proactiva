@@ -178,6 +178,9 @@ Estos datos los genera V-PRO a partir de los anteriores y se publicarán bajo **
 2. **`exports/mitigation_actions.csv`** — acciones generadas por el motor de plantillas con enlaces a trámites reales municipales (ver `docs/concurso/tramites-referenciados.md`).
 3. **`src/backend/engine/templates/*.yaml`** — catálogo de reglas declarativas versionado en git; las acciones exportadas incorporan `payload.url` cuando existe trámite oficial aplicable.
 4. **`exports/feedback_aggregated.csv`** — agregación anónima (sin PII) de los votos 👍/👎 sobre la utilidad de las sugerencias. *Meta-nivel: V-PRO no solo consume datos abiertos — produce nuevos datos abiertos.*
+5. **`exports/latest_events.json`** — feed plano de últimos eventos visibles, con centroide, geometría, fuente, acción disponible y permalink.
+6. **`exports/events/<event_id>.html`** — ficha estática por evento, inspirada en el patrón de publicación de Avisos Madrid, para prensa, jurado y reutilizadores.
+7. **`exports/data_health.json`** — conteos y frescura por tabla (`urban_events`, `points_of_interest`, `impact_zones`, `mitigation_actions`, `official_notices`, `feedback`).
 
 ---
 

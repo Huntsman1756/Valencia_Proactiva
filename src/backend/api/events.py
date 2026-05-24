@@ -20,6 +20,15 @@ from models.models import UrbanEvent
 router = APIRouter()
 
 
+def _location_label_from_event(event: UrbanEvent) -> str | None:
+    extra_data = event.extra_data or {}
+    for key in ("location_label", "direccion", "address", "calle", "localizacion", "localización"):
+        value = extra_data.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return None
+
+
 def _geojson_to_wkt(geojson: dict) -> str:
     """Convert GeoJSON dict to WKT string (with SRID) for PostGIS"""
     geom = shapely.geometry.shape(geojson)
@@ -33,6 +42,7 @@ def _event_to_response(event: UrbanEvent) -> UrbanEventResponse:
         type=event.type,
         title=event.title,
         description=event.description,
+        location_label=_location_label_from_event(event),
         start_time=event.start_time,
         end_time=event.end_time,
         severity=event.severity,

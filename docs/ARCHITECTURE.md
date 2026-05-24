@@ -29,12 +29,11 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
 ### Infraestructura
 | Capa | Herramienta | Notas |
 |---|---|---|
-| VPS | Hetzner CX22 (~4 €/mes) | 2 vCPU · 4 GB RAM · 40 GB SSD — suficiente tras retirar Redis/Celery. |
-| SO | Ubuntu 24.04 LTS | Con `unattended-upgrades` activo. |
-| Reverse proxy | Nginx | Security headers, rate-limit de segundo nivel, servir el frontend estático. |
-| Tunnel | Cloudflare Tunnel | Único ingress. No se abren puertos en el VPS. |
-| DNS / SSL | Cloudflare (full strict) | Dominio registrado en Cloudflare Registrar. |
-| Red interna | Tailscale | Acceso SSH y operaciones de mantenimiento. |
+| VPS | Hetzner CX23 | 2 vCPU · 4 GB RAM · 40 GB disco local — suficiente tras retirar Redis/Celery. IP y datos de proveedor quedan fuera de git. |
+| SO | Ubuntu LTS | Con `unattended-upgrades` activo; usar metapaquetes de Postgres/PostGIS para no fijar versión menor. |
+| Reverse proxy | Nginx + Let's Encrypt | HTTPS público, security headers, rate-limit de segundo nivel, servir el frontend estático y proxy `/api`. |
+| DNS / SSL | DonDominio + Let's Encrypt | `vlcproactiva.es` y `www.vlcproactiva.es` en DNS de DonDominio; certificados emitidos por Let's Encrypt. |
+| Acceso admin | SSH key-only mediante alias local | La IP, el ID de proveedor y rutas administrativas no se versionan en git. |
 | Contenedores | Docker Compose (dev) · binarios nativos en prod | Prod puede correr sin Docker si se prefiere simplicidad máxima; Postgres como servicio de sistema, backend como servicio systemd. |
 | Secretos | Variables de entorno en `/etc/vpro/env` (root, 0600) | Nunca en git, nunca en imagen. |
 | Observabilidad | Logs estructurados (stdout) → journald → rotación estándar | Sin stack de observabilidad externa en MVP. |
@@ -109,7 +108,8 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
 │   ├── docker-compose.yml        # dev
 │   ├── docker-compose.prod.yml   # prod (opcional si se usa Docker en prod)
 │   ├── cloudflare/               # tunnel config
-│   ├── systemd/                  # vpro-api.service, vpro-ingest.timer
+│   ├── systemd/                  # vpro-api.service, vpro-ingest/export timers
+│   ├── deploy.md                 # pipeline manual para cx23
 │   └── provision.sh              # script idempotente de bootstrap del VPS
 ├── .github/
 │   └── workflows/
@@ -159,7 +159,8 @@ V-PRO es un motor reactivo orientado a eventos que transforma datos urbanos abie
 3. Backend usa PostGIS para calcular cercanía, descartar alternativas dentro de la zona de impacto cuando aplica y priorizar `accessible=true` si el perfil es PMR.
 4. Las `MitigationAction` enlazan acciones administrativas reales cuando existe una URL municipal útil; si no existe, la UI muestra solo referencia informativa.
 5. `POST /api/v1/feedback` persiste el voto anónimo y el export publica el agregado en `exports/feedback_aggregated.csv`.
-6. `POST /api/v1/spatial/suggestions` se conserva por compatibilidad, pero la interfaz ciudadana usa los endpoints explícitos anteriores.
+6. `src/scripts/export_derived_data.py` publica artefactos estáticos reutilizables: `latest_events.json`, `data_health.json` y `events/<event_id>.html` como permalink público por evento.
+7. `POST /api/v1/spatial/suggestions` se conserva por compatibilidad, pero la interfaz ciudadana usa los endpoints explícitos anteriores.
 
 ## 🔄 Pipeline de datos (post-ADR-002 y ADR-004: sin Celery, cliente ArcGIS REST)
 ```
@@ -216,8 +217,8 @@ Ejemplo de entrada cron:
 - Security headers en Nginx: `Content-Security-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`.
 - `server_tokens off`.
 - SSH key-only. Password auth disabled.
-- Todo el tráfico público vía Cloudflare Tunnel (sin puertos abiertos en el VPS).
-- Tailscale para acceso administrativo interno.
+- Tráfico público únicamente por HTTP/HTTPS gestionado por Nginx; HTTP redirige a HTTPS.
+- SSH key-only para mantenimiento, documentado fuera del repositorio público.
 - Secretos fuera de git: `.env` local ignorado y `config/.env.example` limitado a placeholders.
 - `unattended-upgrades` activo.
 - CI ejecuta `pip-audit` y `ruff` en cada PR.
@@ -226,10 +227,10 @@ Ejemplo de entrada cron:
 Arquitectura simple, sin orquestador:
 - **Nginx** (systemd) sirve `/` estático (frontend vanilla) y hace reverse-proxy de `/api/v1/*` al backend.
 - **Backend** (systemd `vpro-api.service`) corre `uvicorn src.backend.main:app` como usuario no privilegiado `vpro`.
-- **Postgres/PostGIS** (paquete `postgresql-15-postgis-3`) como servicio de sistema.
-- **Cron** (paquete del sistema) ejecuta la ingesta periódica.
-- **Cloudflare Tunnel** (`cloudflared` systemd) expone `https://vpro.<dominio>` al exterior.
-- **Tailscale** para SSH interno y operaciones de mantenimiento.
+- **Postgres/PostGIS** (metapaquetes `postgresql-postgis` y `postgresql-postgis-scripts`) como servicio de sistema.
+- **Systemd timers** ejecutan la ingesta y la exportación periódica cada 30 minutos.
+- **Nginx + Let's Encrypt** expone `https://vlcproactiva.es` y redirige HTTP a HTTPS.
+- **SSH key-only** queda como canal administrativo local; no se publican IP ni datos de proveedor.
 
 Docker se mantiene en **dev** para reproducibilidad del equipo. En **prod** se evalúa correr directamente en systemd (más sencillo, menor footprint) — decisión diferida a Fase 4.
 

@@ -3,6 +3,14 @@
 > Motor de inteligencia urbana proactiva basado en datos abiertos del Ayuntamiento de València.
 > Proyecto candidato a la **categoría de Datos Abiertos** de los *Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026* (convocatoria **AD.TR.15**).
 
+## Demo pública
+
+- Aplicación: [`https://vlcproactiva.es`](https://vlcproactiva.es)
+- Salud API: [`https://vlcproactiva.es/health`](https://vlcproactiva.es/health)
+- Salud de datos: [`https://vlcproactiva.es/exports/data_health.json`](https://vlcproactiva.es/exports/data_health.json)
+- Feed reutilizable: [`https://vlcproactiva.es/exports/latest_events.json`](https://vlcproactiva.es/exports/latest_events.json)
+- Repositorio público de candidatura: [`Huntsman1756/Valencia_Proactiva`](https://github.com/Huntsman1756/Valencia_Proactiva)
+
 ## 🎯 Idea
 Transformar el Portal de Datos Abiertos de Valencia de una herramienta **pasiva** (consultar datos) a una plataforma **proactiva** (la ciudad avisa y sugiere qué hacer). Cada interrupción urbana (obra, evento, corte de tráfico) desencadena un bucle:
 
@@ -17,6 +25,9 @@ VLC PROACTIVA no solo consume datos abiertos: publica outputs derivados que el j
 - [`exports/impact_zones.geojson`](./exports/impact_zones.geojson) — zonas de impacto calculadas con PostGIS.
 - [`exports/mitigation_actions.csv`](./exports/mitigation_actions.csv) — acciones recomendadas por evento y perfil.
 - [`exports/feedback_aggregated.csv`](./exports/feedback_aggregated.csv) — utilidad agregada del feedback ciudadano, sin `session_token`.
+- `exports/latest_events.json` — feed público de últimos eventos con permalink reutilizable.
+- `exports/data_health.json` — frescura y conteos por tabla para auditoría operativa.
+- `exports/events/<event_id>.html` — ficha estática por evento para prensa, jurado o reutilizadores.
 
 ## 🧱 Stack (definitivo — 2026-05-09)
 | Capa | Herramienta | Notas |
@@ -26,10 +37,10 @@ VLC PROACTIVA no solo consume datos abiertos: publica outputs derivados que el j
 | Scheduler | Cron (host) | Sin Celery ni Redis. Ver [`docs/DECISIONS.md#adr-002`](./docs/DECISIONS.md) |
 | Frontend | HTML + CSS + JS **vanilla** + MapLibre GL JS | Sin Next.js/Tailwind/Framer. Ver [`docs/DECISIONS.md#adr-003`](./docs/DECISIONS.md) |
 | Tiles | OpenFreeMap | Abierto y gratuito |
-| Reverse proxy | Nginx | Security headers + estático + proxy `/api` |
-| Tunnel | Cloudflare Tunnel | Único ingress, sin puertos abiertos en el VPS |
-| Red interna | Tailscale | Acceso administrativo |
-| VPS | Hetzner CX22 | Ubuntu 24.04 · ~4 €/mes |
+| Reverse proxy | Nginx + Let's Encrypt | HTTPS público, estático + proxy `/api` |
+| DNS | DonDominio | `vlcproactiva.es` y `www.vlcproactiva.es` |
+| Acceso admin | SSH key-only mediante alias local | IP, ID de proveedor y rutas administrativas fuera de git |
+| VPS | Hetzner CX23 | Ubuntu LTS · 2 vCPU · 4 GB RAM · 40 GB disco |
 
 ## Kit de replicabilidad
 
@@ -78,6 +89,14 @@ docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest
 4. Trazabilidad completa en [`docs/DATA_SOURCES.md`](./docs/DATA_SOURCES.md).
 5. Reproducible con un único `docker compose up`.
 
+## Publicación pública segura
+
+El repositorio público de candidatura es [`Huntsman1756/Valencia_Proactiva`](https://github.com/Huntsman1756/Valencia_Proactiva). Antes de usarlo como enlace final de concurso debe estar sincronizado con esta release local auditada y no debe incluir `.env`, claves, IP del VPS, ID de proveedor, datos administrativos de la solicitud ni documentación personal.
+
+Si el repositorio privado de trabajo ha contenido secretos en cualquier commit, **no debe hacerse público tal cual**. La publicación recomendada para AD.TR.15 es crear o mantener un repositorio público con historial limpio, copiando solo el estado auditado y publicable del proyecto. Cualquier secreto que haya estado en GitHub debe rotarse antes de publicar.
+
+Procedimiento detallado: [`docs/concurso/publicacion-repositorio-publico.md`](./docs/concurso/publicacion-repositorio-publico.md).
+
 ### Exports derivados reproducibles
 Tras ejecutar la ingesta, los datasets derivados se generan con:
 
@@ -89,6 +108,9 @@ Archivos publicados:
 - [`exports/impact_zones.geojson`](./exports/impact_zones.geojson) - zonas de impacto PostGIS.
 - [`exports/mitigation_actions.csv`](./exports/mitigation_actions.csv) - acciones sugeridas y enlaces oficiales.
 - [`exports/feedback_aggregated.csv`](./exports/feedback_aggregated.csv) - votos agregados sin `session_token`.
+- `exports/latest_events.json` - feed JSON plano para reutilización externa.
+- `exports/data_health.json` - estado de frescura y conteos de datos.
+- `exports/events/<event_id>.html` - permalink HTML estático por evento.
 
 Las cifras usadas en la memoria estan documentadas en [`docs/reports/memoria-figures.sql`](./docs/reports/memoria-figures.sql) y [`docs/reports/memoria-figures.json`](./docs/reports/memoria-figures.json).
 

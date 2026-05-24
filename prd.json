@@ -139,6 +139,51 @@
         "Fuentes, Metodologia e Info incluyen contexto de producto, datos derivados, lectura del mapa, limitaciones y FAQ.",
         "Smoke frontend valida overlapsTabs=false y presencia de guia/ayuda del mapa."
       ]
+    },
+    {
+      "id": "R-13",
+      "title": "Feed publico y permalinks tipo Avisos Madrid",
+      "status": "done",
+      "acceptance": [
+        "export_derived_data genera latest_events.json con fuente, geometria, centroide, accion disponible y permalink.",
+        "export_derived_data genera data_health.json con conteos/frescura por tabla.",
+        "export_derived_data genera exports/events/<event_id>.html como ficha estatica reutilizable.",
+        "Los tests verifican que feedback_aggregated no incluye session_token ni PII."
+      ]
+    },
+    {
+      "id": "R-14",
+      "title": "Preparacion de despliegue en CX23",
+      "status": "done",
+      "acceptance": [
+        "La documentacion sustituye CX22 por CX23 como servidor objetivo.",
+        "Existe infra/provision.sh para Ubuntu LTS con Nginx, Postgres/PostGIS, usuario vpro y hardening SSH basico.",
+        "Existen unidades systemd para API, ingesta y export publico.",
+        "Existe infra/deploy.md con pasos de rsync, instalacion, systemd y validacion."
+      ]
+    },
+    {
+      "id": "R-15",
+      "title": "Legibilidad tipografica de eventos y calles largas",
+      "status": "done",
+      "acceptance": [
+        "La escala tipografica de tarjetas y detalle usa tokens explicitos y pesos menos extremos.",
+        "Las calles largas se parten por palabras, no por caracteres sueltos.",
+        "La lista desktop mantiene ancho suficiente sin perder scroll operativo.",
+        "Smoke Playwright mobile/desktop pasa contra localhost:8080."
+      ]
+    },
+    {
+      "id": "R-16",
+      "title": "Primer despliegue VPS",
+      "status": "done",
+      "acceptance": [
+        "El VPS queda accesible por alias SSH local sin versionar IP ni datos de proveedor.",
+        "Nginx, PostgreSQL/PostGIS, usuario vpro, UFW y SSH key-only quedan provisionados.",
+        "API, frontend, ingesta systemd, export systemd y timers responden en produccion.",
+        "La ingesta y los exports publicos se validan con datos reales.",
+        "Quedan documentados como pendientes dominio, TLS/tunnel y securityheaders.com."
+      ]
     }
   ]
 }

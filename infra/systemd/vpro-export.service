@@ -1,0 +1,15 @@
+[Unit]
+Description=VLC PROACTIVA derived data export
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=oneshot
+User=vpro
+Group=vpro
+EnvironmentFile=/etc/vpro/env
+Environment=VPRO_EXPORT_DIR=/var/www/vpro/exports
+WorkingDirectory=/opt/vpro
+ExecStart=/opt/vpro/.venv/bin/python -m src.scripts.export_derived_data
+StandardOutput=append:/var/log/vpro/export.log
+StandardError=append:/var/log/vpro/export.log

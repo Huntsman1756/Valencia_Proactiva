@@ -4,9 +4,9 @@
 > Versión HTML generada al cierre de fase. Si divergen, el MD es la verdad.
 
 ## Estado global
-- **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y es idempotente en segundo run. Tests verdes (94/94), cobertura backend 70,31%, `ruff`, `mypy` y `pip-audit` verdes.
-- **Fase producto:** 3 · *Interfaz proactiva local* — ingesta end-to-end funcional contra BD real. Action Template Engine `T-20` genera acciones por perfil, feedback loop `/api/v1/feedback` persiste votos reales, Alternative Finder multimodal con 12 datasets POI, `official_notices` como capa de validación diferida para avisos oficiales EMT sin geometría y promoción conservadora opcional a `UrbanEvent` mediante gazetteer versionado con validación geográfica reproducible, CLI operativo y API admin de avisos oficiales, endpoint `/api/v1/spatial/alternatives` operativo, endpoint de capas espaciales para mapa, frontend vanilla `src/frontend` servido por Nginx en `localhost:8080`, dirección visual `Civic Utility` documentada, y configuración Nginx de producción preparada con security headers.
-- **Fase concurso AD.TR.15:** 0 · *Entregables* — 75% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados ✅; Golden Path activo cambiado a `ocupacio-via-publica`; Anexo II oficial, demo/vídeo y solicitud pendientes).
+- **Salud:** 🟢 Stable — Docker validado en entorno funcional, API arranca, `/health` responde 200, `run_ingest.py` ingesta datos reales y refresca ubicaciones legibles en reingesta idempotente. Tests verdes (103/103), `ruff`, `mypy`, `pip-audit` y smoke Playwright mobile/desktop verdes.
+- **Fase producto:** 3 · *Interfaz proactiva local* — ingesta end-to-end funcional contra BD real. Action Template Engine `T-20` genera acciones por perfil, feedback loop `/api/v1/feedback` persiste votos reales, Alternative Finder multimodal con 12 datasets POI, `official_notices` como capa de validación diferida para avisos oficiales EMT sin geometría y promoción conservadora opcional a `UrbanEvent` mediante gazetteer versionado con validación geográfica reproducible, CLI operativo y API admin de avisos oficiales, endpoint `/api/v1/spatial/alternatives` operativo, endpoint de capas espaciales para mapa, eventos con `location_label` humano en API/UI, frontend vanilla `src/frontend` servido por Nginx en `localhost:8080`, dirección visual `Civic Utility` documentada con reglas tipográficas para calles largas, exports públicos con feed/permalinks/salud de datos, y configuración Nginx/systemd de producción preparada para CX23.
+- **Fase concurso AD.TR.15:** 0 · *Entregables* — 85% (docs + licencia + ADRs + MEMORIA con cifras reales + exports derivados + producción HTTPS + checklist AD.TR.15 ✅; Golden Path activo cambiado a `ocupacio-via-publica`; falta sincronizar GitHub público con release local final, Anexo II oficial, demo/vídeo y solicitud).
 - **Branch activa:** `ralph/ingesta-fuentes-info`.
 - **Última release estable:** *ninguna*.
 - **Commits recientes:** *no auditados esta sesión*. El siguiente agente empieza con `git log --oneline -20`.
@@ -20,6 +20,35 @@
 - **Frontend:** tabs `Eventos/Fuentes/MetodologÃ­a/Info`, fuente y `source_id` visibles por tarjeta, filtros de alternativas por tipo POI, CAS/VAL a la derecha, smoke Playwright verde en `localhost:8080` y `localhost:3000`.
 - **Frontend rediseÃ±ado:** cabecera civica, carril izquierdo de perfiles/filtros, mapa central MapLibre, panel derecho de detalle/accion y hoja movil en flujo. Se aÃ±ade perfil `Comercial` al selector runtime y se mantiene smoke verde en mobile/desktop.
 - **VerificaciÃ³n:** `ruff`, `mypy`, `pytest -q` con cobertura (94 passed, 70,31%), `pip-audit`, `docker compose up -d --build`, `/health`, API admin `official_notices` y smoke frontend verdes.
+
+## Actualizacion 2026-05-17 · Ubicaciones legibles
+- **Cambio producto:** coordenadas visibles sustituidas por nombres de lugar en tarjetas, panel de detalle y snapshot. Ejemplos verificados en API local: `C/ BENETUSSER 14`, `C/ TORRES 2`, `C/ PABLO MELENDEZ 2`.
+- **Ajuste visual:** las alertas ya no muestran dos cajas verdes; la verificacion queda como texto de confianza y el chip de impacto conserva el foco visual.
+- **Ajuste visual:** la hoja inferior de detalle puede contraerse, evita el doble scroll, usa fondo flotante con blur y mejora la jerarquia de tarjeta activa y feedback movil.
+- **Memoria/concurso:** `docs/MEMORIA.md` queda alineada con la narrativa de interfaz (`Fuentes`, `Info`, validacion diferida, economia circular del dato y snapshots para medios). Se añade guia de publicacion publica segura: repo publico limpio, sin historial privado ni secretos.
+- **FAQ de primera visita:** `Info` pasa de 3 preguntas conceptuales a 9 preguntas practicas sobre lectura de tarjetas, perfiles, filtros, impacto, feedback y limites oficiales.
+- **Aviso local de novedades:** `Eventos cercanos` compara la ultima visita y el perfil activo en `localStorage` para mostrar incidencias nuevas sin telemetria de servidor.
+- **Backend/datos:** `UrbanEventResponse.location_label` sale de `extra_data.location_label`; la ingesta conserva `desc_calle` + `numero_policia_origen` y refresca duplicados existentes aunque no cambie la severidad.
+- **Ingesta real ejecutada:** `scraped=14220`, `normalized=14220`, `stored=0`, `refreshed_events=1006`, `skipped_duplicates=14220`, `errors=0` tras segunda pasada idempotente.
+- **Verificacion:** `ruff`, `mypy`, `pytest -q` (103 passed), `pip-audit`, `docker compose up -d --build`, `/health`, API local y smoke Playwright mobile/desktop verdes; capturas `docs/reports/frontend-mobile.png` y `docs/reports/frontend-desktop.png` regeneradas.
+
+## Actualizacion 2026-05-24 · Legibilidad tipografica
+- **Cambio frontend:** tarjetas de `Eventos cercanos` y panel de detalle usan tokens tipograficos explicitos, pesos menos extremos y cortes de calles por palabras para evitar que direcciones largas se lean letra a letra.
+- **Referencia externa:** `nexu-io/open-design` se usa como criterio de proceso (direccion, tokens y anti-patrones), no como sistema visual copiado.
+- **Verificacion:** `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs` y smoke Playwright mobile/desktop contra `localhost:8080` verdes; captura limpia en `docs/reports/frontend-desktop-typography-check.png`.
+
+## Actualizacion 2026-05-24 · Primer despliegue VPS
+- **Produccion:** servidor CX23 provisionado mediante alias SSH local `vpro-prod`, sin versionar IP, ID de proveedor ni IPv6. Nginx, PostgreSQL/PostGIS, usuario `vpro`, UFW, unattended-upgrades, API systemd, ingesta y export quedan instalados.
+- **Runtime:** dependencias instaladas con `uv` y Python 3.12 local bajo `/opt/vpro/.python` para evitar incompatibilidades del Python del sistema con ruedas geoespaciales.
+- **Datos reales en VPS:** ingesta produccion ejecutada con `scraped=14240`, `normalized=14240`, `stored_events=669`, `stored_pois=13159`, `refreshed_events=357`, `errors=0`; export publico generado con `impact_zones=672`, `mitigation_actions=950`, `latest_events=100`, `event_pages=100` y `data_health=6`.
+- **Servicios:** `vpro-api.service` y `nginx` activos; `vpro-ingest.timer` y `vpro-export.timer` activos cada 30 minutos; `/health`, `/exports/data_health.json` y frontend responden 200 desde red publica.
+- **Seguridad HTTP:** `server_tokens off` aplicado en Nginx global del VPS; cabeceras CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, COOP y CORP verificadas con `curl -I`.
+
+## Actualizacion 2026-05-24 · Candidatura y repo publico
+- **Checklist AD.TR.15:** `docs/concurso/checklist-candidatura-adtr15.md` resume requisitos formales, criterios de valoración, evidencias de producción y pendientes administrativos.
+- **Demo/repo:** `README.md` y `docs/MEMORIA.md` enlazan `https://vlcproactiva.es`, salud API, salud de datos, feed público y `https://github.com/Huntsman1756/Valencia_Proactiva`.
+- **Auditoria repo publico:** GitHub confirma el repo como público. La rama por defecto `main` sigue en un commit inicial; la rama pública `ralph/ingesta-fuentes-info` está más avanzada, pero la solicitud final debe enlazar una rama por defecto o release/tag sincronizada con la release local auditada.
+- **Privacidad/publicacion:** documentación actualizada para excluir `.env`, claves, IP/ID del VPS, certificados, documentos administrativos, datos personales y artefactos internos innecesarios del repositorio público.
 
 ## Resumen ejecutivo
 Proyecto V-PRO, candidato al premio AD.TR.15 categoría Datos Abiertos. **Plataforma de movilidad proactiva** con 5 perfiles de usuario (Genérico, Comercial, PMR, Ciclista, Transporte público) y feedback loop ciudadano, basada en datasets reales del portal municipal (verificados 2026-05-09).
@@ -77,8 +106,8 @@ Arquitectura firmada en 4 ADRs:
 No hay bloqueantes activos para la demo local. Docker, ingesta, API, frontend, smoke Playwright, `ruff`, `mypy`, `pytest`, `pip-audit`, rebuild Docker y `/health` están verificados el 2026-05-10.
 
 ## Próximas acciones
-1. **Producción/VPS:** cerrar T-23, T-27 y T-28 si el VPS ya está disponible. T-24 está preparado y solo falta validación pública con dominio.
-2. **Concurso:** preparar Anexo II oficial, vídeo demo 90 s, revisión final de lenguaje y solicitud AD.TR.15.
+1. **Producción/VPS:** release HTTPS en `vlcproactiva.es` ejecutada mediante alias SSH local. Queda pendiente validacion externa con securityheaders.com. La IP y datos de proveedor quedan fuera de git.
+2. **Concurso:** sincronizar GitHub público con la release local auditada, preparar Anexo II oficial, vídeo demo 90 s, revisión final de lenguaje y solicitud AD.TR.15.
 3. **Producto post-MVP:** T-120 Valhalla para rutas que eviten `impact_zones`; T-121 Modo Alerta solo cuando existan fuentes oficiales verificadas.
 4. **Higiene opcional:** T-33 pre-commit y T-34b deduplicación de cargadores VE.
 
@@ -98,19 +127,20 @@ Ver [`TODO.md`](./TODO.md) para la lista completa y [`NEXT_STEPS.md`](../NEXT_ST
 | Frontend local | ✅ `http://localhost:3000`/`8080` muestra 6 tarjetas reales, mapa con leyenda ampliada y popups clicables, CAS/VAL runtime, selector de idioma alineado a la derecha, nota AD.TR.15 + GitHub, nav incrustada `Eventos/Fuentes/Metodología/Info`, tráfico solo con incidencia relevante y feedback persistido; capturas en `docs/reports/frontend-mobile.png`, `docs/reports/frontend-desktop.png` y `docs/reports/frontend-polish-current.png` |
 | Frontend civic utility | ✅ Rediseño map-first con cabecera institucional, perfiles/filtros en carril izquierdo, MapLibre central, detalle seleccionado a la derecha, hoja móvil en flujo y perfil Comercial; smoke Playwright mobile/desktop verde |
 | Lighthouse mobile | ✅ Performance 93, Accessibility 100, Best Practices 100 (`docs/reports/lighthouse-mobile.json`) |
-| Nginx producción | 🟡 `config/nginx/prod.conf` + `security-headers.conf` validados con `nginx -t` y `curl -I` local; falta dominio público + securityheaders.com tras T-23 |
-| Deploy | pendiente de T-23/T-27/T-28 sobre VPS disponible |
+| Nginx producción | 🟢 `https://vlcproactiva.es` validado con Let's Encrypt, redireccion HTTP→HTTPS, `server_tokens off`, frontend 200 y cabeceras de seguridad por `curl -I`; falta securityheaders.com |
+| Exports públicos | 🟢 `export_derived_data.py` genera `impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`, `latest_events.json`, `data_health.json` y `events/<id>.html` |
+| Deploy | 🟢 release VPS HTTPS ejecutada por alias SSH local; API, frontend, ingesta, export y timers activos |
 
 ## Última actualización
-- **Fecha:** 2026-05-11 (R-20 pulso urbano y auditoria civica)
+- **Fecha:** 2026-05-24 (checklist candidatura AD.TR.15 y auditoria de repo publico)
 - **Autor:** Codex
 - **Entorno de la sesión ejecutora:** Opencode CLI + Qwen 3.6 sobre Windows — ver `docs/RULES-FOR-AGENTS.md § 10`.
-- **Siguiente revisión prevista:** preparación de VPS/producción si se confirma dominio, SSH y sistema operativo del servidor.
+- **Siguiente revisión prevista:** validar securityheaders.com sobre `https://vlcproactiva.es` y cerrar ajuste final de cabeceras si aparece alguna recomendacion.
 - **Nota de fuentes:** las bases permiten mantener el nucleo en el Portal de Datos Abiertos y usar fuentes oficiales complementarias trazables para eventos vivos si se documentan como `official_feed`/`official_public_info` y no sustituyen los datasets abiertos municipales.
 - **T-21:** Alternative Finder multimodal cerrado: parkings, ORA, no regulados, motos, bicis, PMR, cargadores VE, EMT, FGV estaciones/bocas, Valenbisi e itinerarios ciclistas como `PointOfInterest`. `verify_datasets` confirma 14/14 capas CKAN/ArcGIS.
 - **T-37/T-38/T-39/T-46/T-47/T-48/T-49/T-50/T-51:** inventario preliminar de fuentes oficiales complementarias añadido en `docs/DATA_SOURCES.md § 2.4`; `src/scripts/verify_official_sources.py` verifica endpoints y deja reporte en `docs/reports/official-sources-check.json`. EMT `estado-servicio` ya tiene parser, `OfficialNotice` como avisos en proceso de geolocalización, promoción conservadora opcional a `UrbanEvent`, tests anti-duplicado, gazetteer versionado, reporte reproducible contra `EJES_CALLE.json`, CLI operativo y API admin `GET /api/v1/official-notices`.
 
-- **T-26:** export derivados cerrado con src/scripts/export_derived_data.py y archivos versionados exports/impact_zones.geojson (663 zonas), exports/mitigation_actions.csv (506 acciones) y exports/feedback_aggregated.csv (agregado anonimo).
+- **T-26:** export derivados ampliado con src/scripts/export_derived_data.py: `impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`, `latest_events.json`, `data_health.json` y permalinks `events/<event_id>.html`.
 - **T-29:** cifras reproducibles de memoria cerradas: 253 ocupaciones, 410 tramos de trafico, 2.161 plazas/registros PMR, ZBE 27,44 km2 y 20,38% del termino municipal. Query y resultado en docs/reports/memoria-figures.*.
 - **T-20c:** catalogo de 12 URLs oficiales municipales cerrado en docs/concurso/tramites-referenciados.md; 6 URLs enlazadas desde plantillas YAML.
 - **T-25/T-112:** QA formal cerrado con cobertura 70,31%, 94 tests y rate-limit 429 real.

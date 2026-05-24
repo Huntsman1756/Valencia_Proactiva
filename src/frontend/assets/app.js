@@ -45,6 +45,12 @@ const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.
 const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
 const INITIAL_PROFILE = localStorage.getItem("vpro_profile") || "PMR";
 const INITIAL_VEHICLE_BADGE = localStorage.getItem("vpro_vehicle_badge") || "UNKNOWN";
+const LOCAL_VISIT_KEYS = {
+  lastSeenAt: "vpro_last_seen_at",
+  lastSeenProfile: "vpro_last_seen_profile",
+};
+const INITIAL_LAST_SEEN_AT = localStorage.getItem(LOCAL_VISIT_KEYS.lastSeenAt);
+const INITIAL_LAST_SEEN_PROFILE = localStorage.getItem(LOCAL_VISIT_KEYS.lastSeenProfile) || INITIAL_PROFILE;
 
 const state = {
   profile: INITIAL_PROFILE,
@@ -67,10 +73,16 @@ const state = {
   selectedCardIndex: 0,
   dashboardLoadTimer: null,
   dashboardRequestId: 0,
+  localDelta: {
+    previousAt: INITIAL_LAST_SEEN_AT,
+    previousProfile: INITIAL_LAST_SEEN_PROFILE,
+    notice: null,
+  },
 };
 
 const eventList = document.querySelector("#eventList");
 const eventsPanel = document.querySelector("#events");
+let localDeltaNotice = document.querySelector("#localDeltaNotice");
 const statusText = document.querySelector("#statusText");
 const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
@@ -82,6 +94,7 @@ const sourcesPanel = document.querySelector("#sourcesPanel");
 const methodologyPanel = document.querySelector("#methodologyPanel");
 const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
 const detailRail = document.querySelector(".detail-rail");
+const detailPanelToggle = document.querySelector("#detailPanelToggle");
 const selectedEventPanel = document.querySelector("#selectedEventPanel");
 const profileImpact = document.querySelector("#profileImpact");
 const panelBackdrop = document.querySelector("#panelBackdrop");
@@ -101,6 +114,7 @@ async function init() {
   setupLanguageSelector();
   setupViews();
   setupEventPanelToggle();
+  setupDetailPanelToggle();
   setupQuickFilters();
   setupZbeChecker();
   setupPoiFilters();
@@ -140,6 +154,7 @@ function applyTranslations() {
     option.textContent = t(option.dataset.i18n);
   });
   updateEventPanelToggleText();
+  updateDetailPanelToggleText();
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   updateThemeButton();
   updateAlertModeButton();
@@ -204,6 +219,7 @@ function setupProfiles() {
       localStorage.setItem("vpro_profile", state.profile);
       state.poiTypeFilter = PROFILE_DEFAULT_POI[state.profile] || "ALL";
       localStorage.setItem("vpro_poi_type", state.poiTypeFilter);
+      state.localDelta.notice = null;
       document.querySelectorAll("[data-profile]").forEach((item) => {
         item.setAttribute("aria-pressed", String(item === button));
       });
@@ -344,6 +360,28 @@ function updateEventPanelToggleText() {
   eventPanelToggle.textContent = eventsPanel?.classList.contains("is-collapsed")
     ? t("expandEvents")
     : t("collapseEvents");
+}
+
+function setupDetailPanelToggle() {
+  detailPanelToggle?.addEventListener("click", () => {
+    const collapsed = detailRail?.classList.toggle("is-collapsed") || false;
+    detailPanelToggle.setAttribute("aria-expanded", String(!collapsed));
+    updateDetailPanelToggleText();
+  });
+  updateDetailPanelToggleText();
+}
+
+function updateDetailPanelToggleText() {
+  if (!detailPanelToggle) {
+    return;
+  }
+  const collapsed = detailRail?.classList.contains("is-collapsed");
+  const key = collapsed ? "expandDetail" : "collapseDetail";
+  const fallback = state.language === "val"
+    ? (collapsed ? "Veure detall" : "Contraure detall")
+    : (collapsed ? "Ver detalle" : "Contraer detalle");
+  const label = t(key);
+  detailPanelToggle.textContent = label === key ? fallback : label;
 }
 
 function setupQuickFilters() {
@@ -533,6 +571,7 @@ async function loadDashboard() {
     renderInfoPanels();
     updateMap(filteredCards());
     statusText.textContent = formatMessage("activeEvents", { count: filteredCards().length });
+    persistLocalVisitBaseline();
   } catch (error) {
     if (requestId !== state.dashboardRequestId) {
       return;
@@ -601,6 +640,7 @@ function isEventActive(event) {
 function renderCards(cards) {
   state.visibleCards = cards;
   eventList.innerHTML = "";
+  updateLocalDeltaNotice(cards);
   renderMapEventTray(cards);
   if (cards.length === 0) {
     renderSelectedEvent(null);
@@ -609,6 +649,73 @@ function renderCards(cards) {
   }
   cards.forEach((card, index) => eventList.appendChild(createEventCard(card, index)));
   selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
+}
+
+function updateLocalDeltaNotice(cards = state.visibleCards) {
+  const noticeElement = ensureLocalDeltaNotice();
+  if (!noticeElement) {
+    return;
+  }
+  if (!state.localDelta.notice) {
+    state.localDelta.notice = computeLocalDeltaNotice(cards);
+  }
+  if (!state.localDelta.notice) {
+    noticeElement.hidden = true;
+    noticeElement.textContent = "";
+    return;
+  }
+  const { count, profile } = state.localDelta.notice;
+  const noticeText = formatMessage("localDeltaNoticeText", {
+    count,
+    profile: profileLabel(profile),
+  });
+  noticeElement.hidden = false;
+  noticeElement.innerHTML = `
+    <strong>${escapeHtml(t("localDeltaNoticeTitle"))}</strong>
+    <span>${escapeHtml(noticeText)}</span>
+  `;
+}
+
+function ensureLocalDeltaNotice() {
+  if (localDeltaNotice || !eventList?.parentNode) {
+    return localDeltaNotice;
+  }
+  localDeltaNotice = document.createElement("div");
+  localDeltaNotice.id = "localDeltaNotice";
+  localDeltaNotice.className = "local-delta-notice";
+  localDeltaNotice.setAttribute("role", "status");
+  localDeltaNotice.setAttribute("aria-live", "polite");
+  eventList.before(localDeltaNotice);
+  return localDeltaNotice;
+}
+
+function computeLocalDeltaNotice(cards) {
+  const previousAt = Date.parse(state.localDelta.previousAt || "");
+  if (!Number.isFinite(previousAt) || state.localDelta.previousProfile !== state.profile) {
+    return null;
+  }
+  const count = cards.filter((card) => eventTimestamp(card.event) > previousAt).length;
+  if (count <= 0) {
+    return null;
+  }
+  return { count, profile: state.profile };
+}
+
+function eventTimestamp(event) {
+  const candidates = [event?.updated_at, event?.created_at, event?.start_time, event?.end_time];
+  for (const value of candidates) {
+    const timestamp = Date.parse(value || "");
+    if (Number.isFinite(timestamp)) {
+      return timestamp;
+    }
+  }
+  return 0;
+}
+
+function persistLocalVisitBaseline() {
+  const now = new Date().toISOString();
+  localStorage.setItem(LOCAL_VISIT_KEYS.lastSeenAt, now);
+  localStorage.setItem(LOCAL_VISIT_KEYS.lastSeenProfile, state.profile);
 }
 
 function renderLoadingSkeleton() {
@@ -688,11 +795,14 @@ function createEventCard(card, index) {
   const alternativeSource = alternative
     ? formatMessage("alternativeSourceLine", { source: labelForSource(alternative.source) })
     : "";
+  const eventLocation = formatEventLocation(event);
+  const showSeparateLocation = !isSameStreetLabel(event.title, eventLocation);
+  const cardTitle = showSeparateLocation ? event.title : eventLocation;
 
   article.innerHTML = `
     <div class="source-strip">
       <span>${escapeHtml(sourceText)}</span>
-      <span class="veracity-badge">${escapeHtml(veracityText)}</span>
+      <span class="event-trust-line">${escapeHtml(veracityText)}</span>
       <span>${escapeHtml(event.source_id || "")}</span>
     </div>
     <div class="event-header">
@@ -701,10 +811,11 @@ function createEventCard(card, index) {
           <span>${labelForType(event.type)}</span>
           <span class="severity-badge">${escapeHtml(impact.label)}</span>
         </div>
-        <h3>${escapeHtml(event.title)}</h3>
+        <h3>${escapeHtml(cardTitle)}</h3>
       </div>
       <span class="event-distance">${distance}</span>
     </div>
+    ${showSeparateLocation ? `<p class="event-location">${escapeHtml(eventLocation)}</p>` : ""}
     <p class="event-description">${escapeHtml(trimText(event.description, 104))}</p>
     <div class="key-data">
       <span class="key-data-icon" aria-hidden="true">ALT</span>
@@ -785,6 +896,7 @@ function renderSelectedEvent(card) {
   const severityClass = event.severity >= 4 ? " is-high" : "";
   const veracityText = veracityLabel(event);
   const temporalText = temporalImpactText(event);
+  const eventLocation = formatEventLocation(event);
 
   selectedEventPanel.innerHTML = `
     <div class="detail-meta">
@@ -796,7 +908,7 @@ function renderSelectedEvent(card) {
     <dl class="detail-list">
       <div>
         <dt>${t("locationLabel")}</dt>
-        <dd>${escapeHtml(formatCoordinates(event.center))}</dd>
+        <dd>${escapeHtml(eventLocation)}</dd>
       </div>
       <div>
         <dt>${t("affectedAreaLabel")}</dt>
@@ -1111,21 +1223,10 @@ function renderInfoPanels() {
         <li>${t("limitation3")}</li>
       </ul>
     </details>
-    <details class="info-accordion">
+    <details class="info-accordion" open>
       <summary>${t("faqTitle")}</summary>
       <div class="faq-list">
-        <article class="faq-item">
-          <strong>${t("faqQ1")}</strong>
-          <p>${t("faqA1")}</p>
-        </article>
-        <article class="faq-item">
-          <strong>${t("faqQ2")}</strong>
-          <p>${t("faqA2")}</p>
-        </article>
-        <article class="faq-item">
-          <strong>${t("faqQ3")}</strong>
-          <p>${t("faqA3")}</p>
-        </article>
+        ${renderFaqItems()}
       </div>
     </details>
     <div class="info-links">
@@ -1133,6 +1234,18 @@ function renderInfoPanels() {
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
     </div>
   `;
+}
+
+function renderFaqItems() {
+  return Array.from({ length: 9 }, (_, index) => {
+    const number = index + 1;
+    return `
+      <article class="faq-item">
+        <strong>${t(`faqQ${number}`)}</strong>
+        <p>${t(`faqA${number}`)}</p>
+      </article>
+    `;
+  }).join("");
 }
 
 function updateMap(cards) {
@@ -1507,6 +1620,7 @@ function buildSnapshotPayload(card) {
       impact: impact.label,
       source: labelForSource(event.source),
       source_id: event.source_id || null,
+      location: formatEventLocation(event),
       updated: event.updated_at || event.created_at || null,
       center: event.center || null,
     },
@@ -1778,11 +1892,26 @@ function formatUpdated(value) {
   }).format(date);
 }
 
-function formatCoordinates(center) {
-  if (!Array.isArray(center) || center.length !== 2) {
-    return t("unknownLocation");
+function formatEventLocation(event) {
+  const label = event?.location_label || event?.extra_data?.location_label;
+  if (typeof label === "string" && label.trim()) {
+    return label.trim();
   }
-  return `${center[1].toFixed(5)}, ${center[0].toFixed(5)}`;
+  return t("unknownLocation");
+}
+
+function isSameStreetLabel(title, location) {
+  const normalizedTitle = normalizePlaceForComparison(title);
+  const normalizedLocation = normalizePlaceForComparison(location).replace(/\s+\d+[a-z]?$/i, "");
+  return Boolean(normalizedTitle && normalizedTitle === normalizedLocation);
+}
+
+function normalizePlaceForComparison(value) {
+  return cleanTitle(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,]/g, "")
+    .toLowerCase();
 }
 
 function languageFromNavigator() {

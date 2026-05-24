@@ -65,3 +65,34 @@ R-10/T-36 cerrado.
 - Eventos incluye texto de lectura de tarjetas; mapa incluye ayuda visible de capas y clicks.
 - Fuentes, Metodologia e Info ampliadas con datos derivados, lectura de mapa, limitaciones y FAQ.
 - Smoke mobile/desktop valida overlapsTabs=false, guia de producto, ayuda de mapa, leyenda y popup.
+2026-05-24 12:40 - Inicio tirada Ralph feed publico + CX23.
+Objetivo: incorporar aprendizajes de Avisos Madrid sin copiar su stack: feed JSON, permalinks por evento, salud de datos y preparacion de despliegue para el VPS confirmado.
+R-13 cerrado.
+- export_derived_data.py genera latest_events.json, data_health.json y events/<event_id>.html.
+- Los permalinks se basan en VPRO_PUBLIC_BASE_URL cuando exista; en local quedan relativos.
+- Test focal actualizado: cubre feed, pagina HTML, data_health y que feedback_aggregated no exporta session_token.
+R-14 cerrado parcialmente a nivel repo.
+- Servidor objetivo fijado fuera de git mediante alias SSH local; recursos esperados: 2 vCPU / 4 GB RAM / 40 GB.
+- infra/provision.sh creado para Ubuntu LTS con Postgres/PostGIS, Nginx, usuario vpro, unattended-upgrades y SSH sin password.
+- infra/systemd incluye vpro-api, vpro-ingest y vpro-export; vpro-export escribe en /var/www/vpro/exports.
+- infra/deploy.md documenta rsync, venv, Nginx, systemd y checks. Pendiente: ejecutar en VPS real y validar dominio/tunnel.
+Verificacion cierre R-13/R-14:
+- ruff src tests OK; mypy src OK; pytest -q -> 103 passed; pip-audit OK.
+- docker compose up -d --build OK; /health -> healthy.
+- export real Docker: impact_zones=976, mitigation_actions=764, feedback_aggregated=5, latest_events=100, event_pages=100, data_health=6.
+- bash -n infra/provision.sh OK.
+2026-05-24 14:15 - R-15 cerrado.
+- Referencia revisada: nexu-io/open-design aporta el patron de direccion/tokens antes de iterar; se aplica como disciplina de sistema tipografico, no como marca visual.
+- Frontend: app.css define tokens de tipografia UI, reduce pesos extremos en tarjetas/detalle y cambia cortes de calle de `anywhere` a `break-word` con `word-break: normal`.
+- Layout: `Eventos cercanos` gana algo de ancho en desktop y conserva scroll vertical operativo para calles largas y listas compactas.
+- Verificacion: node --check app.js OK, node --check smoke.mjs OK, smoke Playwright mobile/desktop contra localhost:8080 OK y captura limpia generada en docs/reports/frontend-desktop-typography-check.png.
+2026-05-24 14:45 - R-16 primer despliegue VPS cerrado.
+- Acceso: SSH operativo mediante alias local `vpro-prod`; la IP y datos de proveedor no se versionan.
+- Provisionado: Nginx, PostgreSQL/PostGIS, usuario `vpro`, UFW, unattended-upgrades y SSH key-only activos.
+- Runtime: Python 3.12 instalado con uv bajo /opt/vpro/.python; dependencias instaladas en /opt/vpro/.venv.
+- Servicios: vpro-api.service activo; vpro-ingest.timer y vpro-export.timer activos cada 30 min.
+- Datos produccion: ingesta scraped=14240, normalized=14240, stored_events=669, stored_pois=13159, refreshed_events=357, errors=0.
+- Export produccion: impact_zones=672, mitigation_actions=950, latest_events=100, event_pages=100, data_health=6.
+- Verificacion: /health OK, frontend HTTP 200, /exports/data_health.json OK, headers Nginx con server_tokens off.
+- Dominio/HTTPS: `vlcproactiva.es` y `www.vlcproactiva.es` propagados; Let's Encrypt activo, HTTP redirige a HTTPS y exports regenerados con permalinks finales.
+- Pendiente post-R-16: validacion externa securityheaders.com sobre URL HTTPS estable.

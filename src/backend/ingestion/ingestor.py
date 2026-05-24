@@ -311,21 +311,36 @@ class Ingestor:
             return 0
 
         next_severity = int(item.get("severity", event.severity or 1))
-        if next_severity <= int(event.severity or 1):
+        current_severity = int(event.severity or 1)
+        next_extra_data = item.get("extra_data", event.extra_data or {})
+        next_title = item.get("title")
+        next_title_clean = next_title.strip() if isinstance(next_title, str) else None
+        should_refresh_severity = next_severity > current_severity
+        should_refresh_extra_data = next_extra_data != (event.extra_data or {})
+        should_refresh_title = (
+            next_title_clean is not None
+            and next_title_clean
+            and (not event.title or event.title.casefold() == "sin titulo")
+        )
+        if not should_refresh_severity and not should_refresh_extra_data and not should_refresh_title:
             return 0
 
         try:
-            import shapely.geometry
+            if should_refresh_severity:
+                import shapely.geometry
 
-            geom = shapely.geometry.shape(item["geometry"])
-            event.severity = next_severity
-            event.extra_data = item.get("extra_data", event.extra_data or {})
-            self._create_impact_zone(session, event, geom)
-            logger.info(
-                "Refreshed event %s severity to %s",
-                source_id,
-                next_severity,
-            )
+                geom = shapely.geometry.shape(item["geometry"])
+                event.severity = next_severity
+                self._create_impact_zone(session, event, geom)
+                logger.info(
+                    "Refreshed event %s severity to %s",
+                    source_id,
+                    next_severity,
+                )
+            if should_refresh_extra_data:
+                event.extra_data = next_extra_data
+            if should_refresh_title:
+                event.title = next_title_clean
             return 1
         except Exception as e:
             logger.error("Error refreshing event %s: %s", source_id, e)

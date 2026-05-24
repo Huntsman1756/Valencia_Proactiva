@@ -489,8 +489,8 @@ En prod, Nginx sirve `/var/www/vpro/` estático y proxifica `/api/` al backend (
 ## Fase E — Despliegue en producción (Fase 4 producto)
 
 ### E.1 — Provisionar VPS · **T-23** · DevOps
-Hetzner CX22 Ubuntu 24.04. `infra/provision.sh` idempotente:
-1. `apt update && apt full-upgrade -y && apt install -y unattended-upgrades postgresql-15-postgis-3 nginx python3.11 python3.11-venv cloudflared`
+Hetzner CX23 Ubuntu LTS. `infra/provision.sh` idempotente:
+1. `apt update && apt full-upgrade -y && apt install -y unattended-upgrades postgresql-postgis postgresql-postgis-scripts nginx python3 python3-venv`
 2. `systemctl enable --now unattended-upgrades`
 3. Crear usuario `vpro` no-root con SSH key.
 4. `PermitRootLogin no`, `PasswordAuthentication no` en `sshd_config`.

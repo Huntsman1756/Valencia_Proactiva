@@ -209,6 +209,39 @@ class TestArcGiSCRaper:
         assert item["title"] == "Aparcamiento PMR"
         assert item["extra_data"]["accessible"] is True
 
+    def test_build_item_keeps_human_location_label_from_address_fields(self):
+        item = ArcGiSCRaper()._build_item(
+            {"id_incidencia": 240227702, "direccion": "Carrer de Colon 12"},
+            {"type": "Point", "coordinates": [-0.3763, 39.4699]},
+            {
+                "dataset_key": "ocupacio_via_publica",
+                "event_type": "OCUPACION",
+                "default_title": "Ocupacion via publica",
+            },
+        )
+
+        assert item is not None
+        assert item["extra_data"]["location_label"] == "Carrer de Colon 12"
+
+    def test_build_item_uses_real_open_data_street_fields_as_location_label(self):
+        item = ArcGiSCRaper()._build_item(
+            {
+                "id_incidencia": 260151002,
+                "desc_calle": "C/ BILBAO",
+                "numero_policia_origen": "2",
+            },
+            {"type": "Point", "coordinates": [-0.3763, 39.4699]},
+            {
+                "dataset_key": "ocupacio_via_publica",
+                "event_type": "OCUPACION",
+                "default_title": "Ocupacion via publica",
+            },
+        )
+
+        assert item is not None
+        assert item["title"] == "C/ BILBAO"
+        assert item["extra_data"]["location_label"] == "C/ BILBAO 2"
+
     def test_multimodal_datasets_are_registered_as_pois(self):
         expected = {
             "parkings": "PARKING",
@@ -276,6 +309,50 @@ class TestArcGiSCRaper:
 
 
 class TestIngestorRecordRouting:
+    def test_refresh_existing_event_updates_location_label_even_when_severity_is_unchanged(self, monkeypatch):
+        event = type(
+            "Event",
+            (),
+            {
+                "source_id": "ocupacio_via_publica:1",
+                "title": "Sin titulo",
+                "severity": 3,
+                "extra_data": {},
+            },
+        )()
+
+        class FakeQuery:
+            def filter(self, *_args):
+                return self
+
+            def one_or_none(self):
+                return event
+
+        class FakeSession:
+            def query(self, _model):
+                return FakeQuery()
+
+            def rollback(self):
+                raise AssertionError("rollback should not be called")
+
+        ingestor = Ingestor()
+        monkeypatch.setattr(ingestor, "_create_impact_zone", lambda *_args: None)
+
+        refreshed = ingestor._refresh_existing_event(
+            FakeSession(),
+            {
+                "source_id": "ocupacio_via_publica:1",
+                "title": "C/ BILBAO",
+                "severity": 3,
+                "geometry": {"type": "Point", "coordinates": [-0.3763, 39.4699]},
+                "extra_data": {"location_label": "Carrer de Colon 12"},
+            },
+        )
+
+        assert refreshed == 1
+        assert event.title == "C/ BILBAO"
+        assert event.extra_data["location_label"] == "Carrer de Colon 12"
+
     def test_store_records_merges_event_and_poi_results(self, monkeypatch):
         ingestor = Ingestor()
 

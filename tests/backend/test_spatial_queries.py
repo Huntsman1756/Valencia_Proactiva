@@ -2,6 +2,7 @@ from api.spatial import (
     _build_alternatives_query,
     _build_events_layer_query,
     _build_impact_zones_query,
+    _location_label_from_extra_data,
     _profile_requires_accessible,
 )
 
@@ -11,6 +12,11 @@ def test_profile_requires_accessible_only_for_pmr():
     assert _profile_requires_accessible("pmr") is True
     assert _profile_requires_accessible("CYCLIST") is False
     assert _profile_requires_accessible(None) is False
+
+
+def test_location_label_from_extra_data_prefers_human_place_fields():
+    assert _location_label_from_extra_data({"direccion": "Carrer de Colon"}) == "Carrer de Colon"
+    assert _location_label_from_extra_data({}) is None
 
 
 def test_alternatives_query_filters_accessibility_type_and_event_zone():

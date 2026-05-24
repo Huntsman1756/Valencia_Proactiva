@@ -3,18 +3,24 @@
 > **Borrador de la Memoria Resumen del proyecto (Anexo II)** para la convocatoria AD.TR.15 — Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026, categoría **Datos Abiertos**.
 > Este documento es un borrador de trabajo. El formato final debe ajustarse al modelo Anexo II oficial publicado en la Sede Electrónica.
 > Redactado en castellano. Uso de lenguaje inclusivo y no sexista.
-> Última revisión: 2026-05-09 (pivote tras verificación del portal real).
+> Última revisión: 2026-05-24 (producción HTTPS en `https://vlcproactiva.es`, exports públicos, auditoría de repositorio público y checklist AD.TR.15).
 
 ## 1. Identificación del proyecto
 - **Título:** VLC PROACTIVA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
 - **Categoría a la que concurre:** Datos Abiertos. La reutilización periodística se plantea como salida abierta para terceros, no como candidatura paralela del mismo equipo (ver § 12).
 - **Ámbito territorial:** Municipio de València.
 - **Tipo de entregable:** Plataforma web reutilizable (API + frontend) con código abierto (MIT) y datos derivados bajo licencia CC-BY 4.0.
+- **Demo pública:** `https://vlcproactiva.es`.
+- **Repositorio público:** `https://github.com/Huntsman1756/Valencia_Proactiva` (pendiente de sincronizar con la release local final antes de presentar).
 
 ## 2. Resumen ejecutivo
-**Cuando el tráfico se corta, una ocupación de vía pública afecta a tu calle o la Zona de Bajas Emisiones restringe tu vehículo, VLC PROACTIVA te muestra una alternativa viable adaptada a tu perfil: general, comercio, movilidad reducida, bicicleta o transporte público. V-PRO no solo consume datos abiertos, produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
+**VLC PROACTIVA no es un mapa: es una capa de decisión pública construida sobre datos abiertos municipales. Cuando el tráfico se corta, una ocupación de vía pública afecta a una calle o la Zona de Bajas Emisiones condiciona un desplazamiento, la plataforma muestra qué ocurre, dónde ocurre, qué impacto tiene y qué alternativa puede usar cada perfil: general, comercio, movilidad reducida, bicicleta o transporte público. V-PRO no solo consume datos abiertos: produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
 
-VLC PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere datasets reales del portal municipal (ocupación de vía pública, estado del tráfico, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, puntos de destino multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes. Todo el código es MIT y los datos derivados CC-BY 4.0, cerrando una economía circular del dato: la ciudad publica información, V-PRO la convierte en servicio y devuelve conocimiento procesado, auditable y reutilizable.
+VLC PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable sobre todo por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere datasets reales del portal municipal (ocupación de vía pública, estado del tráfico, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, puntos de destino multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes.
+
+La interfaz ya materializa esa tesis. La pantalla principal prioriza la lista de eventos y el detalle operativo: nombres de calle legibles en lugar de coordenadas, alternativa recomendada, aviso local de novedades desde la última visita y feedback ciudadano. La pestaña `Fuentes` funciona como auditoría cívica del portal: etiquetas técnicas breves (`DAT`, `TRF`, `ZBE`, `PMR`) y un semáforo de calidad distinguen fuentes operativas, fuentes sin incidencia relevante y avisos en validación diferida. La pestaña `Info` resume el pulso urbano con métricas agregadas (calles potencialmente afectadas, zonas alteradas y trazabilidad del dato) e incorpora un FAQ de primera visita para explicar cómo leer una tarjeta, elegir perfil, cambiar filtros e interpretar el impacto. Así una persona técnica, un medio local, una vecina o un jurado pueden entender el valor público en segundos.
+
+Todo el código publicable se libera bajo MIT y los datos derivados bajo CC-BY 4.0, cerrando una economía circular del dato: la ciudad publica información, V-PRO la convierte en servicio y devuelve conocimiento procesado, auditable y reutilizable.
 
 La hoja de ruta incorpora además una dimensión de seguridad urbana y perspectiva de género: futuras rutas iluminadas solo se activarán cuando exista una fuente oficial de alumbrado y una metodología que evite falsas garantías.
 
@@ -62,6 +68,16 @@ Scraper → Normalizer → Ingestor
   Frontend vanilla + MapLibre GL JS
   (mapa + panel operativo + feedback)
 ```
+
+### Diseño de producto como prueba de gobernanza
+La interfaz no usa la trazabilidad como texto decorativo: la convierte en comportamiento verificable.
+
+- **Fuentes como registro operativo.** Las etiquetas funcionales cortas (`DAT`, `TRF`, `ZBE`, `PMR`) reducen ruido visual y comunican que cada capa procede de una fuente concreta, auditable y reutilizable.
+- **Semáforo de calidad.** Antes de pintar un dato en el mapa, V-PRO informa de su estado: operativo, sin incidencia relevante o en validación diferida. Esta gobernanza conservadora evita convertir un aviso incompleto en una falsa certeza.
+- **Detalle accionable.** Cada evento muestra ubicación humana, área afectada, impacto temporal, alternativa y acción administrativa. La persona usuaria no recibe coordenadas ni datasets crudos; recibe una decisión posible.
+- **Aviso local de novedades.** El navegador recuerda solo la fecha de última visita y el perfil activo mediante `localStorage`. Si al volver hay incidencias nuevas para ese perfil, el carril de eventos lo indica sin enviar telemetría ni ubicaciones personales a un servidor.
+- **FAQ de primera visita.** La pestaña `Info` explica en lenguaje simple cómo elegir perfil, leer una alerta, cambiar alternativas y entender los límites de la herramienta frente a fuentes oficiales.
+- **Snapshot para medios.** El botón de exportación genera una pieza trazable con fuente, impacto y alternativa, pensada para cabeceras locales o equipos de comunicación pública.
 
 ### Perfiles de usuario soportados (MVP)
 | Perfil | Prioriza | Filtra en Alternative Finder |
@@ -121,7 +137,7 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **Trazabilidad completa** de cada dato en `DATA_SOURCES.md` con URLs exactas de ArcGIS REST, campos, licencia, frecuencia y limitaciones conocidas.
 - **Metodología documentada** en `METHODOLOGY.md` (ingesta, normalización, validación geométrica, deduplicación, generación de buffers, motor de plantillas).
 - **Reproducibilidad total:** un único `docker compose up` levanta todo el sistema.
-- **Sostenibilidad económica:** stack íntegramente open-source (PostgreSQL+PostGIS, FastAPI, MapLibre GL JS, OpenFreeMap, Nginx, Cloudflare Tunnel, Tailscale) desplegable en Hetzner CX22 (~4 €/mes). **Sin dependencias de plataforma cerrada ni servicios de pago recurrentes.** Coste total estimado < 5 €/mes.
+- **Sostenibilidad económica:** stack íntegramente open-source (PostgreSQL+PostGIS, FastAPI, MapLibre GL JS, OpenFreeMap, Nginx, Let's Encrypt y systemd timers) desplegado en un VPS CX23 de bajo coste. **Sin dependencias de plataforma cerrada ni servicios de pago recurrentes para el núcleo funcional.** Coste total estimado < 5 €/mes.
 - **Bajo coste operativo:** VLC PROACTIVA ha sido diseñada con una arquitectura *vanilla-first* que minimiza los costes de mantenimiento y dependencias de terceros, permitiendo su ejecución en infraestructuras municipales estándar con un consumo de recursos despreciable.
 - **Privacidad por diseño:** la plataforma no requiere registro ni recoge datos personales. El feedback ciudadano es estrictamente anónimo y se procesa sin IP ni perfil identificable antes de agregarse, cumpliendo LOPDGDD/RGPD.
 - **Continuidad y replicabilidad:** el modelo es trasladable a cualquier municipio con portal de datos abiertos (CKAN o ArcGIS REST); solo cambia el catálogo de datasets.
@@ -136,6 +152,7 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **Pulso urbano agregado:** la demo resume calles potencialmente afectadas, zonas con movilidad alterada y porcentaje de datos trazables para ofrecer un titular operativo reutilizable por gestores publicos y medios.
 - **Semaforo de calidad del portal:** la seccion `Fuentes` funciona como auditoria civica amable, diferenciando datasets operativos, fuentes sin incidencia relevante y avisos en validacion diferida antes de pintarlos en el mapa.
 - **Burocracia cero:** la accion administrativa se plantea como deep-link futuro a sede electronica con la incidencia ya referenciada, aplicando el principio once-only: no pedir al ciudadano datos que la administracion ya posee.
+- **Repositorio público auditado:** el repositorio de candidatura es público, pero debe sincronizarse desde una copia local auditada y sin secretos antes de usarse como enlace final. No deben publicarse `.env`, claves, IP/ID del VPS, documentos administrativos ni historial operativo privado.
 - **Decisiones arquitectónicas** registradas como Architecture Decision Records en `docs/DECISIONS.md` (4 ADRs firmados).
 - **Contribuciones externas bienvenidas** mediante PR según `CONTRIBUTING.md`.
 - **Compromiso de publicación** en el Portal de Datos Abiertos si resulta premiado, conforme a la cláusula 12 de las bases.
@@ -147,7 +164,7 @@ Arquitectura lean, enteramente open-source:
 - **Datos:** PostgreSQL 15 · PostGIS (ST_DWithin, ST_Buffer, ST_Transform entre EPSG:4326/32630/3857).
 - **Scheduler:** Cron del sistema invocando un script Python (sin colas de tareas externas).
 - **Frontend:** HTML + CSS + JS **vanilla** + MapLibre GL JS. Sin frameworks, sin pipeline de build, tiles de OpenFreeMap.
-- **Infra:** Hetzner CX22 (Ubuntu 24.04) · Nginx (con security headers A+ en securityheaders.com) · Cloudflare Tunnel · Tailscale · unattended-upgrades.
+- **Infra:** Hetzner CX23 (Ubuntu LTS) · Nginx + Let's Encrypt · systemd services/timers · PostgreSQL/PostGIS · unattended-upgrades. Cabeceras verificadas por `curl`; validación externa en securityheaders.com pendiente.
 
 Plan de trabajo por fases (detalle en `ROADMAP.md` y `NEXT_STEPS.md`):
 - **Fase A — Estabilización del repositorio.** Seguridad baseline, estructura canónica, CI.
@@ -169,6 +186,7 @@ Las decisiones técnicas estructurales (stack, scheduler, frontend, pivote de da
 - Plazas/registros PMR catalogados desde `aparcaments-persones-mobilitat-reduida`: **2.161**.
 - Superficie de la ZBE oficial: **27,44 km2**, equivalente al **20,38%** del termino municipal de Valencia.
 - Numero total de datasets reutilizados por el MVP: **14** capas municipales verificadas, con **12 tipos de POI multimodal** en el Alternative Finder.
+- Producción pública verificada el 2026-05-24: **669** eventos urbanos almacenados, **13.159** puntos de interés, **672** zonas de impacto, **950** acciones de mitigación, **100** eventos en feed público y **100** fichas HTML estáticas.
 
 ## 9. Equipo y colaboración
 Proyecto liderado por personas desarrolladoras con experiencia en plataformas geoespaciales. Abierto a la incorporación de perfiles de periodismo de datos, diseño UX, accesibilidad y entidades municipales. Se contemplará la firma del **Anexo III** si se concurre en agrupación.
@@ -190,7 +208,7 @@ VLC PROACTIVA se plantea como una capa de inteligencia urbana, no como una web a
 - **Pasaporte de resiliencia comercial.** Evolución del perfil Comercio para que un negocio afectado por una obra prolongada pueda acreditar digitalmente la afección y publicar información operativa ("seguimos abiertos", acceso recomendado, campaña local), previa validación administrativa.
 - **Crowdsourcing verificado.** El feedback ciudadano actuará como sensor social de veracidad: varias señales coincidentes podrán auditar la brecha entre dato oficial y realidad vivida, generar incidencias pendientes de validación municipal y publicar métricas agregadas CC-BY 4.0.
 - **Backoffice municipal.** Panel para personal técnico con índice de estrés urbano, concentración de impactos por barrio y recomendaciones sobre dónde evitar nuevas actuaciones simultáneas.
-- **Notificaciones proactivas.** Web Push para zonas habituales de una persona o comercio, siempre con consentimiento explícito y sin almacenar ubicaciones personales innecesarias.
+- **Notificaciones proactivas.** El MVP ya demuestra el principio con avisos de novedades en local (`localStorage`, sin servidor). La evolución será Web Push para zonas habituales de una persona o comercio, siempre con consentimiento explícito, baja sencilla y sin almacenar ubicaciones personales innecesarias.
 
 ## 11. Cumplimiento formal
 - Redactado en castellano. UI pública prevista bilingüe castellano/valenciano desde el arranque.
@@ -222,6 +240,8 @@ Este compromiso refuerza el **criterio 4** (colaboración y apertura) del jurado
 - `docs/concurso/tramites-referenciados.md` — catálogo de URLs municipales reales enlazadas en las `MitigationAction`.
 - `docs/concurso/anexo-ii-primer-parrafo.md` — primer párrafo recomendado para el Anexo II oficial.
 - `docs/concurso/video-storytelling-90s.md` — guion de vídeo de 90 segundos orientado a problema -> acción -> feedback.
+- `docs/concurso/publicacion-repositorio-publico.md` — procedimiento para crear un repositorio público limpio sin historial privado ni secretos.
+- `docs/concurso/checklist-candidatura-adtr15.md` — matriz de cumplimiento AD.TR.15, evidencias de producción y pendientes antes de presentar.
 - `LICENSE` — licencias de código y datos.
 
 ---
@@ -235,3 +255,4 @@ Este compromiso refuerza el **criterio 4** (colaboración y apertura) del jurado
 - [ ] Cifras concretas del § 8 rellenas con datos reales.
 - [ ] Vídeo demo subido y enlazado desde el documento oficial.
 - [ ] Decisión sobre colaboración con persona periodista externa para una candidatura independiente en Periodismo de Datos (§ 12).
+- [ ] Repositorio público sincronizado desde una exportación limpia, sin historial privado, sin `.env`, sin credenciales, sin IP/ID del VPS y con secretos rotados si estuvieron alguna vez en GitHub.
