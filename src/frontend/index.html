@@ -16,7 +16,7 @@
           <span class="brand-copy">
             <strong>VLC PROACTIVA</strong>
             <span data-i18n="brandName">Valencia Proactiva</span>
-            <em class="sync-chip" data-i18n="syncStatus">Datos oficiales cargados · demo local</em>
+            <em class="sync-chip" data-i18n="syncStatus">Datos oficiales cargados</em>
           </span>
         </a>
 
@@ -24,20 +24,32 @@
           <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
           <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
           <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodología</button>
-          <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Info</button>
+          <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Información</button>
         </nav>
 
         <div class="header-actions">
-          <p id="statusText" class="data-status" data-i18n="loading">Buscando acontecimientos activos...</p>
+          <p id="statusText" class="data-status" data-i18n="loading">Cargando eventos...</p>
           <button id="alertModeToggle" class="alert-mode-toggle" type="button" aria-pressed="false" data-i18n-attr="aria-label:alertModeLabel">
             <span aria-hidden="true" data-i18n="alertModeShort">Alerta</span>
           </button>
           <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" data-i18n-attr="aria-label:themeToggleLabel">
-            <span aria-hidden="true">NOC</span>
+            <span aria-hidden="true">☾</span>
           </button>
-          <div class="language-selector" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
-            <button type="button" data-lang="es">CAS</button>
-            <button type="button" data-lang="val">VAL</button>
+          <div class="language-menu" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
+            <button id="languageToggle" class="language-toggle" type="button" aria-haspopup="menu" aria-expanded="false">
+              <span class="flag-icon flag-es" aria-hidden="true"></span>
+              <span id="languageCurrent">Castellano</span>
+            </button>
+            <div id="languageOptions" class="language-options" role="menu" hidden>
+              <button type="button" role="menuitemradio" data-lang="es" aria-checked="true">
+                <span class="flag-icon flag-es" aria-hidden="true"></span>
+                <span data-i18n="languageSpanish">Castellano</span>
+              </button>
+              <button type="button" role="menuitemradio" data-lang="val" aria-checked="false">
+                <span class="flag-icon flag-val" aria-hidden="true"></span>
+                <span data-i18n="languageValencian">Valencià</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -48,6 +60,15 @@
             <p data-i18n="assistKicker">Hola</p>
             <h1 data-i18n="title">Lo que está pasando cerca</h1>
             <p data-i18n="assistText">Selecciona tu perfil para recibir alternativas personalizadas con fuentes trazables.</p>
+            <div class="use-case-panel" aria-label="Caso de uso principal">
+              <p class="eyebrow" data-i18n="mainUseCaseLabel">Caso de uso principal</p>
+              <p data-i18n="mainUseCaseTitle">Caso de uso: hay una obra en tu calle.</p>
+              <ul>
+                <li data-i18n="mainUseCaseImpact">Impacto estimado: 150m de radio afectado.</li>
+                <li data-i18n="mainUseCasePmr">Alternativa PMR: plaza accesible a 200m.</li>
+                <li data-i18n="mainUseCaseCommercial">Alternativa comercio: zona de carga y descarga a 300m.</li>
+              </ul>
+            </div>
           </section>
 
           <section class="rail-section profile-panel">
@@ -59,39 +80,14 @@
               <button type="button" data-profile="CYCLIST"></button>
               <button type="button" data-profile="PUBLIC_TRANSPORT"></button>
             </nav>
-            <p id="profileImpact" class="profile-impact"></p>
           </section>
 
-          <section class="rail-section quick-filters">
-            <h2 data-i18n="quickFiltersTitle">Filtros rápidos</h2>
-            <button type="button" class="filter-row" data-quick-filter="activeOnly" role="switch" aria-checked="true">
-              <span data-i18n="activeOnly">Solo eventos activos</span>
-              <span class="switch-control" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="filter-row" data-quick-filter="showZbe" role="switch" aria-checked="true">
-              <span data-i18n="showZbe">Mostrar ZBE</span>
-              <span class="switch-control" aria-hidden="true"></span>
-            </button>
+          <details class="rail-section quick-filters">
+            <summary data-i18n="alternativeToolbarTitle">Cambiar alternativa</summary>
             <div class="alternative-toolbar" aria-label="Filtro de alternativas" data-i18n-attr="aria-label:alternativeToolbarLabel">
-              <span data-i18n="alternativeToolbarTitle">Alternativas</span>
               <div id="poiFilters" class="poi-filters"></div>
             </div>
-          </section>
-
-          <section class="rail-section zbe-checker" aria-label="ComprobaciÃ³n ZBE" data-i18n-attr="aria-label:zbeCheckerLabel">
-            <h2 data-i18n="zbeCheckerTitle">VehÃ­culo y ZBE</h2>
-            <label for="vehicleBadge" data-i18n="vehicleBadgeLabel">Distintivo ambiental</label>
-            <select id="vehicleBadge">
-              <option value="UNKNOWN" data-i18n="vehicleBadge_UNKNOWN">No lo sÃ©</option>
-              <option value="NONE" data-i18n="vehicleBadge_NONE">Sin etiqueta</option>
-              <option value="B" data-i18n="vehicleBadge_B">Etiqueta B</option>
-              <option value="C" data-i18n="vehicleBadge_C">Etiqueta C</option>
-              <option value="ECO" data-i18n="vehicleBadge_ECO">ECO</option>
-              <option value="ZERO" data-i18n="vehicleBadge_ZERO">Cero emisiones</option>
-            </select>
-            <p id="zbeVehicleResult" class="zbe-result"></p>
-            <a href="https://sede.valencia.es/sede/ordenanzas/detalle/MzM2MDE.AvPAlt3D.AvOvTok%25C2%25A0" target="_blank" rel="noopener" data-i18n="zbeSourceLink">Ver ordenanza ZBE</a>
-          </section>
+          </details>
 
           <section class="rail-section source-note">
             <span class="status-dot" aria-hidden="true"></span>
@@ -99,6 +95,7 @@
               <h2 data-i18n="sourceNoteTitle">Datos actualizados</h2>
               <p data-i18n="sourceNoteText">Fuente: Portal de Datos Abiertos y Geoportal municipal. Derivados reproducibles en memoria técnica.</p>
               <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">Ver código en GitHub</a>
+              <a href="https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15" target="_blank" rel="noopener" data-i18n="releaseLink">Release v1.0-adtr15</a>
             </div>
           </section>
           <p class="source-attribution" data-i18n="footerAttribution">Fuente: Portal de Datos Abiertos del Ayuntamiento de València · CC BY 4.0.</p>
@@ -111,11 +108,14 @@
               <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
             </div>
             <div id="map" class="map-canvas"></div>
-            <div class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
-              <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
-              <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa sugerida</span></span>
-              <span><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico con incidencia</span></span>
-              <span><i class="legend-zone"></i><span data-i18n="legendImpact">Impacto estimado</span></span>
+            <div id="mapLegend" class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
+              <button id="mapLegendToggle" type="button" aria-expanded="true" data-i18n="hideLegend">Ocultar leyenda</button>
+              <div class="legend-items">
+                <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
+                <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa sugerida</span></span>
+                <span><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico con incidencia</span></span>
+                <span><i class="legend-zone"></i><span data-i18n="legendImpact">Impacto estimado</span></span>
+              </div>
             </div>
           </section>
 
@@ -130,6 +130,15 @@
               <p data-i18n="eventsGuideText">Cada tarjeta resume un evento real, su distancia y una alternativa accionable calculada fuera de la zona de impacto.</p>
               <button id="eventPanelToggle" type="button" class="event-panel-toggle" aria-expanded="true" data-i18n="collapseEvents">Contraer eventos</button>
             </header>
+            <div class="event-use-case" aria-label="Caso de uso principal">
+              <p data-i18n="mainUseCaseTitle">Caso de uso: hay una obra en tu calle.</p>
+              <ul>
+                <li data-i18n="mainUseCaseImpact">Impacto estimado: 150m de radio afectado.</li>
+                <li data-i18n="mainUseCasePmr">Alternativa PMR: plaza accesible a 200m.</li>
+                <li data-i18n="mainUseCaseCommercial">Alternativa comercio: zona de carga y descarga a 300m.</li>
+              </ul>
+            </div>
+            <p id="dataScopeNote" class="data-scope-note" data-i18n="visibleDataSummary">Mostrando 6 eventos visibles en esta vista. El feed público publica 100 eventos recientes y la base operativa contiene 745 registros urbanos procesados.</p>
             <div id="eventList" class="event-stack"></div>
           </section>
 

@@ -3,7 +3,7 @@
 > **Borrador de la Memoria Resumen del proyecto (Anexo II)** para la convocatoria AD.TR.15 — Premios para proyectos de datos abiertos y periodismo de datos del Ayuntamiento de València 2026, categoría **Datos Abiertos**.
 > Este documento es un borrador de trabajo. El formato final debe ajustarse al modelo Anexo II oficial publicado en la Sede Electrónica.
 > Redactado en castellano. Uso de lenguaje inclusivo y no sexista.
-> Última revisión: 2026-05-24 (producción HTTPS en `https://vlcproactiva.es`, exports públicos, auditoría de repositorio público y checklist AD.TR.15).
+> Última revisión: 2026-05-27 (producción HTTPS en `https://vlcproactiva.es`, exports públicos, release pública AD.TR.15, auditoría de repositorio público y checklist AD.TR.15).
 
 ## 1. Identificación del proyecto
 - **Título:** VLC PROACTIVA (València Proactiva / V-PRO): plataforma de movilidad proactiva basada en datos abiertos municipales.
@@ -11,14 +11,15 @@
 - **Ámbito territorial:** Municipio de València.
 - **Tipo de entregable:** Plataforma web reutilizable (API + frontend) con código abierto (MIT) y datos derivados bajo licencia CC-BY 4.0.
 - **Demo pública:** `https://vlcproactiva.es`.
-- **Repositorio público:** `https://github.com/Huntsman1756/Valencia_Proactiva` (pendiente de sincronizar con la release local final antes de presentar).
+- **Repositorio público:** `https://github.com/Huntsman1756/Valencia_Proactiva`.
+- **Release pública AD.TR.15:** `https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15`.
 
 ## 2. Resumen ejecutivo
 **VLC PROACTIVA no es un mapa: es una capa de decisión pública construida sobre datos abiertos municipales. Cuando el tráfico se corta, una ocupación de vía pública afecta a una calle o la Zona de Bajas Emisiones condiciona un desplazamiento, la plataforma muestra qué ocurre, dónde ocurre, qué impacto tiene y qué alternativa puede usar cada perfil: general, comercio, movilidad reducida, bicicleta o transporte público. V-PRO no solo consume datos abiertos: produce nuevos datos abiertos derivados de la experiencia ciudadana real.**
 
 VLC PROACTIVA transforma el Portal de Datos Abiertos del Ayuntamiento de València — hoy un archivo pasivo consultable sobre todo por personas técnicas — en una plataforma proactiva que convierte cada interrupción urbana en una sugerencia accionable. El sistema ingiere datasets reales del portal municipal (ocupación de vía pública, estado del tráfico, ZBE), puede reforzarlos con fuentes oficiales complementarias trazables cuando el portal no publique eventos vivos con suficiente frescura, calcula zonas de impacto geoespaciales con PostGIS y las traduce en acciones concretas: aparcamientos alternativos priorizando los accesibles, puntos de destino multimodales (bus, metro, bici), y enlaces directos a trámites municipales relevantes.
 
-La interfaz ya materializa esa tesis. La pantalla principal prioriza la lista de eventos y el detalle operativo: nombres de calle legibles en lugar de coordenadas, alternativa recomendada, aviso local de novedades desde la última visita y feedback ciudadano. La pestaña `Fuentes` funciona como auditoría cívica del portal: etiquetas técnicas breves (`DAT`, `TRF`, `ZBE`, `PMR`) y un semáforo de calidad distinguen fuentes operativas, fuentes sin incidencia relevante y avisos en validación diferida. La pestaña `Info` resume el pulso urbano con métricas agregadas (calles potencialmente afectadas, zonas alteradas y trazabilidad del dato) e incorpora un FAQ de primera visita para explicar cómo leer una tarjeta, elegir perfil, cambiar filtros e interpretar el impacto. Así una persona técnica, un medio local, una vecina o un jurado pueden entender el valor público en segundos.
+La interfaz ya materializa esa tesis. La pantalla principal prioriza la lista de eventos y el detalle operativo: nombres de calle legibles en lugar de coordenadas, alternativa recomendada, aviso local de novedades desde la última visita y feedback ciudadano. La pestaña `Fuentes` funciona como auditoría cívica del portal: etiquetas técnicas breves (`DAT`, `TRF`, `ZBE`, `PMR`) y un semáforo de calidad distinguen fuentes operativas, fuentes sin incidencia relevante y avisos oficiales con geometría pendiente. La pestaña `Info` resume el pulso urbano con métricas agregadas y explica juntas las cifras de eventos visibles, feed público y base operativa. Así una persona técnica, un medio local, una vecina o un jurado pueden entender el valor público en segundos.
 
 Todo el código publicable se libera bajo MIT y los datos derivados bajo CC-BY 4.0, cerrando una economía circular del dato: la ciudad publica información, V-PRO la convierte en servicio y devuelve conocimiento procesado, auditable y reutilizable.
 
@@ -150,9 +151,9 @@ Las fuentes complementarias oficiales (RSS, agenda municipal, avisos o paginas i
 - **Metodología abierta** en `METHODOLOGY.md` con limitaciones y supuestos explícitos.
 - **Centro de recursos para medios:** cada evento puede exportarse como snapshot trazable con fuente, impacto, alternativa y código embebible, facilitando que medios locales lo reutilicen en piezas de periodismo de datos sobre obras, Fallas, maratones o movilidad.
 - **Pulso urbano agregado:** la demo resume calles potencialmente afectadas, zonas con movilidad alterada y porcentaje de datos trazables para ofrecer un titular operativo reutilizable por gestores publicos y medios.
-- **Semaforo de calidad del portal:** la seccion `Fuentes` funciona como auditoria civica amable, diferenciando datasets operativos, fuentes sin incidencia relevante y avisos en validacion diferida antes de pintarlos en el mapa.
+- **Semaforo de calidad del portal:** la seccion `Fuentes` funciona como auditoria civica amable, diferenciando datasets operativos, fuentes sin incidencia relevante y avisos oficiales con geometria pendiente antes de pintarlos en el mapa.
 - **Burocracia cero:** la accion administrativa se plantea como deep-link futuro a sede electronica con la incidencia ya referenciada, aplicando el principio once-only: no pedir al ciudadano datos que la administracion ya posee.
-- **Repositorio público auditado:** el repositorio de candidatura es público, pero debe sincronizarse desde una copia local auditada y sin secretos antes de usarse como enlace final. No deben publicarse `.env`, claves, IP/ID del VPS, documentos administrativos ni historial operativo privado.
+- **Repositorio público auditado:** el repositorio de candidatura es público y la entrega queda fijada mediante la release `v1.0-adtr15`. No deben publicarse `.env`, claves, IP/ID del VPS, documentos administrativos ni historial operativo privado.
 - **Decisiones arquitectónicas** registradas como Architecture Decision Records en `docs/DECISIONS.md` (4 ADRs firmados).
 - **Contribuciones externas bienvenidas** mediante PR según `CONTRIBUTING.md`.
 - **Compromiso de publicación** en el Portal de Datos Abiertos si resulta premiado, conforme a la cláusula 12 de las bases.

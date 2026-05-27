@@ -1169,3 +1169,65 @@ Archivos tocados por el orquestador en este post-script: `docs/STATUS.md`, `docs
 - Se actualizan `README.md`, `docs/MEMORIA.md`, `docs/ARCHITECTURE.md`, `docs/concurso/publicacion-repositorio-publico.md` y `docs/concurso/video-storytelling-90s.md` para reflejar `https://vlcproactiva.es`, Let's Encrypt, systemd timers, repo público y política de no publicar datos personales ni secretos.
 - Auditoría externa: GitHub muestra `Huntsman1756/Valencia_Proactiva` como repositorio público. La copia pública está por detrás del estado local de producción y debe sincronizarse con la release auditada antes de enlazarla en la solicitud final.
 - Auditoría local: se mantiene la regla de no versionar IP, ID de proveedor, claves, `.env`, documentos administrativos ni artefactos internos innecesarios.
+
+## Sesion 2026-05-24 - R-17 pasada UI informativa
+- Frontend: el boton `Expandir` del mapa reserva espacio frente al panel derecho de eventos y en modo expandido vuelve a inset completo para no quedar tapado.
+- Fuentes: `vpro_feedback` se presenta como datos derivados VLC PROACTIVA y cuenta 3 artefactos visibles (`impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`) en vez de 1 dataset generico.
+- UX writing: el saludo lateral cambia a `Valencia ahora` / `Valencia ara` para reforzar tono operativo ciudadano.
+- Design system: se documenta que controles flotantes del mapa no deben quedar bajo otras superficies y que las tarjetas de fuentes deben distinguir fuente, dataset y artefacto derivado.
+- Produccion: frontend desplegado en `vlcproactiva.es` por `scp` temporal a `/tmp/vpro-frontend-new`, `rsync` a `/opt/vpro/src/frontend/` y `/var/www/vpro/`, `nginx -t` y `systemctl reload nginx`.
+- QA posterior: revisar siempre el ancho `desktop` 1440 porque el panel inferior puede invadir el carril derecho si queda con `right: 374px`; los nombres de calle visibles deben limpiar sufijos ` 0` del portal cuando no representan un numero civico util.
+- Copy produccion: no usar `demo local` ni `API local` en el frontend publico. Usar `servicio publico experimental` / `servici public experimental` y mantener el limite de que no sustituye avisos oficiales.
+- Incidencia 2026-05-26: si aparece `API no disponible` pero `/health` y `/api/v1/events` responden 200, revisar rate-limit de `/api/v1/spatial/alternatives`; una rafaga de cambios de filtros/perfiles puede devolver 429 y antes tumbaba `loadDashboard`.
+- Incidencia 2026-05-26: el despliegue estatico con `rsync --delete` sobre `/var/www/vpro/` borro `/exports`; restaurado con `vpro-export.service` y documentado que el frontend se sincroniza con `--exclude "exports/"`.
+- Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, validacion JSON de `src/frontend/i18n/es.json` y `src/frontend/i18n/val.json`, smoke Playwright mobile/desktop contra `http://localhost:8080` y `https://vlcproactiva.es`, QA visual desktop/narrow/mobile con capturas `docs/reports/prod-qa-*.png`.
+
+## Sesion 2026-05-26 - T-145 limpieza de Eventos
+- Frontend: CAS/VAL se sustituye por desplegable de idioma con bandera activa y opciones Castellano/Valencia; los tabs empujan hash (`#fuentes`, `#metodologia`, `#info`) y la marca vuelve a `#events`.
+- Eventos: se ocultan los controles visibles `Vista resumida`, `Mostrar ZBE` y `Vehiculo y ZBE` porque duplicaban o no explicaban bien la logica de perfil; el perfil queda como filtro principal y sus descripciones pasan a ayuda hover/focus.
+- Tarjetas: se elimina la tira de fuente/source_id del listado para limpiar el panel; la trazabilidad completa queda en el detalle del evento.
+- Mapa: se fuerza rehidratacion de capas al expandir, se evita acumular dos popups, se corrige contraste de popups en modo noche y se anade leyenda plegable.
+- Detalle: `Exportar snapshot` pasa a `Copiar ficha` con texto legible; `+ Util / - No util` pasa a `Me ayuda / No me ayuda` con nota de voto anonimo agregado.
+- Info/Metodologia: se retiran metricas agregadas sin contexto, `Estonia/X-Road` y `Digital Twin`; el texto ahora explica conteos de la vista actual y modelo espacial simplificado.
+- Produccion: desplegado en `vlcproactiva.es` con `rsync --exclude exports/`, `nginx -t` y reload. Verificado con smoke Playwright mobile/desktop contra produccion, comprobacion de modo oscuro en popup (`popupCount=1`, fondo oscuro y texto claro), hash de tabs, marca a Eventos y leyenda plegable.
+
+## Sesion 2026-05-26 - T-146 segunda limpieza de Eventos
+- Frontend: se retira el CTA visible `Copiar ficha` del detalle principal; la reutilizacion queda orientada a exports publicos y no como accion primaria de ciudadania.
+- Frontend: `Vehiculo y ZBE` deja de existir en el DOM visible y se elimina la logica cliente asociada al distintivo ambiental; el perfil y `Cambiar alternativa` quedan como controles utiles.
+- Cabecera: el selector de idioma usa fallback legible para no exponer claves como `languageValencian`; el modo claro/oscuro usa iconos sol/luna y el contador superior explica eventos actualizados.
+- Acciones: los enlaces de tramite/referencia solo se renderizan cuando la accion trae una URL municipal reconocible y compatible con el perfil activo.
+- Tabs informativas: `Fuentes`, `Metodologia` e `Info` centran su contenido en la pagina completa.
+- Produccion: desplegado en `vlcproactiva.es` mediante alias SSH local y `rsync --exclude exports/`; `nginx -t` y reload correctos.
+- Verificacion ejecutada: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, validacion JSON, smoke Playwright mobile/desktop local y contra produccion, y comprobacion especifica de idioma, iconos, ausencia de ZBE/copia, centrado y enlaces municipales.
+- Nota local: antes del smoke local se reinicio `vpro_api` porque el contenedor habia arrancado mientras Postgres seguia iniciando y Nginx devolvia 502.
+
+## Sesion 2026-05-26 - T-146 ajuste post-QA visual
+- Incidencia detectada por captura: el desplegable de idioma podia mostrar claves `languageSpanish` / `languageValencian` en las opciones aunque el boton activo tuviera fallback correcto.
+- Incidencia detectada por captura: la bandeja inferior de eventos del mapa expandido usaba fondo claro semitransparente con texto claro en modo noche, dejando informacion casi invisible.
+- Fix frontend: `readableMessage` evita pintar claves i18n, `updateLanguageButton` fuerza etiquetas `Castellano` / `Valencia` en las opciones del menu y la bandeja expandida tiene fondo oscuro en `data-theme=dark`.
+- Copy: se simplifican textos de `Fuentes`, `Metodologia` e `Info`; se sustituyen frases promocionales por descripcion directa de datos usados, calculo, limites y reutilizacion.
+- Verificacion: `node --check`, validacion JSON, smoke Playwright local y produccion, y comprobacion especifica en produccion de menu de idioma, contraste de bandeja oscura y ausencia de copy antiguo.
+
+## Sesion 2026-05-27 - T-147 entrada progresiva de Eventos
+- Diagnostico: la vista de entrada mostraba demasiadas capas a la vez: bienvenida, perfil, alternativas, nota de fuente, ayuda de mapa, leyenda, lista y detalle inferior.
+- Frontend: el detalle inferior arranca plegado y se expande al seleccionar una tarjeta; la leyenda y el bloque `Cambiar alternativa` tambien empiezan plegados.
+- Desktop: se ocultan el panel de bienvenida, la nota lateral de fuente y la ayuda larga del mapa para que el foco inicial sea perfil + eventos + mapa.
+- QA visual: se corrige el estado plegado de `Ver detalle` para que no quede recortado en la parte inferior del mapa.
+- Produccion: desplegado en `vlcproactiva.es` mediante alias SSH local y `rsync --exclude exports/`; `nginx -t` y reload correctos.
+- Verificacion: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, validacion JSON, smoke Playwright local y produccion, captura `docs/reports/prod-entry-density.png` y medicion de entrada (`detailCollapsed=true`, `legendCollapsed=true`, `quickFiltersOpen=false`, `horizontalOverflow=0`).
+
+## Sesion 2026-05-27 - T-148 pestanas informativas AD.TR.15
+- Diagnostico: `Fuentes`, `Metodologia` e `Info` quedaban como lectura larga; en `Fuentes` el CTA `Abrir fuente` flotaba en una columna vacia y la etiqueta `Info` era demasiado abreviada para navegacion publica.
+- Referencias: `nexu-io/open-design` se usa como criterio de proceso (tokens, jerarquia, anti-patrones) y la sede AD.TR.15 como marco de evidencia; no se copia ningun sistema visual externo.
+- Frontend: `Info` pasa a `Informacion` / `Informacio`, las tres pestanas abren siempre arriba, incorporan banda de criterios AD.TR.15 y reorganizan fuentes con CTA junto al titulo, metadatos compactos y datasets en columnas.
+- Produccion: desplegado en `vlcproactiva.es` mediante alias SSH local y `rsync --exclude exports/`; `nginx -t` y reload correctos.
+- Verificacion: `node --check src/frontend/assets/app.js`, `node --check tests/frontend/smoke.mjs`, validacion JSON de `es.json`/`val.json`, smoke Playwright local y produccion, captura `docs/reports/prod-sources-evidence-pass.png` y medicion produccion (`tabInfo=Informacion`, `sourceLinks=3`, `overflow=0`).
+
+## Sesion 2026-05-27 - T-149 QA critico AD.TR.15
+- Objetivo: cerrar exactamente los bloqueos QA de concurso: targets tactiles, foco movil, warnings MapLibre por nulos, metricas confusas, caso de uso principal y release publica.
+- Frontend: se anade caso de uso visible "obra en tu calle -> impacto -> alternativa PMR/comercio" y bloque de datos con `6 eventos visibles`, `100 eventos recientes` y `745 registros urbanos procesados`.
+- Accesibilidad: botones, enlaces, pills, summaries, controles de mapa y tarjetas mantienen al menos 44px de alto; `focusin` recentra el elemento activo para que Tab no deje el foco fuera del viewport.
+- Datos/mapa: se sanea GeoJSON antes de pasarlo a MapLibre (`radius`, `severidad`, `severity`, `radio_impacto`, `buffer_distance`, `distance_meters`) y se cambia el mapa base a raster OSM para eliminar warnings `Expected value... null` procedentes de vector tiles.
+- Infra: CSP actualizada para permitir tiles raster OSM en `connect-src`; Nginx validado con `nginx -t` y recargado.
+- Docs: README y `docs/MEMORIA.md` enlazan `v1.0-adtr15`; `docs/design/vpro-design-system.md` documenta regla 44px/foco; TODO, STATUS y CHANGELOG actualizados.
+- Produccion: desplegado en `https://vlcproactiva.es`; smoke Playwright produccion verde. Auditoria movil posterior: 0 targets <44px, foco dentro del viewport, tarjetas cargadas, metricas visibles y sin warnings MapLibre `Expected value... null`. Persisten solo warnings WebGL de Chromium headless en una de las corridas, no de datos de la app.

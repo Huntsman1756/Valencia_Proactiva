@@ -34,20 +34,57 @@ const SOURCE_CATALOG = [
   },
   {
     id: "vpro_feedback",
-    datasetCount: 1,
+    datasetCount: 3,
+    countKey: "derivedArtifactCount",
     kindKey: "sourceKindDerived",
     url: "https://github.com/Huntsman1756/Valencia_Proactiva",
   },
 ];
 const GITHUB_URL = "https://github.com/Huntsman1756/Valencia_Proactiva";
 const CONTEST_URL = "https://sede.valencia.es/sede/registro/procedimiento/AD.TR.15";
+const RELEASE_URL = "https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15";
 const MAPLIBRE_CSS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.css";
 const MAPLIBRE_JS_URL = "https://unpkg.com/maplibre-gl@5.13.0/dist/maplibre-gl.js";
+const NUMERIC_PROPERTY_DEFAULTS = {
+  radius: 0,
+  severidad: 1,
+  severity: 1,
+  radio_impacto: 0,
+  buffer_distance: 0,
+  distance_meters: 0,
+};
+const IGNORED_MAPLIBRE_WARNINGS = ["Expected value to be of type number, but found null instead."];
+const originalConsoleWarn = console.warn.bind(console);
+console.warn = (...args) => {
+  if (args.some((arg) => IGNORED_MAPLIBRE_WARNINGS.some((warning) => String(arg).includes(warning)))) {
+    return;
+  }
+  originalConsoleWarn(...args);
+};
 const INITIAL_PROFILE = localStorage.getItem("vpro_profile") || "PMR";
-const INITIAL_VEHICLE_BADGE = localStorage.getItem("vpro_vehicle_badge") || "UNKNOWN";
+const LANGUAGE_LABELS = {
+  es: "Castellano",
+  val: "Valencià",
+};
 const LOCAL_VISIT_KEYS = {
   lastSeenAt: "vpro_last_seen_at",
   lastSeenProfile: "vpro_last_seen_profile",
+};
+const VIEW_HASHES = {
+  events: "#events",
+  sources: "#fuentes",
+  methodology: "#metodologia",
+  info: "#info",
+};
+const HASH_VIEWS = {
+  "#events": "events",
+  "#eventos": "events",
+  "#fuentes": "sources",
+  "#sources": "sources",
+  "#metodologia": "methodology",
+  "#metodología": "methodology",
+  "#methodology": "methodology",
+  "#info": "info",
 };
 const INITIAL_LAST_SEEN_AT = localStorage.getItem(LOCAL_VISIT_KEYS.lastSeenAt);
 const INITIAL_LAST_SEEN_PROFILE = localStorage.getItem(LOCAL_VISIT_KEYS.lastSeenProfile) || INITIAL_PROFILE;
@@ -58,17 +95,19 @@ const state = {
   messages: {},
   theme: localStorage.getItem("vpro_theme") || "light",
   alertMode: localStorage.getItem("vpro_alert_mode") === "true",
-  vehicleBadge: INITIAL_VEHICLE_BADGE,
   events: [],
   cards: [],
   visibleCards: [],
   impactZones: [],
   trafficEvents: [],
+  dataHealth: null,
   activeView: "events",
   poiTypeFilter: localStorage.getItem("vpro_poi_type") || PROFILE_DEFAULT_POI[INITIAL_PROFILE] || "ALL",
-  activeOnly: localStorage.getItem("vpro_active_only") !== "false",
-  showZbe: localStorage.getItem("vpro_show_zbe") !== "false",
+  activeOnly: true,
+  showZbe: true,
   map: null,
+  mapPopup: null,
+  legendCollapsed: localStorage.getItem("vpro_legend_collapsed") !== "false",
   sessionToken: getSessionToken(),
   selectedCardIndex: 0,
   dashboardLoadTimer: null,
@@ -83,10 +122,13 @@ const state = {
 const eventList = document.querySelector("#eventList");
 const eventsPanel = document.querySelector("#events");
 let localDeltaNotice = document.querySelector("#localDeltaNotice");
+const dataScopeNote = document.querySelector("#dataScopeNote");
 const statusText = document.querySelector("#statusText");
 const toast = document.querySelector("#toast");
 const mapShell = document.querySelector(".map-shell");
 const toggleMap = document.querySelector("#toggleMap");
+const mapLegend = document.querySelector("#mapLegend");
+const mapLegendToggle = document.querySelector("#mapLegendToggle");
 const mapEventTray = document.querySelector("#mapEventTray");
 const eventPanelToggle = document.querySelector("#eventPanelToggle");
 const poiFilters = document.querySelector("#poiFilters");
@@ -96,12 +138,12 @@ const additionalInfoPanel = document.querySelector("#additionalInfoPanel");
 const detailRail = document.querySelector(".detail-rail");
 const detailPanelToggle = document.querySelector("#detailPanelToggle");
 const selectedEventPanel = document.querySelector("#selectedEventPanel");
-const profileImpact = document.querySelector("#profileImpact");
 const panelBackdrop = document.querySelector("#panelBackdrop");
 const themeToggle = document.querySelector("#themeToggle");
 const alertModeToggle = document.querySelector("#alertModeToggle");
-const vehicleBadge = document.querySelector("#vehicleBadge");
-const zbeVehicleResult = document.querySelector("#zbeVehicleResult");
+const languageToggle = document.querySelector("#languageToggle");
+const languageOptions = document.querySelector("#languageOptions");
+const languageCurrent = document.querySelector("#languageCurrent");
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -116,11 +158,31 @@ async function init() {
   setupEventPanelToggle();
   setupDetailPanelToggle();
   setupQuickFilters();
-  setupZbeChecker();
   setupPoiFilters();
   setupMapToggle();
+  setupMapLegendToggle();
+  setupFocusVisibility();
   await loadDashboard();
   scheduleMapSetup();
+  syncViewFromHash();
+}
+
+function setupFocusVisibility() {
+  document.addEventListener("focusin", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      const rect = target.getBoundingClientRect();
+      const header = document.querySelector(".civic-header");
+      const topReserve = (header?.getBoundingClientRect().height || 0) + 8;
+      const isOutside = rect.top < topReserve || rect.bottom > window.innerHeight;
+      if (isOutside) {
+        target.scrollIntoView({ block: "center", inline: "nearest" });
+      }
+    });
+  });
 }
 
 async function loadMessages() {
@@ -136,12 +198,12 @@ async function loadMessages() {
 
 function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach((element) => {
-    element.textContent = t(element.dataset.i18n);
+    element.textContent = readableMessage(element.dataset.i18n, element.textContent);
   });
   document.querySelectorAll("[data-i18n-attr]").forEach((element) => {
     element.dataset.i18nAttr.split(",").forEach((pair) => {
       const [attribute, key] = pair.split(":");
-      element.setAttribute(attribute, t(key));
+      element.setAttribute(attribute, readableMessage(key, element.getAttribute(attribute) || ""));
     });
   });
   document.querySelectorAll("[data-profile]").forEach((button) => {
@@ -150,16 +212,15 @@ function applyTranslations() {
   document.querySelectorAll("[data-poi-filter]").forEach((button) => {
     button.textContent = labelForPoiFilter(button.dataset.poiFilter);
   });
-  document.querySelectorAll("#vehicleBadge [data-i18n]").forEach((option) => {
-    option.textContent = t(option.dataset.i18n);
-  });
   updateEventPanelToggleText();
   updateDetailPanelToggleText();
   toggleMap.textContent = mapShell.classList.contains("is-expanded") ? t("close") : t("expand");
   updateThemeButton();
   updateAlertModeButton();
-  updateZbeChecker();
+  updateLanguageButton();
+  updateMapLegendToggle();
   renderInfoPanels();
+  updateDataScopeNote();
   renderSelectedEvent(state.visibleCards[state.selectedCardIndex]);
 }
 
@@ -224,37 +285,55 @@ function setupProfiles() {
         item.setAttribute("aria-pressed", String(item === button));
       });
       updatePoiFilterButtons();
-      updateProfileImpact();
       scheduleDashboardLoad();
     });
   });
-  updateProfileImpact();
 }
 
 function renderProfileButton(button) {
   const profile = button.dataset.profile;
+  const label = profileLabel(profile);
+  const description = profileDescription(profile);
+  button.dataset.tooltip = description;
+  button.setAttribute("aria-label", `${label}: ${description}`);
   button.innerHTML = `
     <span class="profile-icon" aria-hidden="true">${profileIcon(profile)}</span>
     <span class="profile-copy">
-      <strong>${escapeHtml(profileLabel(profile))}</strong>
-      <span>${escapeHtml(profileDescription(profile))}</span>
+      <strong>${escapeHtml(label)}</strong>
     </span>
+    <span class="profile-help" aria-hidden="true">?</span>
   `;
 }
 
 function setupLanguageSelector() {
+  languageToggle?.addEventListener("click", () => {
+    const expanded = languageToggle.getAttribute("aria-expanded") === "true";
+    setLanguageMenuOpen(!expanded);
+  });
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".language-menu")) {
+      setLanguageMenuOpen(false);
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      setLanguageMenuOpen(false);
+    }
+  });
   document.querySelectorAll("[data-lang]").forEach((button) => {
     const active = button.dataset.lang === state.language;
     button.setAttribute("aria-pressed", String(active));
+    button.setAttribute("aria-checked", String(active));
     button.addEventListener("click", async () => {
       state.language = button.dataset.lang;
       localStorage.setItem("vpro_language", state.language);
       document.querySelectorAll("[data-lang]").forEach((item) => {
         item.setAttribute("aria-pressed", String(item === button));
+        item.setAttribute("aria-checked", String(item === button));
       });
+      setLanguageMenuOpen(false);
       await loadMessages();
       applyTranslations();
-      updateProfileImpact();
       if (state.cards.length > 0) {
         state.events = normalizeEvents(state.events);
         state.cards = state.cards.map((card) => ({
@@ -266,36 +345,88 @@ function setupLanguageSelector() {
         renderCards(visibleCards);
         statusText.textContent = formatMessage("activeEvents", { count: visibleCards.length });
         updateMap(visibleCards);
+        updateDataScopeNote();
       }
     });
+  });
+  updateLanguageButton();
+}
+
+function setLanguageMenuOpen(open) {
+  if (!languageToggle || !languageOptions) {
+    return;
+  }
+  languageToggle.setAttribute("aria-expanded", String(open));
+  languageOptions.hidden = !open;
+}
+
+function updateLanguageButton() {
+  if (!languageToggle || !languageCurrent) {
+    return;
+  }
+  const isValencian = state.language === "val";
+  const flag = languageToggle.querySelector(".flag-icon");
+  flag?.classList.toggle("flag-es", !isValencian);
+  flag?.classList.toggle("flag-val", isValencian);
+  const labelKey = isValencian ? "languageValencian" : "languageSpanish";
+  const fallback = isValencian ? LANGUAGE_LABELS.val : LANGUAGE_LABELS.es;
+  languageCurrent.textContent = readableMessage(labelKey, fallback);
+  document.querySelectorAll("[data-lang]").forEach((button) => {
+    const active = button.dataset.lang === state.language;
+    button.setAttribute("aria-pressed", String(active));
+    button.setAttribute("aria-checked", String(active));
+    const label = button.querySelector("[data-i18n]");
+    if (label) {
+      label.textContent = LANGUAGE_LABELS[button.dataset.lang] || label.textContent;
+    }
   });
 }
 
 function setupViews() {
+  window.addEventListener("hashchange", syncViewFromHash);
+  document.querySelector(".brand")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    activateView("events", { updateHash: true, revealEvents: true });
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && state.activeView !== "events") {
-      closeInfoPanel();
+      activateView("events", { updateHash: true, revealEvents: true });
     }
   });
   document.querySelectorAll("[data-view]").forEach((button) => {
     button.addEventListener("click", () => {
-      const nextView = button.dataset.view;
-      state.activeView = nextView;
-      document.querySelectorAll("[data-view]").forEach((item) => {
-        item.setAttribute("aria-pressed", String(item === button));
-      });
-      if (nextView === "events") {
-        closeInfoPanel({ keepEventsPressed: true, revealEvents: true });
-        setTimeout(() => state.map?.resize(), 120);
-        return;
-      }
-      openInfoPanel(nextView);
+      activateView(button.dataset.view, { updateHash: true, revealEvents: true });
     });
   });
 }
 
+function syncViewFromHash() {
+  const view = HASH_VIEWS[window.location.hash.toLowerCase()] || "events";
+  activateView(view, { updateHash: false, revealEvents: view === "events" });
+}
+
+function activateView(nextView, options = {}) {
+  state.activeView = nextView;
+  document.querySelectorAll("[data-view]").forEach((item) => {
+    item.setAttribute("aria-pressed", String(item.dataset.view === nextView));
+  });
+  if (options.updateHash) {
+    const nextHash = VIEW_HASHES[nextView] || "#events";
+    if (window.location.hash !== nextHash) {
+      history.pushState(null, "", nextHash);
+    }
+  }
+  if (nextView === "events") {
+    closeInfoPanel({ keepEventsPressed: true, revealEvents: options.revealEvents });
+    setTimeout(() => state.map?.resize(), 120);
+    return;
+  }
+  openInfoPanel(nextView);
+}
+
 function openInfoPanel(view) {
   document.body.classList.add("has-section-tab");
+  window.scrollTo({ top: 0, behavior: "auto" });
   if (eventsPanel) {
     eventsPanel.hidden = true;
   }
@@ -363,11 +494,21 @@ function updateEventPanelToggleText() {
 }
 
 function setupDetailPanelToggle() {
+  const savedState = localStorage.getItem("vpro_detail_collapsed");
+  setDetailCollapsed(savedState === null ? true : savedState === "true", false);
   detailPanelToggle?.addEventListener("click", () => {
-    const collapsed = detailRail?.classList.toggle("is-collapsed") || false;
-    detailPanelToggle.setAttribute("aria-expanded", String(!collapsed));
-    updateDetailPanelToggleText();
+    const collapsed = !detailRail?.classList.contains("is-collapsed");
+    setDetailCollapsed(collapsed);
   });
+  updateDetailPanelToggleText();
+}
+
+function setDetailCollapsed(collapsed, persist = true) {
+  detailRail?.classList.toggle("is-collapsed", collapsed);
+  detailPanelToggle?.setAttribute("aria-expanded", String(!collapsed));
+  if (persist) {
+    localStorage.setItem("vpro_detail_collapsed", String(collapsed));
+  }
   updateDetailPanelToggleText();
 }
 
@@ -429,37 +570,6 @@ function updatePoiFilterButtons() {
   });
 }
 
-function updateProfileImpact() {
-  if (!profileImpact) {
-    return;
-  }
-  const key = `profileImpact_${state.profile}`;
-  profileImpact.textContent = t(key);
-}
-
-function setupZbeChecker() {
-  if (!vehicleBadge) {
-    return;
-  }
-  vehicleBadge.value = state.vehicleBadge;
-  vehicleBadge.addEventListener("change", () => {
-    state.vehicleBadge = vehicleBadge.value;
-    localStorage.setItem("vpro_vehicle_badge", state.vehicleBadge);
-    updateZbeChecker();
-  });
-  updateZbeChecker();
-}
-
-function updateZbeChecker() {
-  if (!vehicleBadge || !zbeVehicleResult) {
-    return;
-  }
-  vehicleBadge.value = state.vehicleBadge;
-  const level = zbeStatusLevel(state.vehicleBadge);
-  zbeVehicleResult.dataset.level = level;
-  zbeVehicleResult.textContent = zbeStatusText(state.vehicleBadge);
-}
-
 function scheduleMapSetup() {
   if ("requestIdleCallback" in window) {
     window.requestIdleCallback(() => setupMap(), { timeout: 4500 });
@@ -481,7 +591,18 @@ async function setupMap() {
 
   state.map = new maplibregl.Map({
     container: "map",
-    style: "https://tiles.openfreemap.org/styles/liberty",
+    style: {
+      version: 8,
+      sources: {
+        osm: {
+          type: "raster",
+          tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
+          tileSize: 256,
+          attribution: "© OpenStreetMap contributors",
+        },
+      },
+      layers: [{ id: "osm-raster", type: "raster", source: "osm" }],
+    },
     center: DEFAULT_CENTER,
     zoom: 13,
     attributionControl: false,
@@ -489,10 +610,32 @@ async function setupMap() {
 
   window.vproDebug = { map: state.map, state };
   state.map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-right");
-  state.map.on("load", () => {
+  const hydrateMap = () => {
     reduceBaseMapVisualNoise();
     updateMap(filteredCards());
+  };
+  const hydrateWhenReady = (attempt = 0) => {
+    if (!state.map) {
+      return;
+    }
+    if (state.map.isStyleLoaded?.() || state.map.loaded()) {
+      hydrateMap();
+      return;
+    }
+    if (attempt < 24) {
+      setTimeout(() => hydrateWhenReady(attempt + 1), 250);
+    }
+  };
+  state.map.on("load", hydrateMap);
+  state.map.on("idle", () => {
+    if (!state.map.getSource("event-points")) {
+      hydrateMap();
+    }
   });
+  if (state.map.loaded()) {
+    hydrateMap();
+  }
+  hydrateWhenReady();
   state.map.on("error", (event) => {
     const message = event?.error?.message;
     if (message) {
@@ -532,11 +675,44 @@ function loadScript(src) {
 function setupMapToggle() {
   toggleMap.addEventListener("click", async () => {
     await setupMap();
+    refreshMapLayers();
     const expanded = mapShell.classList.toggle("is-expanded");
     toggleMap.textContent = expanded ? t("close") : t("expand");
     toggleMap.setAttribute("aria-expanded", String(expanded));
-    setTimeout(() => state.map?.resize(), 190);
+    setTimeout(() => {
+      state.map?.resize();
+      refreshMapLayers();
+    }, 190);
   });
+}
+
+function refreshMapLayers() {
+  if (!state.map) {
+    return;
+  }
+  if (state.map.loaded()) {
+    updateMap(filteredCards());
+    return;
+  }
+  state.map.once("load", () => updateMap(filteredCards()));
+}
+
+function setupMapLegendToggle() {
+  mapLegendToggle?.addEventListener("click", () => {
+    state.legendCollapsed = !state.legendCollapsed;
+    localStorage.setItem("vpro_legend_collapsed", String(state.legendCollapsed));
+    updateMapLegendToggle();
+  });
+  updateMapLegendToggle();
+}
+
+function updateMapLegendToggle() {
+  if (!mapLegend || !mapLegendToggle) {
+    return;
+  }
+  mapLegend.classList.toggle("is-collapsed", state.legendCollapsed);
+  mapLegendToggle.setAttribute("aria-expanded", String(!state.legendCollapsed));
+  mapLegendToggle.textContent = state.legendCollapsed ? t("showLegend") : t("hideLegend");
 }
 
 async function loadDashboard() {
@@ -546,10 +722,11 @@ async function loadDashboard() {
 
   try {
     const eventLimit = state.activeOnly ? 8 : 16;
-    const [events, impactZones, trafficEvents] = await Promise.all([
+    const [events, impactZones, trafficEvents, dataHealth] = await Promise.all([
       fetchJson(`${API_BASE}/api/v1/events/?limit=${eventLimit}`),
       fetchJson(`${API_BASE}/api/v1/spatial/impact-zones?limit=120`),
       fetchJson(`${API_BASE}/api/v1/spatial/events-layer?limit=160&event_type=TRAFICO`),
+      fetchJson("./exports/data_health.json").catch(() => null),
     ]);
     if (requestId !== state.dashboardRequestId) {
       return;
@@ -558,10 +735,12 @@ async function loadDashboard() {
     state.events = (state.activeOnly ? normalizedEvents.filter(isEventActive) : normalizedEvents).slice(0, state.activeOnly ? 6 : 10);
     state.impactZones = impactZones;
     state.trafficEvents = trafficEvents;
+    state.dataHealth = dataHealth;
 
     if (state.events.length === 0) {
       renderEmpty(t("emptyEvents"));
       updateMap([]);
+      updateDataScopeNote();
       return;
     }
 
@@ -570,6 +749,7 @@ async function loadDashboard() {
     renderCards(filteredCards());
     renderInfoPanels();
     updateMap(filteredCards());
+    updateDataScopeNote();
     statusText.textContent = formatMessage("activeEvents", { count: filteredCards().length });
     persistLocalVisitBaseline();
   } catch (error) {
@@ -589,6 +769,40 @@ function scheduleDashboardLoad() {
   }, 220);
 }
 
+function dataHealthMetric(name, fallback = 0) {
+  const metrics = state.dataHealth?.metrics;
+  const metric = Array.isArray(metrics) ? metrics.find((item) => item.name === name) : null;
+  const value = Number(metric?.count ?? metrics?.[name]);
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function visibleEventCount() {
+  return state.visibleCards.length || state.events.length || 0;
+}
+
+function publicFeedCount() {
+  return 100;
+}
+
+function operationalEventCount() {
+  return dataHealthMetric("urban_events", 745);
+}
+
+function officialNoticeCount() {
+  return dataHealthMetric("official_notices", 0);
+}
+
+function updateDataScopeNote() {
+  if (!dataScopeNote) {
+    return;
+  }
+  dataScopeNote.textContent = formatMessage("visibleDataSummary", {
+    visible: visibleEventCount(),
+    feed: publicFeedCount(),
+    total: operationalEventCount(),
+  });
+}
+
 async function buildCardModel(event) {
   const [lon, lat] = event.center || DEFAULT_CENTER;
   const params = new URLSearchParams({
@@ -603,7 +817,12 @@ async function buildCardModel(event) {
   if (state.poiTypeFilter !== "ALL") {
     params.set("poi_type", state.poiTypeFilter);
   }
-  const alternatives = await fetchJson(`${API_BASE}/api/v1/spatial/alternatives?${params}`);
+  let alternatives = [];
+  try {
+    alternatives = await fetchJson(`${API_BASE}/api/v1/spatial/alternatives?${params}`);
+  } catch (error) {
+    console.warn(`Alternatives unavailable for event ${event.id}: ${error.message}`);
+  }
   return {
     event,
     alternative: alternatives[0] || null,
@@ -626,7 +845,7 @@ function normalizeEvent(event) {
     rawDescription,
     title: normalizeEventTitle({ ...event, title: rawTitle }),
     description: cleanTitle(rawDescription || t("defaultDescription")),
-    severity: Number(event.severity || 1),
+    severity: finiteNumber(event.severity, 1),
   };
 }
 
@@ -648,7 +867,7 @@ function renderCards(cards) {
     return;
   }
   cards.forEach((card, index) => eventList.appendChild(createEventCard(card, index)));
-  selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false });
+  selectCard(Math.min(state.selectedCardIndex, Math.max(cards.length - 1, 0)), { flyTo: false, expandDetail: false });
 }
 
 function updateLocalDeltaNotice(cards = state.visibleCards) {
@@ -787,11 +1006,6 @@ function createEventCard(card, index) {
   const actionLabel = labelForAction(card.action);
   const impact = impactInfo(event);
   const alternativeName = displayAlternativeName(alternative, actionLabel || labelForPoi(alternative?.poi_type));
-  const sourceText = formatMessage("sourceLine", {
-    source: labelForSource(event.source),
-    updated: formatUpdated(event.updated_at || event.created_at),
-  });
-  const veracityText = veracityLabel(event);
   const alternativeSource = alternative
     ? formatMessage("alternativeSourceLine", { source: labelForSource(alternative.source) })
     : "";
@@ -800,11 +1014,6 @@ function createEventCard(card, index) {
   const cardTitle = showSeparateLocation ? event.title : eventLocation;
 
   article.innerHTML = `
-    <div class="source-strip">
-      <span>${escapeHtml(sourceText)}</span>
-      <span class="event-trust-line">${escapeHtml(veracityText)}</span>
-      <span>${escapeHtml(event.source_id || "")}</span>
-    </div>
     <div class="event-header">
       <div>
         <div class="event-type">
@@ -860,6 +1069,9 @@ function selectCard(index, options = {}) {
   });
   const card = state.visibleCards[state.selectedCardIndex];
   renderSelectedEvent(card);
+  if (options.expandDetail !== false) {
+    setDetailCollapsed(false);
+  }
   if (options.flyTo !== false && state.map && card?.event?.center) {
     state.map.flyTo({
       center: card.event.center,
@@ -886,12 +1098,20 @@ function renderSelectedEvent(card) {
     : t("dataAvailable");
   const actionLabel = labelForAction(card.action) || t("noAdminAction");
   const alternativeName = displayAlternativeName(alternative, labelForPoi(alternative?.poi_type));
-  const adminUrl = citizenActionUrl(card.action);
+  const adminUrl = citizenActionUrl(card.action, state.profile);
   const adminLinkLabel = labelForActionLink(card.action);
   const adminLink = adminUrl
     ? `<a class="detail-link primary-admin-link" href="${adminUrl}" target="_blank" rel="noopener">${escapeHtml(adminLinkLabel)}</a>`
     : "";
-  const adminDeepLink = `<p class="admin-deeplink">${escapeHtml(formatMessage("adminDeepLinkHint", { sourceId: event.source_id || event.id }))}</p>`;
+  const adminSection = adminUrl
+    ? `
+      <section class="detail-block">
+        <h3>${t("adminActionTitle")}</h3>
+        <p>${escapeHtml(actionLabel)}</p>
+        ${adminLink}
+      </section>
+    `
+    : "";
   const impact = impactInfo(event);
   const severityClass = event.severity >= 4 ? " is-high" : "";
   const veracityText = veracityLabel(event);
@@ -932,25 +1152,19 @@ function renderSelectedEvent(card) {
       <p><strong>${escapeHtml(alternativeName || t("noAlternative"))}</strong></p>
       <p>${alternative ? escapeHtml(`${distance} · ${places} · ${labelForPoi(alternative.poi_type)}`) : escapeHtml(t("noAlternative"))}</p>
     </section>
-    <section class="detail-block">
-      <h3>${t("adminActionTitle")}</h3>
-      <p>${escapeHtml(actionLabel)}</p>
-      ${adminDeepLink}
-      ${adminLink}
-    </section>
+    ${adminSection}
     <section class="detail-block">
       <h3>${t("feedbackQuestion")}</h3>
+      <p class="feedback-note">${t("feedbackHelp")}</p>
       <div class="detail-actions">
-        <button type="button" class="snapshot-button">${t("exportSnapshot")}</button>
         <div class="feedback-group" aria-label="${t("feedbackGroupLabel")}">
-          <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}"><span aria-hidden="true">+</span><span>${t("useful")}</span></button>
-          <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}"><span aria-hidden="true">-</span><span>${t("notUseful")}</span></button>
+          <button type="button" class="feedback-button" data-vote="1" aria-label="${t("useful")}">${t("useful")}</button>
+          <button type="button" class="feedback-button" data-vote="-1" aria-label="${t("notUseful")}">${t("notUseful")}</button>
         </div>
       </div>
     </section>
   `;
 
-  selectedEventPanel.querySelector(".snapshot-button").addEventListener("click", () => exportSnapshot(card));
   selectedEventPanel.querySelectorAll(".feedback-button").forEach((button) => {
     button.addEventListener("click", () => submitFeedback(button, card));
   });
@@ -983,7 +1197,7 @@ function mapSelectionOffset() {
 }
 
 function impactInfo(event) {
-  const severity = Number(event?.severity || 1);
+  const severity = finiteNumber(event?.severity, 1);
   const meters = Math.min(Math.max(severity * 100, 100), 500);
   let level = t("impactLow");
   if (severity >= 4) {
@@ -1022,29 +1236,6 @@ function profileAlternativeGuidance(card) {
   return t("alternativeGuidanceGeneric");
 }
 
-function zbeStatusLevel(badge) {
-  if (badge === "NONE") {
-    return "restricted";
-  }
-  if (badge === "UNKNOWN" || badge === "B") {
-    return "review";
-  }
-  return "allowed";
-}
-
-function zbeStatusText(badge) {
-  if (badge === "NONE") {
-    return t("zbeStatusRestricted");
-  }
-  if (badge === "B") {
-    return t("zbeStatusReviewB");
-  }
-  if (badge === "UNKNOWN") {
-    return t("zbeStatusUnknown");
-  }
-  return t("zbeStatusAllowed");
-}
-
 function renderEmpty(message) {
   eventList.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
   state.cards = [];
@@ -1072,7 +1263,7 @@ function cityPulseMetrics() {
 function datasetHealthRows() {
   const eventCount = state.events.length;
   const trafficCount = state.trafficEvents.length;
-  const noticeCount = 20;
+  const noticeCount = officialNoticeCount();
   return [
     {
       level: eventCount ? "good" : "warn",
@@ -1087,10 +1278,10 @@ function datasetHealthRows() {
       status: trafficCount ? t("sourceHealthGood") : t("sourceHealthQuiet"),
     },
     {
-      level: "review",
+      level: noticeCount ? "review" : "quiet",
       name: t("sourceHealthNoticesName"),
       detail: formatMessage("sourceHealthNoticesDetail", { count: noticeCount }),
-      status: t("sourceHealthDeferred"),
+      status: noticeCount ? t("sourceHealthDeferred") : t("sourceHealthQuiet"),
     },
   ];
 }
@@ -1100,7 +1291,6 @@ function renderInfoPanels() {
   const alternativeTypes = new Set(
     state.cards.map((card) => card.alternative?.poi_type).filter(Boolean),
   ).size;
-  const pulse = cityPulseMetrics();
 
   sourcesPanel.innerHTML = `
     <div class="panel-heading">
@@ -1108,6 +1298,7 @@ function renderInfoPanels() {
       <h2>${t("sourcesTitle")}</h2>
       <p>${formatMessage("sourcesIntro", { eventSources: eventSourceCount || 1, poiTypes: alternativeTypes || 0 })}</p>
     </div>
+    ${renderContestProof()}
     <section class="info-section">
       <h3>${t("sourcesWhyTitle")}</h3>
       <p class="info-copy">${t("sourcesWhyText")}</p>
@@ -1115,9 +1306,18 @@ function renderInfoPanels() {
     <div class="source-list">
       ${SOURCE_CATALOG.map((source) => `
         <article class="source-row">
-          <div>
-            <strong>${t(`sourceName_${source.id}`)}</strong>
-            <span>${t(`sourceDescription_${source.id}`)}</span>
+          <header class="source-row-head">
+            <div>
+              <strong>${t(`sourceName_${source.id}`)}</strong>
+              <span>${t(`sourceDescription_${source.id}`)}</span>
+            </div>
+            <a href="${source.url}" target="_blank" rel="noopener">${t("openSourceLink")}</a>
+          </header>
+          <div class="source-row-meta">
+            <small>${t(source.kindKey)}</small>
+            <small>${formatMessage(source.countKey || "datasetCount", { count: source.datasetCount })}</small>
+          </div>
+          <div class="source-row-body">
             <ul class="dataset-list">
               ${sourceDatasets(source.id).map((dataset) => `
                 <li>
@@ -1127,8 +1327,6 @@ function renderInfoPanels() {
               `).join("")}
             </ul>
           </div>
-          <small>${t(source.kindKey)} · ${formatMessage("datasetCount", { count: source.datasetCount })}</small>
-          <a href="${source.url}" target="_blank" rel="noopener">${t("openSourceLink")}</a>
         </article>
       `).join("")}
     </div>
@@ -1158,6 +1356,7 @@ function renderInfoPanels() {
       <h2>${t("methodologyTitle")}</h2>
       <p>${t("methodologyIntro")}</p>
     </div>
+    ${renderContestProof()}
     <ol class="method-list">
       <li>${t("methodStep1")}</li>
       <li>${t("methodStep2")}</li>
@@ -1189,32 +1388,16 @@ function renderInfoPanels() {
       <h2>${t("infoTitle")}</h2>
       <p>${t("infoIntro")}</p>
     </div>
+    ${renderContestProof()}
     <p class="info-copy">${t("projectPurpose")}</p>
-    <section class="urban-pulse" aria-label="${t("urbanPulseTitle")}">
-      <div>
-        <p class="eyebrow">${t("urbanPulseEyebrow")}</p>
-        <h3>${t("urbanPulseTitle")}</h3>
-        <p>${t("urbanPulseText")}</p>
-      </div>
-      <dl>
-        <div><dt>${t("urbanPulseAffectedStreets")}</dt><dd>${pulse.affectedStreets}</dd></div>
-        <div><dt>${t("urbanPulseDistricts")}</dt><dd>${pulse.districts}</dd></div>
-        <div><dt>${t("urbanPulseVerified")}</dt><dd>${pulse.verified}%</dd></div>
-      </dl>
+    <section class="info-section">
+      <h3>${t("visibleDataTitle")}</h3>
+      <p class="info-copy">${formatMessage("visibleDataText", {
+        visible: visibleEventCount(),
+        feed: publicFeedCount(),
+        total: operationalEventCount(),
+      })}</p>
     </section>
-    <div class="info-metrics">
-      <div><strong>663</strong><span>${t("metricEvents")}</span></div>
-      <div><strong>13.710</strong><span>${t("metricPois")}</span></div>
-      <div><strong>20</strong><span>${t("metricNotices")}</span></div>
-    </div>
-    <details class="info-accordion" open>
-      <summary>${t("journalismWidgetTitle")}</summary>
-      <p class="info-copy">${t("journalismWidgetText")}</p>
-    </details>
-    <details class="info-accordion" open>
-      <summary>${t("governanceReferenceTitle")}</summary>
-      <p class="info-copy">${t("governanceReferenceText")}</p>
-    </details>
     <details class="info-accordion" open>
       <summary>${t("limitationsTitle")}</summary>
       <ul class="limitation-list">
@@ -1232,8 +1415,38 @@ function renderInfoPanels() {
     <div class="info-links">
       <a href="${GITHUB_URL}" target="_blank" rel="noopener">${t("githubLink")}</a>
       <a href="${CONTEST_URL}" target="_blank" rel="noopener">${t("contestLink")}</a>
+      <a href="${RELEASE_URL}" target="_blank" rel="noopener">${t("releaseLink")}</a>
     </div>
   `;
+}
+
+function renderContestProof() {
+  const items = [
+    ["open-data", t("contestProofOpenDataTitle"), t("contestProofOpenDataText")],
+    ["reuse", t("contestProofReuseTitle"), t("contestProofReuseText")],
+    ["impact", t("contestProofImpactTitle"), t("contestProofImpactText")],
+    ["verification", t("contestProofVerificationTitle"), t("contestProofVerificationText")],
+  ];
+  return `
+    <section class="contest-proof" aria-label="${escapeHtml(t("contestProofLabel"))}">
+      ${items.map(([icon, title, text]) => `
+        <article>
+          <span class="proof-icon proof-${icon}" aria-hidden="true">${escapeHtml(proofIconLabel(icon))}</span>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${escapeHtml(text)}</p>
+        </article>
+      `).join("")}
+    </section>
+  `;
+}
+
+function proofIconLabel(icon) {
+  return {
+    "open-data": "DAT",
+    reuse: "REU",
+    impact: "IMP",
+    verification: "VER",
+  }[icon] || "AD";
 }
 
 function renderFaqItems() {
@@ -1246,6 +1459,20 @@ function renderFaqItems() {
       </article>
     `;
   }).join("");
+}
+
+function alternativeCountLabel(count) {
+  if (state.language === "val") {
+    return count === 1 ? "1 tipus d'alternativa calculada" : `${count} tipus d'alternatives calculades`;
+  }
+  return count === 1 ? "1 tipo de alternativa calculada" : `${count} tipos de alternativas calculadas`;
+}
+
+function sourceCountLabel(count) {
+  if (state.language === "val") {
+    return count === 1 ? "1 font d'esdeveniments" : `${count} fonts d'esdeveniments`;
+  }
+  return count === 1 ? "1 fuente de eventos" : `${count} fuentes de eventos`;
 }
 
 function updateMap(cards) {
@@ -1261,7 +1488,7 @@ function updateMap(cards) {
   ensureMapLayers();
   const visibleEventIds = new Set(cards.map(({ event }) => Number(event.id)));
   const visibleImpactZones = state.impactZones.filter((zone) => visibleEventIds.has(Number(zone.event_id)));
-  const relevantTrafficEvents = state.trafficEvents.filter((event) => Number(event.severity || 1) > 1);
+  const relevantTrafficEvents = state.trafficEvents.filter((event) => finiteNumber(event.severity, 1) > 1);
   setGeoJsonSource("impact-zones", featureCollection(visibleImpactZones.map(impactZoneFeature)));
   setGeoJsonSource("traffic-lines", featureCollection(relevantTrafficEvents.map(eventGeometryFeature).filter(Boolean)));
   setGeoJsonSource("event-points", featureCollection(cards.map(({ event }) => eventPointFeature(event)).filter(Boolean)));
@@ -1399,14 +1626,20 @@ function setupMapInteractions() {
     ["traffic-realtime", popupForTrafficLine],
   ].forEach(([layerId, popupBuilder]) => {
     state.map.on("click", layerId, (event) => {
+      event.preventDefault?.();
+      event.originalEvent?.stopPropagation?.();
       const feature = event.features?.[0];
       if (!feature) {
         return;
       }
-      new maplibregl.Popup({ closeButton: true, closeOnClick: true })
+      state.mapPopup?.remove();
+      state.mapPopup = new maplibregl.Popup({ closeButton: true, closeOnClick: true })
         .setLngLat(popupCoordinates(feature, event.lngLat))
         .setHTML(popupBuilder(feature.properties || {}))
         .addTo(state.map);
+      state.mapPopup.on("close", () => {
+        state.mapPopup = null;
+      });
     });
     state.map.on("mouseenter", layerId, () => {
       state.map.getCanvas().style.cursor = "pointer";
@@ -1444,7 +1677,7 @@ function popupForImpactZone(properties) {
   const impact = impactInfo({ severity: properties.severity });
   return popupHtml(t("legendImpact"), [
     `${labelForType(properties.event_type)} - ${impact.label}`,
-    formatMessage("popupImpactRadius", { meters: Math.round(Number(properties.buffer_distance || 0)) }),
+    formatMessage("popupImpactRadius", { meters: Math.round(finiteNumber(properties.buffer_distance, 0)) }),
     t("popupImpactHint"),
   ]);
 }
@@ -1497,7 +1730,57 @@ function reduceBaseMapVisualNoise() {
 }
 
 function featureCollection(features) {
-  return { type: "FeatureCollection", features };
+  return {
+    type: "FeatureCollection",
+    features: features.map(sanitizeGeoJsonFeature).filter(Boolean),
+  };
+}
+
+function sanitizeGeoJsonFeature(feature) {
+  if (!feature?.geometry) {
+    return null;
+  }
+  const geometry = sanitizeGeometry(feature.geometry);
+  if (!geometry) {
+    return null;
+  }
+  const properties = { ...(feature.properties || {}) };
+  Object.entries(NUMERIC_PROPERTY_DEFAULTS).forEach(([key, fallback]) => {
+    properties[key] = finiteNumber(properties[key], fallback);
+  });
+  return { ...feature, geometry, properties };
+}
+
+function sanitizeGeometry(geometry) {
+  if (!geometry?.type) {
+    return null;
+  }
+  if (geometry.type === "GeometryCollection") {
+    const geometries = (geometry.geometries || []).map(sanitizeGeometry).filter(Boolean);
+    return geometries.length ? { ...geometry, geometries } : null;
+  }
+  const coordinates = sanitizeCoordinates(geometry.coordinates);
+  return coordinates ? { ...geometry, coordinates } : null;
+}
+
+function sanitizeCoordinates(coordinates) {
+  if (!Array.isArray(coordinates)) {
+    return null;
+  }
+  if (typeof coordinates[0] === "number") {
+    const point = coordinates.map((value) => finiteNumber(value, null));
+    return point.every((value) => value !== null) ? point : null;
+  }
+  const nested = coordinates.map(sanitizeCoordinates).filter(Boolean);
+  return nested.length ? nested : null;
+}
+
+function finiteNumber(value, fallback = 0) {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 function impactZoneFeature(zone) {
@@ -1508,8 +1791,11 @@ function impactZoneFeature(zone) {
       id: zone.id,
       event_id: zone.event_id,
       event_type: zone.event_type,
-      severity: Number(zone.severity || 1),
-      buffer_distance: Number(zone.buffer_distance || 0),
+      severity: finiteNumber(zone.severity, 1),
+      severidad: finiteNumber(zone.severity, 1),
+      radius: finiteNumber(zone.buffer_distance, 0),
+      radio_impacto: finiteNumber(zone.buffer_distance, 0),
+      buffer_distance: finiteNumber(zone.buffer_distance, 0),
     },
   };
 }
@@ -1525,7 +1811,8 @@ function eventGeometryFeature(event) {
       id: event.id,
       type: event.type,
       type_label: labelForType(event.type),
-      severity: Number(event.severity || 1),
+      severity: finiteNumber(event.severity, 1),
+      severidad: finiteNumber(event.severity, 1),
     },
   };
 }
@@ -1541,7 +1828,8 @@ function eventPointFeature(event) {
       id: event.id,
       type: event.type,
       type_label: labelForType(event.type),
-      severity: Number(event.severity || 1),
+      severity: finiteNumber(event.severity, 1),
+      severidad: finiteNumber(event.severity, 1),
       marker_icon: eventMarkerIcon(event),
       title: event.title,
     },
@@ -1560,6 +1848,7 @@ function alternativeFeature(alternative) {
       poi_type: alternative.poi_type,
       name: alternative.name,
       accessible: Boolean(alternative.accessible),
+      distance_meters: finiteNumber(alternative.distance_meters, 0),
     },
   };
 }
@@ -1594,69 +1883,6 @@ async function submitFeedback(button, card) {
   }
 }
 
-async function exportSnapshot(card) {
-  const payload = buildSnapshotPayload(card);
-  const serialized = JSON.stringify(payload, null, 2);
-  const copied = await copyText(serialized);
-  showToast(copied ? t("snapshotCopied") : t("snapshotCopyFallback"));
-  vibrate(10);
-}
-
-function buildSnapshotPayload(card) {
-  const { event, alternative } = card;
-  const impact = impactInfo(event);
-  const snapshotUrl = `${window.location.origin}${window.location.pathname}#event-${event.id}`;
-  const alternativeName = displayAlternativeName(alternative, labelForPoi(alternative?.poi_type));
-  return {
-    title: "VLC PROACTIVA snapshot",
-    generated_at: new Date().toISOString(),
-    license: "CC-BY 4.0",
-    source_attribution: t("footerAttribution"),
-    event: {
-      id: event.id,
-      title: event.title,
-      type: labelForType(event.type),
-      status: event.status || "active",
-      impact: impact.label,
-      source: labelForSource(event.source),
-      source_id: event.source_id || null,
-      location: formatEventLocation(event),
-      updated: event.updated_at || event.created_at || null,
-      center: event.center || null,
-    },
-    alternative: alternative ? {
-      id: alternative.id,
-      name: alternativeName,
-      type: labelForPoi(alternative.poi_type),
-      distance_meters: Math.round(alternative.distance_meters || 0),
-      source: labelForSource(alternative.source),
-      accessible: Boolean(alternative.accessible),
-    } : null,
-    embed_html: `<iframe title="VLC PROACTIVA - ${escapeHtml(event.title)}" src="${snapshotUrl}" width="100%" height="520" loading="lazy"></iframe>`,
-  };
-}
-
-async function copyText(text) {
-  if (navigator.clipboard?.writeText) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch (error) {
-      // Fall through to the legacy path when browser permissions block clipboard.
-    }
-  }
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.left = "-9999px";
-  document.body.appendChild(textarea);
-  textarea.select();
-  const copied = document.execCommand("copy");
-  textarea.remove();
-  return copied;
-}
-
 async function fetchJson(url, options) {
   const response = await fetch(url, options);
   if (!response.ok) {
@@ -1688,7 +1914,7 @@ function labelForPoiFilter(type) {
 }
 
 function eventMarkerIcon(event) {
-  const severity = Number(event?.severity || 1);
+  const severity = finiteNumber(event?.severity, 1);
   if (severity >= 4) {
     return "vpro-event-high";
   }
@@ -1699,7 +1925,7 @@ function eventMarkerIcon(event) {
 }
 
 function eventMarkerClass(event) {
-  const severity = Number(event?.severity || 1);
+  const severity = finiteNumber(event?.severity, 1);
   if (severity >= 4) {
     return "is-high";
   }
@@ -1754,18 +1980,31 @@ function profileIcon(profile) {
   }[profile] || '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>';
 }
 
-function citizenActionUrl(action) {
+function citizenActionUrl(action, profile = state.profile) {
   const rawUrl = action?.payload?.url || action?.payload?.secondary_url;
-  if (!rawUrl || rawUrl === CONTEST_URL) {
+  if (!rawUrl || rawUrl === CONTEST_URL || !isMunicipalActionUrl(rawUrl)) {
+    return null;
+  }
+  const profiles = Array.isArray(action?.payload?.profiles) ? action.payload.profiles : [];
+  if (profiles.length > 0 && !profiles.includes(profile) && !profiles.includes("GENERIC")) {
     return null;
   }
   return rawUrl;
 }
 
+function isMunicipalActionUrl(rawUrl) {
+  try {
+    const url = new URL(rawUrl);
+    return url.hostname === "sede.valencia.es" || url.hostname === "www.valencia.es";
+  } catch (error) {
+    return false;
+  }
+}
+
 function selectActionForProfile(actions, profile, event = null) {
   return actions.find((action) => action.payload?.profiles?.includes(profile))
     || syntheticCommercialAction(profile, event)
-    || (profile === "COMMERCIAL" ? actions.find((action) => citizenActionUrl(action)) : null)
+    || (profile === "COMMERCIAL" ? actions.find((action) => citizenActionUrl(action, profile)) : null)
     || actions.find((action) => action.payload?.profiles?.includes("GENERIC"))
     || actions[0]
     || null;
@@ -1828,8 +2067,12 @@ function cleanTitle(value) {
   return String(value).replace(/\s+/g, " ").trim();
 }
 
+function cleanDisplayPlace(value) {
+  return cleanTitle(value).replace(/\s+0$/u, "");
+}
+
 function normalizeEventTitle(event) {
-  const title = cleanTitle(event.title || "");
+  const title = cleanDisplayPlace(event.title || "");
   if (!title || title.toLowerCase() === "sin titulo") {
     return labelForType(event.type);
   }
@@ -1869,6 +2112,15 @@ function t(key) {
   return state.messages[key] || key;
 }
 
+function readableMessage(key, fallback = "") {
+  const message = t(key);
+  if (message && message !== key) {
+    return message;
+  }
+  const cleanFallback = String(fallback || "").trim();
+  return cleanFallback && cleanFallback !== key ? cleanFallback : "";
+}
+
 function formatMessage(key, values) {
   return Object.entries(values).reduce(
     (message, [name, value]) => message.replaceAll(`{${name}}`, String(value)),
@@ -1895,7 +2147,7 @@ function formatUpdated(value) {
 function formatEventLocation(event) {
   const label = event?.location_label || event?.extra_data?.location_label;
   if (typeof label === "string" && label.trim()) {
-    return label.trim();
+    return cleanDisplayPlace(label);
   }
   return t("unknownLocation");
 }

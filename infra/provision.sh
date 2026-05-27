@@ -45,6 +45,7 @@ fi
 
 install -d -o "${VPRO_USER}" -g "${VPRO_USER}" "${APP_DIR}"
 install -d -o "${VPRO_USER}" -g "${VPRO_USER}" "${WEB_DIR}"
+install -d -o "${VPRO_USER}" -g "${VPRO_USER}" "${WEB_DIR}/exports"
 install -d -o "${VPRO_USER}" -g "${VPRO_USER}" /var/log/vpro
 install -d -m 0750 /etc/vpro
 

@@ -1,6 +1,7 @@
 import { chromium } from "playwright";
 
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_API_BASE = process.env.FRONTEND_API_BASE || "";
 
 async function runViewport(browser, name, viewport, isMobile = false) {
   const page = await browser.newPage({
@@ -13,6 +14,11 @@ async function runViewport(browser, name, viewport, isMobile = false) {
 
   page.on("console", (msg) => messages.push(`${msg.type()}: ${msg.text()}`));
   page.on("pageerror", (err) => messages.push(`pageerror: ${err.message}`));
+  await page.addInitScript((apiBase) => {
+    if (apiBase) {
+      localStorage.setItem("vpro_api_base", apiBase);
+    }
+  }, FRONTEND_API_BASE);
 
   await page.goto(FRONTEND_URL, { waitUntil: "networkidle", timeout: 30000 });
   await page.evaluate(() => {
@@ -20,21 +26,45 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     localStorage.setItem("vpro_alert_mode", "false");
     localStorage.setItem("vpro_last_seen_at", "2000-01-01T00:00:00.000Z");
     localStorage.setItem("vpro_last_seen_profile", "PMR");
+    localStorage.removeItem("vpro_detail_collapsed");
+    localStorage.removeItem("vpro_legend_collapsed");
+    localStorage.removeItem("vpro_poi_type");
   });
   await page.reload({ waitUntil: "networkidle" });
+  await page.locator("#languageToggle").click();
   await page.locator("[data-lang='val']").click();
-  await page.locator("h1").filter({ hasText: "El que està passant prop" }).waitFor({ timeout: 5000 });
-  await page.locator(".source-strip").first().waitFor({ timeout: 10000 });
-  await page.locator("#vehicleBadge").selectOption("NONE");
-  await page.locator("#zbeVehicleResult").filter({ hasText: "Restricció probable" }).waitFor({ timeout: 5000 });
+  await page.waitForFunction(() => document.documentElement.lang === "val", null, { timeout: 5000 });
+  await page.locator(".event-card").first().waitFor({ timeout: 10000 });
+  const entryDensityState = await page.evaluate(() => {
+    const detailRail = document.querySelector(".detail-rail");
+    const mapHelp = document.querySelector(".map-help");
+    const assistPanel = document.querySelector(".assist-panel");
+    const sourceNote = document.querySelector(".source-note");
+    return {
+      detailCollapsed: detailRail?.classList.contains("is-collapsed"),
+      detailExpanded: document.querySelector("#detailPanelToggle")?.getAttribute("aria-expanded"),
+      legendCollapsed: document.querySelector("#mapLegend")?.classList.contains("is-collapsed"),
+      quickFiltersOpen: document.querySelector(".quick-filters")?.open,
+      mapHelpDisplay: mapHelp ? getComputedStyle(mapHelp).display : "",
+      assistDisplay: assistPanel ? getComputedStyle(assistPanel).display : "",
+      sourceNoteDisplay: sourceNote ? getComputedStyle(sourceNote).display : "",
+    };
+  });
+  if (!entryDensityState.detailCollapsed || entryDensityState.detailExpanded !== "false" || !entryDensityState.legendCollapsed || entryDensityState.quickFiltersOpen || entryDensityState.mapHelpDisplay !== "none") {
+    throw new Error(`Entry view is too dense: ${JSON.stringify(entryDensityState)}`);
+  }
+  if (name === "desktop" && (entryDensityState.assistDisplay !== "none" || entryDensityState.sourceNoteDisplay !== "none")) {
+    throw new Error(`Desktop entry rail still shows secondary panels: ${JSON.stringify(entryDensityState)}`);
+  }
   await page.locator("#alertModeToggle").click();
   await page.locator("#toast").filter({ hasText: "Mode alerta preparat" }).waitFor({ timeout: 5000 });
+  await page.locator(".quick-filters summary").click();
   await page.locator("[data-poi-filter='VALENBISI']").click();
   await page.locator(".event-card").first().waitFor({ timeout: 5000 });
   await page.locator(".event-card").nth(1).click();
   await page.locator(".event-card").nth(1).evaluate((card) => card.dataset.selected === "true");
   await page.locator("[data-view='sources']").click();
-  await page.locator("#sourcesPanel").filter({ hasText: "Governança proactiva" }).waitFor({ timeout: 5000 });
+  await page.locator("#sourcesPanel").filter({ hasText: "Per a què servix" }).waitFor({ timeout: 5000 });
   const sourcesPanelState = await page.evaluate(() => ({
     eventsHidden: document.querySelector("#events")?.hidden,
     sourcesVisible: !document.querySelector("#sourcesPanel")?.hidden,
@@ -97,7 +127,10 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   await page.waitForFunction(() => Boolean(window.vproDebug?.map?.getLayer("alternative-points")), null, { timeout: 12000 });
   await page.waitForTimeout(500);
   await page.waitForFunction(
-    () => (window.vproDebug?.map?.querySourceFeatures("event-points") || []).length > 0,
+    () => {
+      const source = window.vproDebug?.map?.getSource("event-points");
+      return (source?._data?.geojson?.features || source?._data?.features || []).length > 0;
+    },
     null,
     { timeout: 5000 },
   );
@@ -131,10 +164,8 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     await page.locator(".maplibregl-popup-content").first().waitFor({ timeout: 5000 });
   }
   await page.locator("#toggleMap").click();
-  await page.locator("#selectedEventPanel .snapshot-button").click();
-  await page.locator("#toast").filter({ hasText: "Snapshot periodístic copiat" }).waitFor({ timeout: 5000 });
   await page.locator("#selectedEventPanel .feedback-button[data-vote='1']").click();
-  await page.locator("#toast").filter({ hasText: "Feedback registrat" }).waitFor({ timeout: 5000 });
+  await page.locator("#toast").filter({ hasText: "Valoració registrada" }).waitFor({ timeout: 5000 });
 
   const data = await page.evaluate(() => ({
     title: document.title,
@@ -155,11 +186,13 @@ async function runViewport(browser, name, viewport, isMobile = false) {
     localDeltaTimestamp: localStorage.getItem("vpro_last_seen_at"),
     eventCardVeracityBadges: document.querySelectorAll(".event-card .veracity-badge").length,
     sourceDatasetCount: document.querySelectorAll("#sourcesPanel .dataset-list li").length,
+    sourceLinkCount: document.querySelectorAll("#sourcesPanel .source-row-head a").length,
+    contestProofText: document.querySelector("#sourcesPanel .contest-proof")?.textContent,
     sourceHealthText: document.querySelector(".source-health")?.textContent,
-    profileImpact: document.querySelector("#profileImpact")?.textContent,
-    zbeResult: document.querySelector("#zbeVehicleResult")?.textContent,
+    profileTooltips: Array.from(document.querySelectorAll("[data-profile]")).map((button) => button.dataset.tooltip),
+    zbeVisible: Boolean(document.querySelector(".zbe-checker:not([hidden])")),
     routeButtons: document.querySelectorAll(".route-button").length,
-    snapshotText: document.querySelector(".snapshot-button")?.textContent,
+    snapshotButtons: document.querySelectorAll(".snapshot-button").length,
     googleMention: document.body.textContent.includes("Google"),
     veracityText: document.querySelector(".veracity-badge")?.textContent,
     temporalImpact: document.querySelector(".detail-list")?.textContent,
@@ -217,7 +250,7 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       };
     })(),
     modeGuidance: document.querySelector(".mode-guidance")?.textContent,
-    urbanPulseText: document.querySelector(".urban-pulse")?.textContent,
+    visibleDataText: document.querySelector("#additionalInfoPanel .info-section")?.textContent,
     faqText: document.querySelector(".faq-list")?.textContent,
     faqItems: document.querySelectorAll(".faq-list .faq-item").length,
     adminDeepLinkText: document.querySelector(".admin-deeplink")?.textContent,
@@ -272,14 +305,17 @@ async function runViewport(browser, name, viewport, isMobile = false) {
   if (data.sourceDatasetCount < 10) {
     throw new Error(`Expected detailed source datasets, got ${data.sourceDatasetCount}`);
   }
+  if (data.sourceLinkCount < 3 || !data.contestProofText?.includes("Dades obertes") || !data.tabs?.includes("Informació")) {
+    throw new Error(`Informational evidence layout is missing: ${JSON.stringify({ sourceLinkCount: data.sourceLinkCount, contestProofText: data.contestProofText, tabs: data.tabs })}`);
+  }
   if (data.faqItems < 8 || !data.faqText?.includes("Quin perfil trie") || !data.faqText?.includes("Com llisc una targeta") || !data.faqText?.includes("Quan he de canviar")) {
     throw new Error(`First-visit FAQ is too thin: ${JSON.stringify({ faqItems: data.faqItems, faqText: data.faqText })}`);
   }
-  if (!data.sourceHealthText?.includes("EMT") || !data.urbanPulseText?.includes("Salut operativa")) {
-    throw new Error(`Missing source health or urban pulse: ${JSON.stringify({ sourceHealthText: data.sourceHealthText, urbanPulseText: data.urbanPulseText })}`);
+  if (!data.sourceHealthText?.includes("EMT") || !data.visibleDataText?.includes("feed públic") || !data.visibleDataText?.includes("base operativa")) {
+    throw new Error(`Missing source health or visible-data explanation: ${JSON.stringify({ sourceHealthText: data.sourceHealthText, visibleDataText: data.visibleDataText })}`);
   }
-  if (!data.adminDeepLinkText?.includes("Burocràcia zero")) {
-    throw new Error(`Missing zero-bureaucracy admin note: ${data.adminDeepLinkText}`);
+  if (data.adminDeepLinkText) {
+    throw new Error(`Internal admin/deeplink hint should not be visible: ${data.adminDeepLinkText}`);
   }
   if (data.routeButtons !== 0 || data.googleMention) {
     throw new Error(`Google Maps route action should not be visible: ${JSON.stringify({ routeButtons: data.routeButtons, googleMention: data.googleMention })}`);
@@ -294,11 +330,14 @@ async function runViewport(browser, name, viewport, isMobile = false) {
       timestamp: data.localDeltaTimestamp,
     })}`);
   }
-  if (!data.snapshotText?.includes("snapshot")) {
-    throw new Error("Journalism snapshot action is missing");
+  if (data.snapshotButtons !== 0) {
+    throw new Error(`Copy ficha action should be removed from the main detail: ${data.snapshotButtons}`);
   }
-  if (!data.zbeResult?.includes("Restricció probable") || !data.modeGuidance?.includes("places PMR")) {
-    throw new Error(`Missing ZBE or modal guidance: ${JSON.stringify({ zbeResult: data.zbeResult, modeGuidance: data.modeGuidance })}`);
+  if (data.zbeVisible || !data.modeGuidance?.includes("places PMR")) {
+    throw new Error(`ZBE checker should be hidden and modal guidance preserved: ${JSON.stringify({ zbeVisible: data.zbeVisible, modeGuidance: data.modeGuidance })}`);
+  }
+  if (!data.profileTooltips?.some((text) => text?.includes("accessibles"))) {
+    throw new Error(`Profile help tooltips are missing: ${JSON.stringify(data.profileTooltips)}`);
   }
   if (data.alertMode !== "prepared" || !data.veracityText?.includes("Verificat per")) {
     throw new Error(`Missing alert/veracity signals: ${JSON.stringify({ alertMode: data.alertMode, veracityText: data.veracityText })}`);

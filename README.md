@@ -10,6 +10,7 @@
 - Salud de datos: [`https://vlcproactiva.es/exports/data_health.json`](https://vlcproactiva.es/exports/data_health.json)
 - Feed reutilizable: [`https://vlcproactiva.es/exports/latest_events.json`](https://vlcproactiva.es/exports/latest_events.json)
 - Repositorio público de candidatura: [`Huntsman1756/Valencia_Proactiva`](https://github.com/Huntsman1756/Valencia_Proactiva)
+- Release AD.TR.15: [`v1.0-adtr15`](https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15)
 
 ## 🎯 Idea
 Transformar el Portal de Datos Abiertos de Valencia de una herramienta **pasiva** (consultar datos) a una plataforma **proactiva** (la ciudad avisa y sugiere qué hacer). Cada interrupción urbana (obra, evento, corte de tráfico) desencadena un bucle:
@@ -91,7 +92,7 @@ docker compose -f infra/docker-compose.yml exec api python -m scripts.run_ingest
 
 ## Publicación pública segura
 
-El repositorio público de candidatura es [`Huntsman1756/Valencia_Proactiva`](https://github.com/Huntsman1756/Valencia_Proactiva). Antes de usarlo como enlace final de concurso debe estar sincronizado con esta release local auditada y no debe incluir `.env`, claves, IP del VPS, ID de proveedor, datos administrativos de la solicitud ni documentación personal.
+El repositorio público de candidatura es [`Huntsman1756/Valencia_Proactiva`](https://github.com/Huntsman1756/Valencia_Proactiva) y la entrega AD.TR.15 queda identificada con la release [`v1.0-adtr15`](https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15). No debe incluir `.env`, claves, IP del VPS, ID de proveedor, datos administrativos de la solicitud ni documentación personal.
 
 Si el repositorio privado de trabajo ha contenido secretos en cualquier commit, **no debe hacerse público tal cual**. La publicación recomendada para AD.TR.15 es crear o mantener un repositorio público con historial limpio, copiando solo el estado auditado y publicable del proyecto. Cualquier secreto que haya estado en GitHub debe rotarse antes de publicar.
 

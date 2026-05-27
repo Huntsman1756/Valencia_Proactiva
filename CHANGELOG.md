@@ -5,6 +5,50 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 
 ## [Unreleased]
 
+### Changed - QA crítico AD.TR.15 - 2026-05-27
+- Accesibilidad: controles, pills, summaries, enlaces y controles de mapa pasan a `min-height: 44px`; el foco se recentra para no quedar fuera del viewport móvil.
+- Datos/mapa: las features GeoJSON se sanean antes de pintar MapLibre y el mapa base pasa a raster OSM para evitar warnings `Expected value to be of type number, but found null instead`.
+- Copy concurso: la entrada muestra el caso de uso "obra cerca -> impacto -> alternativa PMR/comercio" y las métricas `6 visibles / 100 feed / 745 base operativa` quedan explicadas juntas.
+- Entrega: README, memoria y web enlazan la release pública `v1.0-adtr15`; CSP permite el mapa base raster.
+- Tests: smoke Playwright producción verde; auditoría móvil con 0 targets <44px y foco dentro del viewport.
+
+### Changed - Pestañas informativas AD.TR.15 - 2026-05-27
+- Frontend: `Info` pasa a `Información` / `Informació` en la navegación.
+- Frontend: `Fuentes`, `Metodología` e `Información` incorporan una banda de criterios AD.TR.15: datos abiertos, reutilización, impacto local y verificación.
+- Frontend: `Fuentes` reorganiza cada bloque con CTA junto al título, metadatos como chips y datasets en columnas para evitar enlaces flotando en una zona vacía.
+- UX: al abrir una pestaña informativa se vuelve al inicio de la página para no caer a mitad del contenido.
+
+### Changed - Entrada progresiva de Eventos - 2026-05-27
+- Frontend: la vista inicial reduce saturacion informativa; el detalle inferior, la leyenda y el bloque de alternativas aparecen plegados por defecto.
+- Frontend: en desktop se ocultan el panel de bienvenida y la nota lateral de fuente para dejar como foco inicial perfil, mapa y eventos cercanos.
+- Tests: el smoke Playwright valida que la entrada no muestre ayuda secundaria, filtros abiertos ni detalle expandido antes de una interaccion.
+
+### Changed - Segunda limpieza de Eventos - 2026-05-26
+- Frontend: se retira el CTA visible de copiar ficha del detalle principal; la reutilizacion periodistica queda en exports publicos, no como accion ciudadana primaria.
+- Frontend: modo claro/oscuro usa iconos de sol/luna, el contador superior pasa a Mostrando {count} eventos actualizados y se elimina la ayuda redundante de alternativas.
+- Frontend: los enlaces de tramite/referencia solo aparecen cuando la accion seleccionada trae una URL municipal reconocible y compatible con el perfil activo.
+- Frontend: Fuentes, Metodologia e Info centran el contenido dentro de la pestana a pagina completa.
+- Frontend: el desplegable de idioma fuerza etiquetas legibles en sus opciones y evita pintar claves i18n; la bandeja de eventos del mapa expandido mantiene contraste en modo oscuro.
+- Copy: textos de Fuentes, Metodologia e Info se simplifican para explicar datos usados, calculo y limites sin tono de candidatura.
+
+### Changed - Limpieza de pestaña Eventos - 2026-05-26
+- Frontend: selector de idioma sustituido por desplegable con bandera/idioma activo y opciones Castellano/Valencià; las pestañas actualizan el hash de la URL y la marca vuelve a `Eventos`.
+- Frontend: se retiran de la vista visible los switches `Vista resumida`/`Mostrar ZBE` y el comprobador de distintivo ambiental; el perfil queda como control principal y las alternativas como override explícito.
+- Frontend: tarjetas de eventos más limpias, sin tira de fuente/source_id; la fuente queda en el detalle.
+- Frontend: popups del mapa usan una única instancia y tienen contraste correcto en modo noche; la leyenda del mapa se puede ocultar/mostrar.
+- Frontend: `Exportar snapshot` pasa a `Copiar ficha` y copia texto legible; feedback cambia a `Me ayuda` / `No me ayuda` con explicación de voto anónimo agregado.
+- Copy: cabecera sin `producción`, estado superior más corto, `Info` elimina métricas agregadas poco explicadas y referencias `Estonia/X-Road`; `Metodología` sustituye `Digital Twin` por modelo espacial simplificado.
+
+### Changed - Pasada UI informativa y control de mapa - 2026-05-24
+- Frontend: el boton `Expandir` del mapa reserva espacio frente al panel derecho de eventos y recupera ancho util en vista expandida.
+- Frontend: el bloque de feedback en `Fuentes` se renombra como datos derivados VLC PROACTIVA y declara `3 artefactos` (`impact_zones.geojson`, `mitigation_actions.csv`, `feedback_aggregated.csv`) en vez de `1 dataset`.
+- Frontend: el saludo lateral cambia de `Hola` a una senal operativa de ciudad (`Valencia ahora` / `Valencia ara`) para reducir tono conversacional y reforzar contexto civico.
+- Frontend: QA de produccion ajusta el panel inferior para no invadir el carril derecho y oculta sufijos de portal tipo numero `0` en nombres de calle.
+- Frontend: los textos publicos retiran `demo local` y `API local`; produccion se presenta como servicio experimental operativo sin perder el aviso de que no sustituye fuentes oficiales.
+- Frontend: los fallos puntuales o rate-limit de `/spatial/alternatives` ya no tumban toda la vista de eventos; la tarjeta queda visible sin alternativa cercana si ese endpoint falla.
+- Infra: el deploy estatico excluye `/exports/` para no borrar los JSON publicos generados por `vpro-export.service`, y Nginx devuelve 404 real si falta un fichero bajo `/exports/`.
+- Infra: `config/nginx/prod.conf` declara explicitamente HTTPS con los certificados de Let's Encrypt existentes para no depender de ediciones manuales de Certbot fuera del repo.
+
 ### Changed - Checklist candidatura y repo publico - 2026-05-24
 - Concurso: añadido `docs/concurso/checklist-candidatura-adtr15.md` con matriz de requisitos, evidencias de producción, criterios de valoración y pendientes de Sede Electrónica.
 - Docs: README, memoria, arquitectura y guion de vídeo quedan alineados con `https://vlcproactiva.es`, Let's Encrypt, systemd timers y repositorio público `Huntsman1756/Valencia_Proactiva`.

@@ -97,13 +97,18 @@ sudo systemctl enable --now vpro-export.timer
 ## 4. Frontend y exports
 
 ```bash
-sudo rsync -az --delete /opt/vpro/src/frontend/ /var/www/vpro/
 sudo mkdir -p /var/www/vpro/exports
+sudo chown -R vpro:vpro /var/www/vpro/exports
+sudo rsync -az --delete --exclude "exports/" /opt/vpro/src/frontend/ /var/www/vpro/
 cd /opt/vpro
 . .venv/bin/activate
 python -m src.scripts.export_derived_data
-sudo rsync -az --delete /opt/vpro/exports/ /var/www/vpro/exports/
 ```
+
+No ejecutar `rsync --delete` sobre `/var/www/vpro/` sin excluir `exports/`.
+En produccion `vpro-export.service` escribe directamente en
+`/var/www/vpro/exports`; si el despliegue estatico borra ese directorio,
+los JSON publicos desaparecen hasta la siguiente exportacion.
 
 Los permalinks publicos quedan bajo:
 
