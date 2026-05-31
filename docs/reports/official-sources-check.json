@@ -1,0 +1,93 @@
+﻿[
+  {
+    "key": "valencia_rss_catalog",
+    "name": "Servicios RSS Ayuntamiento",
+    "url": "https://www.valencia.es/cas/atencion-ciudadana/servicios-rss",
+    "classification": "official_feed_catalog",
+    "status_code": 404,
+    "final_url": "https://www.valencia.es/cas/atencion-ciudadana/servicios-rss",
+    "content_type": "text/html;charset=UTF-8",
+    "reachable": true,
+    "machine_readable": false,
+    "record_count": null,
+    "note": "http_404"
+  },
+  {
+    "key": "valencia_agenda_city",
+    "name": "Agenda de la Ciudad",
+    "url": "http://www.valencia.es/ayuntamiento/agenda_accesible.nsf/agenda.xml",
+    "classification": "official_public_info",
+    "status_code": 200,
+    "final_url": "https://www.valencia.es/val/agenda-de-la-ciutat",
+    "content_type": "text/html;charset=UTF-8",
+    "reachable": true,
+    "machine_readable": false,
+    "record_count": null,
+    "note": "html_fallback"
+  },
+  {
+    "key": "valencia_news",
+    "name": "Noticias Ayuntamiento",
+    "url": "http://www.valencia.es/valencia/noticias/rss/index.htm?lang=1",
+    "classification": "official_public_info",
+    "status_code": 200,
+    "final_url": "https://www.valencia.es/val/actualitat",
+    "content_type": "text/html;charset=UTF-8",
+    "reachable": true,
+    "machine_readable": false,
+    "record_count": null,
+    "note": "html_fallback"
+  },
+  {
+    "key": "emt_estado_servicio",
+    "name": "EMT Valencia estado del servicio",
+    "url": "https://www.emtvalencia.es/wp/wp-json/wp/v2/estado-servicio?per_page=5",
+    "classification": "official_public_info",
+    "status_code": 200,
+    "final_url": "https://www.emtvalencia.es/wp/wp-json/wp/v2/estado-servicio?per_page=5",
+    "content_type": "application/json; charset=UTF-8",
+    "reachable": true,
+    "machine_readable": true,
+    "record_count": 5,
+    "note": "ok"
+  },
+  {
+    "key": "emt_posts",
+    "name": "EMT Valencia noticias",
+    "url": "https://www.emtvalencia.es/wp/wp-json/wp/v2/posts?per_page=5",
+    "classification": "official_public_info",
+    "status_code": 200,
+    "final_url": "https://www.emtvalencia.es/wp/wp-json/wp/v2/posts?per_page=5",
+    "content_type": "application/json; charset=UTF-8",
+    "reachable": true,
+    "machine_readable": true,
+    "record_count": 5,
+    "note": "ok"
+  },
+  {
+    "key": "cultural_valencia_agenda",
+    "name": "Cultural Valencia agenda",
+    "url": "https://cultural.valencia.es/agenda/",
+    "classification": "official_public_info",
+    "status_code": 200,
+    "final_url": "https://cultural.valencia.es/agenda/",
+    "content_type": "text/html; charset=UTF-8",
+    "reachable": true,
+    "machine_readable": false,
+    "record_count": null,
+    "note": "html_fallback"
+  },
+  {
+    "key": "cultural_valencia_rest_types",
+    "name": "Cultural Valencia REST API",
+    "url": "https://cultural.valencia.es/wp-json/wp/v2/types",
+    "classification": "official_public_info",
+    "status_code": 401,
+    "final_url": "https://cultural.valencia.es/wp-json/wp/v2/types",
+    "content_type": "application/json; charset=UTF-8",
+    "reachable": true,
+    "machine_readable": true,
+    "record_count": 3,
+    "note": "http_401"
+  }
+]

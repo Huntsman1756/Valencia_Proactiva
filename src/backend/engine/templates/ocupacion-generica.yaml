@@ -1,0 +1,19 @@
+{
+  "id": "ocupacion-generica",
+  "when": {
+    "event_type": "OCUPACION",
+    "severity_lte": 2
+  },
+  "actions": [
+    {
+      "action_type": "INFORMATION",
+      "title": "Consulta la afeccion antes de desplazarte",
+      "description": "La incidencia es leve, pero puede afectar al acceso inmediato.",
+      "priority": 35,
+      "profiles": ["GENERIC"],
+      "payload": {
+        "url": "https://www.valencia.es/cas/tramites/cita-previa"
+      }
+    }
+  ]
+}

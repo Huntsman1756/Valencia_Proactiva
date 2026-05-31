@@ -1,0 +1,19 @@
+{
+  "id": "bici-ocupacion",
+  "when": {
+    "event_type": "OCUPACION",
+    "severity_gte": 1
+  },
+  "actions": [
+    {
+      "action_type": "ROUTE_CHANGE",
+      "title": "Desvio ciclista recomendado",
+      "description": "Comprueba el mapa y evita cruzar la zona de trabajos.",
+      "priority": 60,
+      "profiles": ["CYCLIST"],
+      "payload": {
+        "url": "https://www.valencia.es/agenciabici/es/red-de-itinerarios-ciclistas"
+      }
+    }
+  ]
+}

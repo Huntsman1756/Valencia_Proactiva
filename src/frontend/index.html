@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f6f8">
+    <title>València Proactiva</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d3b66'/%3E%3Cpath d='M16 5a8 8 0 0 0-8 8c0 5.5 8 14 8 14s8-8.5 8-14a8 8 0 0 0-8-8Zm0 11.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Z' fill='%23fff'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="./assets/app.css?v=20260529-public-data-copy">
+  </head>
+  <body>
+    <main class="app-shell" aria-live="polite">
+      <header class="civic-header">
+        <a class="brand" href="#events" aria-label="València Proactiva">
+          <span class="brand-mark" aria-hidden="true">V</span>
+          <span class="brand-copy">
+            <strong data-i18n="brandName">Valencia Proactiva</strong>
+            <span class="brand-tagline" data-i18n="heroSubtitle">Dato oficial → impacto estimado → alternativa verificable</span>
+            <em class="sync-chip" data-i18n="syncStatus">Datos oficiales cargados</em>
+          </span>
+        </a>
+
+        <nav class="section-nav view-tabs" aria-label="Secciones" data-i18n-attr="aria-label:viewTabsLabel">
+          <button type="button" data-view="events" aria-pressed="true" data-i18n="tabEvents">Eventos</button>
+          <button type="button" data-view="sources" aria-pressed="false" data-i18n="tabSources">Fuentes</button>
+          <button type="button" data-view="methodology" aria-pressed="false" data-i18n="tabMethodology">Metodología</button>
+          <button type="button" data-view="info" aria-pressed="false" data-i18n="tabInfo">Información</button>
+        </nav>
+
+        <div class="header-actions">
+          <p id="statusText" class="data-status" data-i18n="loading">Cargando eventos...</p>
+          <button id="alertModeToggle" class="alert-mode-toggle" type="button" aria-pressed="false" data-i18n-attr="aria-label:alertModeLabel">
+            <span aria-hidden="true" data-i18n="alertModeShort">Alerta</span>
+          </button>
+          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false" data-i18n-attr="aria-label:themeToggleLabel">
+            <span aria-hidden="true">☾</span>
+          </button>
+          <div class="language-menu" aria-label="Idioma" data-i18n-attr="aria-label:languageSelectorLabel">
+            <button id="languageToggle" class="language-toggle" type="button" aria-haspopup="menu" aria-expanded="false">
+              <span class="flag-icon flag-es" aria-hidden="true"></span>
+              <span id="languageCurrent">Castellano</span>
+            </button>
+            <div id="languageOptions" class="language-options" role="menu" hidden>
+              <button type="button" role="menuitemradio" data-lang="es" aria-checked="true">
+                <span class="flag-icon flag-es" aria-hidden="true"></span>
+                <span data-i18n="languageSpanish">Castellano</span>
+              </button>
+              <button type="button" role="menuitemradio" data-lang="val" aria-checked="false">
+                <span class="flag-icon flag-val" aria-hidden="true"></span>
+                <span data-i18n="languageValencian">Valencià</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <section class="events-context-bar" aria-labelledby="eventsContextTitle">
+          <div>
+            <h1 id="eventsContextTitle" data-i18n="eventsContextTitle">Eventos urbanos con alternativa calculada</h1>
+            <p data-i18n="eventsContextText">Fuente oficial municipal · impacto orientativo · evidencia reutilizable</p>
+          </div>
+          <div class="context-actions" aria-label="Acciones de contexto">
+            <button type="button" data-view-target="methodology" data-i18n="heroCtaMethodology">Ver metodología</button>
+            <button type="button" data-view-target="info" data-i18n="auditDeliverablesAction">Auditar entregables</button>
+          </div>
+        </section>
+
+        <aside class="left-rail" aria-label="Panel de configuración" data-i18n-attr="aria-label:leftRailLabel">
+          <section class="rail-section search-panel">
+            <label for="eventSearch" data-i18n="searchLabel">Buscar</label>
+            <input id="eventSearch" type="search" autocomplete="off" data-i18n-attr="placeholder:searchPlaceholder" placeholder="Buscar evento o calle oficial de València...">
+            <div id="streetSearchResults" class="street-search-results" hidden></div>
+          </section>
+
+          <section class="rail-section profile-panel">
+            <h2 data-i18n="profileTitle">Perfil afectado</h2>
+            <nav class="profile-selector" aria-label="Perfil de movilidad" data-i18n-attr="aria-label:profileSelectorLabel">
+              <button type="button" data-profile="GENERIC"></button>
+              <button type="button" data-profile="COMMERCIAL"></button>
+              <button type="button" data-profile="PMR"></button>
+              <button type="button" data-profile="CYCLIST"></button>
+              <button type="button" data-profile="PUBLIC_TRANSPORT"></button>
+            </nav>
+          </section>
+
+          <section id="events" class="event-list view-panel" data-panel="events" aria-label="Acontecimientos activos" data-i18n-attr="aria-label:eventListLabel">
+            <header class="section-heading">
+              <div>
+                <p class="eyebrow" data-i18n="eyebrow">Valencia ahora</p>
+                <h2 data-i18n="eventsNearbyTitle">Eventos cercanos</h2>
+              </div>
+              <span id="eventCountBadge" class="event-count-badge">0</span>
+              <button id="eventPanelToggle" type="button" class="event-panel-toggle" aria-expanded="true" data-i18n="collapseEvents">Contraer eventos</button>
+            </header>
+            <div id="eventList" class="event-stack"></div>
+          </section>
+
+          <section class="rail-section compact-filters" aria-label="Filtros de eventos">
+            <label class="filter-check">
+              <input id="withAlternativeFilter" type="checkbox">
+              <span data-i18n="filterOnlyAlternative">Solo con alternativa</span>
+            </label>
+          </section>
+
+          <section class="rail-section source-note">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div>
+              <h2 data-i18n="sourceNoteTitle">Datos actualizados</h2>
+              <p data-i18n="sourceNoteText">Fuente: Portal de Datos Abiertos y Geoportal municipal. Derivados reproducibles en memoria técnica.</p>
+              <a href="https://github.com/Huntsman1756/Valencia_Proactiva" target="_blank" rel="noopener" data-i18n="githubLink">Ver código en GitHub</a>
+              <a href="https://github.com/Huntsman1756/Valencia_Proactiva/releases/tag/v1.0-adtr15" target="_blank" rel="noopener" data-i18n="releaseLink">Release v1.0-adtr15</a>
+            </div>
+          </section>
+          <p class="source-attribution" data-i18n="footerAttribution">Fuente: Portal de Datos Abiertos del Ayuntamiento de València · CC BY 4.0.</p>
+        </aside>
+
+        <section class="map-workspace" aria-label="Área principal" data-i18n-attr="aria-label:mainAreaLabel">
+          <section class="map-shell" aria-label="Mapa de eventos y alternativas" data-i18n-attr="aria-label:mapLabel">
+            <div class="map-toolbar">
+              <span data-i18n="map">Mapa</span>
+              <button id="toggleMap" type="button" aria-expanded="false" data-i18n="expand">Expandir</button>
+            </div>
+            <div id="map" class="map-canvas"></div>
+            <div id="mapLegend" class="map-legend" aria-label="Leyenda del mapa" data-i18n-attr="aria-label:mapLegendLabel">
+              <button id="mapLegendToggle" type="button" aria-expanded="true" data-i18n="hideLegend">Ocultar leyenda</button>
+              <div class="legend-items">
+                <span><i class="legend-dot legend-event"></i><span data-i18n="legendEvent">Evento activo</span></span>
+                <span><i class="legend-dot legend-selected-alternative"></i><span data-i18n="legendSelectedAlternative">Alternativa recomendada</span></span>
+                <span><i class="legend-dot legend-alternative"></i><span data-i18n="legendAlternative">Alternativa sugerida</span></span>
+                <span id="legendTrafficItem" hidden><i class="legend-line legend-traffic"></i><span data-i18n="legendTraffic">Tráfico con incidencia</span></span>
+                <span><i class="legend-zone"></i><span data-i18n="legendImpact">Impacto estimado</span></span>
+              </div>
+            </div>
+          </section>
+
+          <div id="mapEventTray" class="map-event-tray" aria-label="Eventos visibles" data-i18n-attr="aria-label:mapEventTrayLabel"></div>
+
+          <p class="map-help" data-i18n="mapHelp">El mapa explica dónde cae el evento, qué zona puede verse afectada y dónde están las alternativas. Haz clic en círculos, líneas o zonas para ver el detalle.</p>
+
+          <section id="sourcesPanel" class="view-panel info-panel" data-panel="sources" tabindex="-1" hidden></section>
+          <section id="methodologyPanel" class="view-panel info-panel" data-panel="methodology" tabindex="-1" hidden></section>
+          <section id="additionalInfoPanel" class="view-panel info-panel" data-panel="info" tabindex="-1" hidden></section>
+        </section>
+
+        <aside class="detail-rail" aria-label="Detalle del evento seleccionado" data-i18n-attr="aria-label:detailRailLabel">
+          <button id="detailPanelToggle" type="button" class="detail-panel-toggle" aria-expanded="true" data-i18n="collapseDetail">Contraer detalle</button>
+          <p id="detailCompactSummary" class="detail-compact-summary" data-i18n="selectEventHint">Selecciona un evento para ver ubicación, alternativas y acción recomendada.</p>
+          <section id="selectedEventPanel" class="selected-event-panel" aria-live="polite">
+            <p class="empty-state" data-i18n="selectEventHint">Selecciona un evento para ver ubicación, alternativas y acción recomendada.</p>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <div id="panelBackdrop" class="panel-backdrop" hidden></div>
+    <div id="toast" class="toast" role="status" hidden></div>
+
+    <noscript>VLC PROACTIVA necesita JavaScript para mostrar eventos urbanos y alternativas cercanas.</noscript>
+    <script src="./assets/app.js?v=20260529-public-data-copy" defer></script>
+  </body>
+</html>

@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "name": "valencia_promotable_locations",
+    "version": "2026-05-10",
+    "description": "Small curated gazetteer for conservative OfficialNotice to UrbanEvent promotion.",
+    "official_name_source": "Listado de las calles - Ayuntamiento de Valencia",
+    "official_name_source_url": "https://opendata.vlci.valencia.es/dataset/61776145-c8fb-4613-9798-63ce5a30d116",
+    "official_name_ckan_api_url": "https://opendata.vlci.valencia.es/api/3/action/package_show?id=61776145-c8fb-4613-9798-63ce5a30d116",
+    "official_name_csv_url": "https://mapas.valencia.es/lanzadera/opendata/vias/csv",
+    "license": "CC BY 4.0",
+    "coordinate_policy": "Initial centroid coordinates are manually curated for high-salience streets and squares. Do not add entries without a documented municipal/open geodata source and tests.",
+    "minimum_confidence_for_promotion": 0.85
+  },
+  "locations": [
+    {
+      "id": "av-del-reino",
+      "label": "Av. del Reino",
+      "aliases": ["av del reino", "av. del reino", "avenida del reino", "avinguda del reino", "avenida reino de valencia", "avinguda regne de valencia", "regne de valencia"],
+      "geometry": {"type": "Point", "coordinates": [-0.3659, 39.4649]},
+      "confidence": 0.9,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "plaza-ayuntamiento",
+      "label": "Plaza del Ayuntamiento",
+      "aliases": ["plaza del ayuntamiento", "pl de l ajuntament", "plaça de l ajuntament", "placa ajuntament", "plaça ajuntament", "plaza ayuntamiento", "ajuntament"],
+      "geometry": {"type": "Point", "coordinates": [-0.3765, 39.4699]},
+      "confidence": 0.92,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "estacio-nord",
+      "label": "Estación del Norte",
+      "aliases": ["estacion del norte", "estacio del nord", "estacion nord", "estacio nord"],
+      "geometry": {"type": "Point", "coordinates": [-0.3772, 39.4666]},
+      "confidence": 0.9,
+      "location_type": "transport_hub"
+    },
+    {
+      "id": "porta-mar",
+      "label": "Porta de la Mar",
+      "aliases": ["porta de la mar", "puerta del mar", "plaza porta de la mar"],
+      "geometry": {"type": "Point", "coordinates": [-0.3702, 39.4736]},
+      "confidence": 0.9,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "plaza-tetuan",
+      "label": "Plaza de Tetuán",
+      "aliases": ["plaza de tetuan", "plaça de tetuan", "placa tetuan", "pl tetuan"],
+      "geometry": {"type": "Point", "coordinates": [-0.3691, 39.4752]},
+      "confidence": 0.9,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "plaza-virgen",
+      "label": "Plaza de la Virgen",
+      "aliases": ["plaza de la virgen", "plaça de la verge", "placa de la verge", "pl virgen"],
+      "geometry": {"type": "Point", "coordinates": [-0.3751, 39.4766]},
+      "confidence": 0.9,
+      "location_type": "landmark"
+    },
+    {
+      "id": "plaza-reina",
+      "label": "Plaza de la Reina",
+      "aliases": ["plaza de la reina", "plaça de la reina", "placa reina", "plaça reina", "pl reina"],
+      "geometry": {"type": "Point", "coordinates": [-0.3757, 39.4745]},
+      "confidence": 0.9,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "mercado-central",
+      "label": "Mercado Central",
+      "aliases": ["mercado central", "mercat central"],
+      "geometry": {"type": "Point", "coordinates": [-0.3783, 39.4745]},
+      "confidence": 0.9,
+      "location_type": "facility"
+    },
+    {
+      "id": "lonja-seda",
+      "label": "Lonja de la Seda",
+      "aliases": ["lonja de la seda", "llotja de la seda", "la lonja"],
+      "geometry": {"type": "Point", "coordinates": [-0.3787, 39.4744]},
+      "confidence": 0.9,
+      "location_type": "landmark"
+    },
+    {
+      "id": "calle-colon",
+      "label": "Calle Colón",
+      "aliases": ["calle colon", "carrer colon", "carrer de colon", "colon"],
+      "geometry": {"type": "Point", "coordinates": [-0.3709, 39.4691]},
+      "confidence": 0.88,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "gran-via-marques-turia",
+      "label": "Gran Vía Marqués del Turia",
+      "aliases": ["gran via marques del turia", "gran via marques de turia", "gv marques del turia"],
+      "geometry": {"type": "Point", "coordinates": [-0.3675, 39.4662]},
+      "confidence": 0.88,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "avenida-blasco-ibanez",
+      "label": "Av. Blasco Ibáñez",
+      "aliases": ["avenida blasco ibanez", "avinguda blasco ibanez", "av blasco ibanez", "av. blasco ibanez", "blasco ibanez"],
+      "geometry": {"type": "Point", "coordinates": [-0.3515, 39.4758]},
+      "confidence": 0.88,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "avenida-aragon",
+      "label": "Av. Aragón",
+      "aliases": ["avenida aragon", "avinguda arago", "av aragon", "av. aragon", "av arago", "aragó", "arago"],
+      "geometry": {"type": "Point", "coordinates": [-0.3583, 39.4718]},
+      "confidence": 0.88,
+      "location_type": "street_axis",
+      "validation_policy": "long_axis_curated_point"
+    },
+    {
+      "id": "avenida-puerto",
+      "label": "Av. del Puerto",
+      "aliases": ["avenida del puerto", "av del puerto", "avinguda del port", "avinguda port", "av. del puerto", "port"],
+      "geometry": {"type": "Point", "coordinates": [-0.3464, 39.4646]},
+      "confidence": 0.88,
+      "location_type": "street_axis"
+    },
+    {
+      "id": "marina-valencia",
+      "label": "Marina de València",
+      "aliases": ["marina de valencia", "marina real", "la marina"],
+      "geometry": {"type": "Point", "coordinates": [-0.3237, 39.4628]},
+      "confidence": 0.88,
+      "location_type": "facility"
+    },
+    {
+      "id": "paseo-maritimo",
+      "label": "Paseo Marítimo",
+      "aliases": ["paseo maritimo", "passeig maritim", "passeig marítim"],
+      "geometry": {"type": "Point", "coordinates": [-0.3251, 39.4742]},
+      "confidence": 0.88,
+      "location_type": "landmark"
+    },
+    {
+      "id": "campanar",
+      "label": "Campanar",
+      "aliases": ["campanar", "barrio campanar"],
+      "geometry": {"type": "Point", "coordinates": [-0.3973, 39.4873]},
+      "confidence": 0.86,
+      "location_type": "neighborhood"
+    },
+    {
+      "id": "sant-isidre",
+      "label": "Sant Isidre",
+      "aliases": ["sant isidre", "san isidro"],
+      "geometry": {"type": "Point", "coordinates": [-0.4078, 39.4552]},
+      "confidence": 0.86,
+      "location_type": "neighborhood"
+    },
+    {
+      "id": "malva-rosa",
+      "label": "La Malva-rosa",
+      "aliases": ["malva rosa", "la malva rosa", "malvarrosa"],
+      "geometry": {"type": "Point", "coordinates": [-0.3262, 39.4827]},
+      "confidence": 0.86,
+      "location_type": "neighborhood"
+    },
+    {
+      "id": "palau-congressos",
+      "label": "Palau de Congressos",
+      "aliases": ["palau de congressos", "palacio de congresos"],
+      "geometry": {"type": "Point", "coordinates": [-0.4057, 39.4955]},
+      "confidence": 0.9,
+      "location_type": "facility"
+    }
+  ]
+}
