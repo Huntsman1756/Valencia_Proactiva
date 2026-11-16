@@ -1,0 +1,21 @@
+# source: Portal de Datos Abiertos del Ayuntamiento de Valencia; datos derivados por V-PRO
+# license: CC-BY-4.0
+action_id,action_type,title,profile,up_votes,down_votes,total_votes
+1176,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,14,0,14
+1239,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,12,0,12
+1097,INFORMATION,Consulta la afeccion antes de desplazarte,PMR,10,0,10
+1261,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,8,0,8
+1172,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,5,0,5
+11,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,4,0,4
+1254,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,4,0,4
+1265,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,4,0,4
+1329,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,4,0,4
+1333,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,4,0,4
+1318,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,3,0,3
+1080,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,2,0,2
+1279,PARKING_SUGGESTION,Aparcamiento PMR cercano fuera de la afeccion,PMR,2,0,2
+1079,ROUTE_CHANGE,Ruta alternativa recomendada,GENERIC,1,0,1
+1103,INFORMATION,Consulta la afeccion antes de desplazarte,PUBLIC_TRANSPORT,0,1,1
+1310,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,1,0,1
+1314,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,1,0,1
+1378,ADMIN_TASK,"Gestion municipal de carga, descarga o acceso comercial",PMR,1,0,1
