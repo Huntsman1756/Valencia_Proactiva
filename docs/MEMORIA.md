@@ -31,5 +31,5 @@ personales, secretos ni notas internas de trabajo.
 
 ## Licencias y atribucion
 
-Codigo bajo MIT. Datos derivados bajo CC-BY 4.0, atribuyendo el Portal de Datos Abiertos y Geoportal
+Codigo: todos los derechos reservados (h1756), publicado solo para consulta. Datos derivados bajo CC-BY 4.0, atribuyendo el Portal de Datos Abiertos y Geoportal
 del Ayuntamiento de Valencia como fuente oficial y Valencia Proactiva como transformacion derivada.
